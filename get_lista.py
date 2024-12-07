@@ -4,7 +4,7 @@ import openpyxl
 from datetime import time
 from datetime import datetime, timedelta
 import os
-
+import re
 
 def generate_name_of_file_google():
     """генерируем файлы для загрузки"""
@@ -30,7 +30,39 @@ def get_from_google_sheet():
         except:
             print("ERRR")
             continue
+def form_lista_beton(excel_file, day):
+    '''дастоём расписание из файла'''
+    lista_beton = []
+    try:
+        wb = openpyxl.load_workbook(excel_file)
+    except:
+        print("такого файла нет " + excel_file)
+        return []
 
+    sheet = wb[wb.sheetnames[day]]
+
+    def fill_list_beton(times_download, row, column, wenz):
+        if isinstance(times_download, time):
+            lista_beton.append((sheet.cell(row=row, column=column + 4).value, times_download,
+                                sheet.cell(row=row, column=column + 2).value,
+                                sheet.cell(row=row, column=column + 10).value,
+                                sheet.cell(row=row, column=column + 11).value, wenz))
+
+    for row_in_file in range(1, sheet.max_row):
+        c = sheet.cell(row=row_in_file, column=3).value
+        if "zawodzie 2 " in str(c).lower():
+            for row_in_beton in range(11, 42):
+                fill_list_beton(sheet.cell(row=row_in_file + row_in_beton, column=3).value, row_in_file + row_in_beton,
+                                3, "2")
+
+        if "zawodzie 1 " in str(c).lower():
+            for row_in_beton in range(11, 42):
+                fill_list_beton(sheet.cell(row=row_in_file + row_in_beton, column=3).value, row_in_file + row_in_beton,
+                                3, "1")
+
+    lista_beton = sorted(lista_beton, key=lambda event: event[1])
+
+    return lista_beton
 
 def form_lista(excel_file, day):
     '''дастоём расписание из файла'''
@@ -71,6 +103,53 @@ def lista_in_bot(lista):
 
     return lista_text
 
+def lista_in_bot_beton(lista_beton):
+    """"фотрмируем list в текстовый формат для высолки в бот """
+    def sum_of_metres(data):
+        sum_m = 0
+        try:
+            sum_m += float(data)
+        except (ValueError, TypeError):
+            # Игнорируем элементы, которые не являются числами
+            pass
+        return sum_m
+
+    def convert_to_string(data):
+        if not data:
+            return ""
+        try:
+            data = str(data)
+            data = data.strip()
+            data = re.sub(r'\s+', ' ', data)
+            return data
+        except (TypeError, ValueError):
+            return ""
+
+    if not lista_beton:
+        return ""
+    lista_text = ""
+    sum_metres = 0
+    for metres, times, name, uwagi, tel, wenz in lista_beton:
+        times = times.strftime('%H:%M')
+        if tel:
+            if isinstance(tel, float):
+                tel = str(int(tel)).strip()
+            elif isinstance(tel, str):
+                tel = tel.strip()
+        else:
+            tel = ""
+
+        name = convert_to_string(name)
+        tel = convert_to_string(tel)
+        uwagi = convert_to_string(uwagi)
+        sum_metres = sum_metres + sum_of_metres(metres)
+        metres = str(metres).strip()
+
+
+        lista_text += (f"{times} {metres} węzeł {wenz}\n"
+                       f"{name} {uwagi} {tel}\n"
+                       f"--------------------\n")
+    return lista_text, sum_metres
 
 def find_day_request():
     list_of_days = []
@@ -116,14 +195,29 @@ def combination_of_some_days_list():
     """формируем общий лист на несколько дней в зависимости от дня недели"""
     get_from_google_sheet()
     dict_list = {}
+    dict_beton = {}
     number_day = 1
     for day, file, date in find_day_request():
+        if not lista_in_bot(form_lista(file, day)):
+            dict_list[number_day] = [f"***{date}***", "Dane są niedostępne"]
+            number_day += 1
+            continue
 
         dict_list[number_day] = [f"***{date}***",  (lista_in_bot(form_lista(file, day))).split("\n")]
         number_day += 1
 
+    for day, file, date in find_day_request():
+        if not lista_in_bot(form_lista(file, day)):
+            dict_beton[number_day] = [f"***{date}***", "Dane są niedostępne"]
+            number_day += 1
+            continue
+        lista, meter = lista_in_bot_beton(form_lista_beton(file, day))
 
-    return dict_list
+        dict_beton[number_day] = [f"***{date}***", f"Metres {meter}", lista.split("\n")]
+        number_day += 1
+
+
+    return dict_list | dict_beton
 
 if __name__ == '__main__':
     print(combination_of_some_days_list())
