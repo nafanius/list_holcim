@@ -1,4 +1,3 @@
-from jinja2 import Template
 
 # Создаем HTML-шаблон
 html_template = """
@@ -17,7 +16,7 @@ html_template = """
         <div class="title_div">
             <div class="title_text">
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
-                <p>Zaktualizowano na .....</p>
+                <p>{{ Zaktualizowano }}</p>
                 <p><span style="color: rgb(59, 59, 124);">prodaction by "Trans-Serwis" :)</span></p>
             </div>
 
@@ -28,68 +27,62 @@ html_template = """
 
     <div></div>
     <div class="main_list">
-        <p>дата день недели</p>
+        <p>{{ element1[0] }}</p>
         <div class="main_list" style="background-color: rgb(164, 255, 169);">
             <div class="list">
                 <ul>
-                    <li>sasasas asas asasasas asasasasass asa sasasas1 sasa sas as asasassa sasas </li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
+                    <li>ROZKŁAD</li>
+                    {% for item in element1[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="list">
                 <ul>
-                    <li>2 aas as s sa a sas as as as aa a as as asa as asasas asa asas asasasasa s</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
+                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    {% for item in element4[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
 
-        <p>дата день недели</p>
+        <p>{{ element2[0] }}</p>
         <div class="main_list" style="background-color: rgb(252, 241, 153);">
             <div class="list">
                 <ul>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
+                    <li>ROZKŁAD</li>
+                    {% for item in element2[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="list">
                 <ul>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
+                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    {% for item in element5[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
 
-        <p>дата день недели</p>
+        <p>{{ element3[0] }}</p>
         <div class="main_list" style="background-color: rgb(255, 157, 157); border: 30px; border-color: black;">
             <div class="list">
                 <ul>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
+                    <li>ROZKŁAD</li>
+                    {% for item in element3[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="list">
                 <ul>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
-                    <li>2</li>
+                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    {% for item in element6[1:] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -99,7 +92,3 @@ html_template = """
 
 </html>
 """
-lista ={}
-
-template = Template(html_template)
-rendered_html = template.render(products=lista)

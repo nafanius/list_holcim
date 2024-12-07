@@ -147,7 +147,7 @@ def lista_in_bot_beton(lista_beton):
 
 
         lista_text += (f"{times} {metres} węzeł {wenz}\n"
-                       f"{name} {uwagi} {tel}\n"
+                       f"{name} {uwagi}\n {tel}\n"
                        f"--------------------\n")
     return lista_text, sum_metres
 
@@ -172,22 +172,22 @@ def find_day_request():
         list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              (now + timedelta(days=1)).strftime('%d.%m.%Y')))
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
     elif day_of_week == 5:
         list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              now.strftime('%d.%m.%Y')))
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
         list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
 
     elif day_of_week == 6:
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
         list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
         list_of_days.append((2, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
 
     return list_of_days
 
@@ -199,21 +199,21 @@ def combination_of_some_days_list():
     number_day = 1
     for day, file, date in find_day_request():
         if not lista_in_bot(form_lista(file, day)):
-            dict_list[number_day] = [f"***{date}***", "Dane są niedostępne"]
+            dict_list[f"element{number_day}"] = [f"***{date}***", "Dane są niedostępne"]
             number_day += 1
             continue
 
-        dict_list[number_day] = [f"***{date}***",  (lista_in_bot(form_lista(file, day))).split("\n")]
+        dict_list[f"element{number_day}"] = [f"***{date}***"] + (lista_in_bot(form_lista(file, day))).split("\n")
         number_day += 1
 
     for day, file, date in find_day_request():
-        if not lista_in_bot(form_lista(file, day)):
-            dict_beton[number_day] = [f"***{date}***", "Dane są niedostępne"]
+        if not lista_in_bot_beton(form_lista_beton(file, day)):
+            dict_beton[f"element{number_day}"] = [f"***{date}***", "Dane są niedostępne"]
             number_day += 1
             continue
         lista, meter = lista_in_bot_beton(form_lista_beton(file, day))
 
-        dict_beton[number_day] = [f"***{date}***", f"Metres {meter}", lista.split("\n")]
+        dict_beton[f"element{number_day}"] = [f"***{date}***", f"Metres {meter}"] + lista.split("\n")
         number_day += 1
 
 
