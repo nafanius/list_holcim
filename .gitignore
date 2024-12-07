@@ -1,6 +1,6 @@
 auth_data.py
 credentials.json
-.venv
+.venv1
 excel_files/
 token-drive.pickle
 token-sheets.pickle

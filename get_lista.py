@@ -80,61 +80,50 @@ def find_day_request():
     current_week_number = now.isocalendar()[1]
     day_of_week = now.weekday()
     current_year = now.year
-    time_after_14_00 = now.replace(hour=14, minute=0, second=0, microsecond=0)
     if day_of_week in (0, 1, 2, 3):
-        if now < time_after_14_00:
-            list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                                 now.strftime('%d.%m.%Y')))
-        else:
-            list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                                 (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             now.strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week + 2, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
     elif day_of_week == 4:
-        if now < time_after_14_00:
-            list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                                 now.strftime('%d.%m.%Y')))
-            list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                                 (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        else:
-            list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                                 (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-            list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                                 (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             now.strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+        list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
     elif day_of_week == 5:
-        if now < time_after_14_00:
-            list_of_days.append(
-                (day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx", now.strftime('%d.%m.%Y')))
-            list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                                 (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-        else:
-            list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                                 (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             now.strftime('%d.%m.%Y')))
+        list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
 
     elif day_of_week == 6:
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((2, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
 
     return list_of_days
 
-def combination_of_some_days_list(now=False):
+def combination_of_some_days_list():
     """формируем общий лист на несколько дней в зависимости от дня недели"""
     get_from_google_sheet()
-    text_to_bot = ""
-    if now:
-        now = datetime.now()
-        day = now.weekday()
-        current_week_number = now.isocalendar()[1]
-        current_year = now.year
-        date = now.strftime('%d.%m.%Y')
-        file = f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx"
-        text_to_bot += f"**{date}**\n{lista_in_bot(form_lista(file, day))}\n\n"
-    else:
-        for day, file, date in find_day_request():
-            if not lista_in_bot(form_lista(file, day)):
-                continue
-            text_to_bot += f"**{date}**\n{lista_in_bot(form_lista(file, day))}\n\n"
+    dict_list = {}
+    number_day = 1
+    for day, file, date in find_day_request():
 
-    return text_to_bot
+        dict_list[number_day] = [f"***{date}***",  (lista_in_bot(form_lista(file, day))).split("\n")]
+        number_day += 1
 
+
+    return dict_list
 
 if __name__ == '__main__':
-    print(combination_of_some_days_list(True))
+    print(combination_of_some_days_list())
