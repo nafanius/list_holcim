@@ -25,13 +25,12 @@ html_template = """
         </div>
     </div>
 
-    <div></div>
     <div class="main_list">
         <p>{{ element1[0] }}</p>
-        <div class="main_list" style="background-color: rgb(164, 255, 169);">
+        <div class="main_list" style="background-color: rgb(189, 255, 193);">
             <div class="list">
                 <ul>
-                    <li>ROZKŁAD</li>
+                    <li class="libold">ROZKŁAD:</li>
                     {% for item in element1[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
@@ -39,7 +38,7 @@ html_template = """
             </div>
             <div class="list">
                 <ul>
-                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element4[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
@@ -48,10 +47,10 @@ html_template = """
         </div>
 
         <p>{{ element2[0] }}</p>
-        <div class="main_list" style="background-color: rgb(252, 241, 153);">
+        <div class="main_list" style="background-color: rgb(255, 247, 188);">
             <div class="list">
                 <ul>
-                    <li>ROZKŁAD</li>
+                    <li class="libold">ROZKŁAD:</li>
                     {% for item in element2[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
@@ -59,7 +58,7 @@ html_template = """
             </div>
             <div class="list">
                 <ul>
-                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element5[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
@@ -68,10 +67,10 @@ html_template = """
         </div>
 
         <p>{{ element3[0] }}</p>
-        <div class="main_list" style="background-color: rgb(255, 157, 157); border: 30px; border-color: black;">
+        <div class="main_list" style="background-color: rgb(255, 188, 188); border: 30px; border-color: black;">
             <div class="list">
                 <ul>
-                    <li>ROZKŁAD</li>
+                    <li class="libold">ROZKŁAD:</li>
                     {% for item in element3[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
@@ -79,7 +78,7 @@ html_template = """
             </div>
             <div class="list">
                 <ul>
-                    <li>HARMONOGRAM ZAŁADUNKÓW</li>
+                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element6[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
