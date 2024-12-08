@@ -42,6 +42,6 @@ def upload_file_to_s3(file_path, bucket, file_name, region="eu-central-1"):
 
 
 if __name__ == '__main__':
-    print(get_dict())
+    # print(get_dict())
     save_html(get_dict())
     upload_file_to_s3('./site/index.html', 'list-holcim', "index.html")
