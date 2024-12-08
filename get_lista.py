@@ -27,7 +27,8 @@ def get_from_google_sheet():
             ss_name = ss.title
             file_path = os.path.join(directory, f'{ss_name}.xlsx')
             ss.downloadAsExcel(file_path)
-        except:
+        except Exception as err:
+            print(err)
             print("ERRR")
             continue
 def form_lista_beton(excel_file, day):
