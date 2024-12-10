@@ -194,27 +194,28 @@ def find_day_request():
 
 def combination_of_some_days_list():
     """формируем общий лист на несколько дней в зависимости от дня недели"""
+    day_of_week_list = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
     get_from_google_sheet()
     dict_list = {}
     dict_beton = {}
     number_day = 1
     for day, file, date in find_day_request():
         if not lista_in_bot(form_lista(file, day)):
-            dict_list[f"element{number_day}"] = [f"***{date}***", "Dane są niedostępne"]
+            dict_list[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***", "Dane są niedostępne"]
             number_day += 1
             continue
 
-        dict_list[f"element{number_day}"] = [f"***{date}***"] + (lista_in_bot(form_lista(file, day))).split("\n")
+        dict_list[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***"] + (lista_in_bot(form_lista(file, day))).split("\n")
         number_day += 1
 
     for day, file, date in find_day_request():
         if not lista_in_bot_beton(form_lista_beton(file, day)):
-            dict_beton[f"element{number_day}"] = [f"***{date}***", "Dane są niedostępne"]
+            dict_beton[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***", "Dane są niedostępne"]
             number_day += 1
             continue
         lista, meter = lista_in_bot_beton(form_lista_beton(file, day))
 
-        dict_beton[f"element{number_day}"] = [f"***{date}***", f"Metres {meter}"] + lista.split("\n")
+        dict_beton[f"element{number_day}"] = [f"***{date}  {day_of_week_list[day]}***", f"Metres {meter}"] + lista.split("\n")
         number_day += 1
 
 

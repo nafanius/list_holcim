@@ -10,7 +10,7 @@ def get_dict():
     data = combination_of_some_days_list()
 
     now = datetime.now()
-    data["Zaktualizowano"] = f"Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}"
+    data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
 
     return data
 
