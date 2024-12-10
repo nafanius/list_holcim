@@ -167,27 +167,48 @@ def find_day_request():
                              (now + timedelta(days=1)).strftime('%d.%m.%Y')))
         list_of_days.append((day_of_week + 2, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-    elif day_of_week == 4:
+    elif day_of_week == 4 and current_week_number < 52:
         list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              now.strftime('%d.%m.%Y')))
         list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              (now + timedelta(days=1)).strftime('%d.%m.%Y')))
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-    elif day_of_week == 5:
+    elif day_of_week == 5 and current_week_number < 52:
         list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                              now.strftime('%d.%m.%Y')))
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
         list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=3)).strftime('%d.%m.%Y')))
-
-    elif day_of_week == 6:
+    elif day_of_week == 6 and current_week_number < 52:
         list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=1)).strftime('%d.%m.%Y')))
         list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
                              (now + timedelta(days=2)).strftime('%d.%m.%Y')))
         list_of_days.append((2, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+    elif day_of_week == 4 and current_week_number >= 52:
+        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             now.strftime('%d.%m.%Y')))
+        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+    elif day_of_week == 5 and current_week_number >= 52:
+        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                             now.strftime('%d.%m.%Y')))
+        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((1, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+
+    elif day_of_week == 6 and current_week_number >= 52:
+        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
+        list_of_days.append((1, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append((2, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
                              (now + timedelta(days=3)).strftime('%d.%m.%Y')))
 
     return list_of_days
