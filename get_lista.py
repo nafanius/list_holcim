@@ -31,6 +31,7 @@ def get_from_google_sheet():
             print(err)
             print("ERRR")
             continue
+
 def form_lista_beton(excel_file, day):
     '''дастоём расписание из файла'''
     lista_beton = []
@@ -43,7 +44,11 @@ def form_lista_beton(excel_file, day):
     sheet = wb[wb.sheetnames[day]]
 
     def fill_list_beton(times_download, row, column, wenz):
-        if isinstance(times_download, time):
+        time_pattern = r'\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b'
+        match = re.search(time_pattern, str(times_download))
+        if match:
+            hours, minutes = match.groups()
+            times_download = time(int(hours), int(minutes))
             lista_beton.append((sheet.cell(row=row, column=column + 4).value, times_download,
                                 sheet.cell(row=row, column=column + 2).value,
                                 sheet.cell(row=row, column=column + 10).value,
@@ -75,9 +80,13 @@ def form_lista(excel_file, day):
         return []
     sheet = wb[wb.sheetnames[day]]
 
-    def fill_list(time_str, row, column):
-        if isinstance(time_str, time):
-            lista.append((time_str, (sheet.cell(row=row, column=column - 1).value).strip()))
+    def fill_list(time_start, row, column):
+        time_pattern = r'\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b'
+        match = re.search(time_pattern, str(time_start))
+        if match:
+            hours, minutes = match.groups()
+            time_start = time(int(hours), int(minutes))
+            lista.append((time_start, str(sheet.cell(row=row, column=column - 1).value).strip()))
 
     for row_in_file in range(1, sheet.max_row):
         c = sheet.cell(row=row_in_file, column=3).value
