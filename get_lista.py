@@ -50,8 +50,10 @@ def form_lista_beton(excel_file, day):
             hours, minutes = match.groups()
             times_download = time(int(hours), int(minutes))
             lista_beton.append((sheet.cell(row=row, column=column + 4).value, times_download,
+                                sheet.cell(row=row, column=column + 1).value,
                                 sheet.cell(row=row, column=column + 2).value,
                                 sheet.cell(row=row, column=column + 10).value,
+                                sheet.cell(row=row, column=column + 13).value,
                                 sheet.cell(row=row, column=column + 11).value, wenz))
 
     for row_in_file in range(1, sheet.max_row):
@@ -139,7 +141,7 @@ def lista_in_bot_beton(lista_beton):
         return ""
     lista_text = ""
     sum_metres = 0
-    for metres, times, name, uwagi, tel, wenz in lista_beton:
+    for metres, times, firm, name, uwagi, przebieg, tel, wenz in lista_beton:
         times = times.strftime('%H:%M')
         if tel:
             if isinstance(tel, float):
@@ -149,6 +151,8 @@ def lista_in_bot_beton(lista_beton):
         else:
             tel = ""
 
+        przebieg = convert_to_string(przebieg)
+        firm = convert_to_string(firm)
         name = convert_to_string(name)
         tel = convert_to_string(tel)
         uwagi = convert_to_string(uwagi)
@@ -157,7 +161,7 @@ def lista_in_bot_beton(lista_beton):
 
 
         lista_text += (f"{times} {metres} węzeł {wenz}\n"
-                       f"{name} {uwagi}\n {tel}\n"
+                       f"{firm}\n{name} {uwagi+" "+przebieg }\n{tel}\n"
                        f"--------------------\n")
     return lista_text, sum_metres
 
