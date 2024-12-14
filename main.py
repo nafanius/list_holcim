@@ -21,7 +21,6 @@ def save_html(data):
         f.write(rendered_html)
 
 def upload_file_to_s3(file_path, bucket, file_name, region="eu-central-1"):
-   
     # Создаем сессию boto3 и клиент S3
     session = boto3.Session(
         region_name=region
