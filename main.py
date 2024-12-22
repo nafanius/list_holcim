@@ -19,17 +19,18 @@ def get_dict():
 
         args = parser.parse_args()
 
-        dictinary["brend"] = args.by_who if args.by_who else 'production by \"Trans-Serwis\" :)</span>'
-        dictinary["cong"] = args.cong if args.cong else ''
-        dictinary["war"] = args.war if args.war else ''
+        dictinary["brend"] = (
+            args.by_who if args.by_who else 'production by "Trans-Serwis" :)</span>'
+        )
+        dictinary["cong"] = args.cong if args.cong else ""
+        dictinary["war"] = args.war if args.war else ""
 
         return dictinary
 
     data = combination_of_some_days_list()
 
     now = datetime.now()
-    data["Zaktualizowano"] = f'Zaktualizowano na: {
-        now.strftime("%d.%m.%Y %H:%M")}'
+    data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
 
     parsing_args(data)
 
@@ -58,8 +59,7 @@ def upload_directory_to_s3(
             # Construct the S3 path by joining base path with the relative path
             # to get the subdirectories structure
             relative_path = os.path.relpath(local_path, directory_path)
-            s3_path = os.path.join(
-                s3_base_path, relative_path).replace("\\", "/")
+            s3_path = os.path.join(s3_base_path, relative_path).replace("\\", "/")
 
             # Upload the file
             try:
@@ -69,8 +69,9 @@ def upload_directory_to_s3(
                     s3_path,
                     ExtraArgs={"ContentType": "text/html"},
                 )
-                # s3_client.put_object_acl(
-                #     ACL="public-read", Bucket=bucket_name, Key=s3_path)
+                s3_client.put_object_acl(
+                    ACL="public-read", Bucket=bucket_name, Key=s3_path
+                )
                 print(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
 
             except FileNotFoundError:
