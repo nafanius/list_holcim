@@ -17,7 +17,7 @@ html_template = """
             <div class="title_text">
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
                 <p>{{ Zaktualizowano }}</p>
-                <p><span style="color: rgb(59, 59, 124);">production by "Trans-Serwis" :)</span></p>
+                <p><span style="color: rgb(59, 59, 124);">{{brend}}</span></p>
             </div>
 
             <div class="title_image"><a href="https://www.holcim.pl/" target="_blank"><img
