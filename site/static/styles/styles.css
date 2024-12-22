@@ -37,7 +37,10 @@ img {
     display: inline-block;
     text-align: start;
     order: 1;
-    margin: 3px;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+
 }
 
 .title_image {

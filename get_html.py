@@ -71,6 +71,50 @@ html_template = """
             }
         }
 
+        @keyframes beton {
+            0% {
+                animation-timing-function: ease-in;
+                opacity: 0;
+                transform: translateX(-250px);
+            }
+
+            38% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            55% {
+                animation-timing-function: ease-in;
+                transform: translateX(-68px);
+            }
+
+            72% {
+                animation-timing-function: ease-out;
+                transform: translateX(0);
+            }
+
+            81% {
+                animation-timing-function: ease-in;
+                transform: translateX(-28px);
+            }
+
+            90% {
+                animation-timing-function: ease-out;
+                transform: translateX(0);
+            }
+
+            95% {
+                animation-timing-function: ease-in;
+                transform: translateX(-8px);
+            }
+
+            100% {
+                animation-timing-function: ease-out;
+                transform: translateX(0);
+            }
+        }
+
         .main {
             text-align: left;
             align-content: center;
@@ -90,7 +134,9 @@ html_template = """
             display: inline-block;
             text-align: start;
             order: 1;
-            margin: 3px;
+            margin-top: 3px;
+            margin-left: 3px;
+            margin-right: 3px;
         }
 
         .title_image {
@@ -105,7 +151,6 @@ html_template = """
             flex-direction: row;
             text-align: center;
             align-content: center;
-            margin: 5px;
             padding: 5px;
             justify-content: center;
             filter: drop-shadow(7px 8px 10px #9e9a9a);
@@ -113,7 +158,7 @@ html_template = """
         }
 
         .main_list>p {
-            margin-top: 10px;
+            margin-top: 5px;
             margin-left: 3px;
             font-size: larger;
             text-align: left;
@@ -155,6 +200,14 @@ html_template = """
             filter: drop-shadow(9px -5px 3px #a1a1a1);
         }
 
+        #betonka {
+            animation: beton 4s linear 1s 1 alternate forwards;
+        }
+
+        #bet {
+            text-align: right;
+        }
+
 
         @media (max-width: 500px) {
             .title_div {
@@ -181,6 +234,39 @@ html_template = """
                 <p id="brend">{{ brend }}</p>
                 <p id="cong">{{ cong }}</p>
                 <p id="war">{{ war }}</p>
+                <p id="bet"><svg id="betonka" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                width="64.000000pt" height="54.000000pt" viewBox="0 0 64.000000 54.000000"
+                preserveAspectRatio="xMidYMid meet">
+
+                <g transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
+                fill="#000000" stroke="none">
+                <path d="M41 510 c-21 -38 -21 -41 -6 -98 13 -53 13 -64 0 -102 -8 -23 -15
+                -64 -15 -91 0 -46 2 -49 26 -49 16 0 35 -11 51 -30 33 -40 73 -40 106 0 25 29
+                28 30 117 30 89 0 92 -1 117 -30 33 -40 73 -40 106 0 16 19 35 30 51 30 22 0
+                26 4 26 30 0 17 -4 30 -10 30 -6 0 -10 26 -10 58 0 56 -22 143 -43 170 -7 9
+                -32 12 -81 10 l-71 -3 -3 -117 c-1 -68 -7 -118 -12 -118 -6 0 -10 19 -10 43 0
+                24 -5 48 -11 54 -8 8 -8 17 0 31 16 30 15 34 -25 81 -54 63 -98 86 -187 99
+                -43 7 -81 12 -86 12 -4 0 -17 -18 -30 -40z m122 5 l48 -6 -37 -67 c-20 -37
+                -39 -69 -41 -71 -8 -10 -32 27 -51 80 -22 59 -17 80 16 73 10 -1 39 -6 65 -9z
+                m101 -30 c17 -13 16 -17 -25 -89 -39 -68 -44 -74 -63 -64 -12 6 -23 12 -25 14
+                -4 4 82 154 88 154 4 0 14 -7 25 -15z m-185 -88 c11 -32 21 -78 21 -102 0 -25
+                5 -45 11 -45 5 0 7 -4 4 -10 -3 -5 -22 -10 -41 -10 -39 0 -41 7 -19 71 16 44
+                14 63 -12 154 -12 42 15 -1 36 -58z m255 22 l26 -30 -20 -39 c-25 -49 -32 -53
+                -80 -45 l-40 7 37 69 c21 38 41 69 45 69 3 0 18 -14 32 -31z m228 -24 c9 -27
+                17 -76 17 -107 1 -55 0 -58 -23 -58 -14 0 -28 4 -31 10 -8 13 -62 13 -70 0 -3
+                -5 -13 -10 -21 -10 -11 0 -14 21 -14 110 l0 111 63 -3 62 -3 17 -50z m-313
+                -111 l56 -12 -92 -1 -93 -1 0 35 0 34 36 -21 c20 -12 61 -27 93 -34z m111 -14
+                l0 -40 -84 0 c-47 0 -88 5 -91 10 -4 6 18 10 59 10 63 0 66 1 81 30 21 41 35
+                38 35 -10z m-200 -90 c0 -5 -4 -10 -10 -10 -5 0 -10 5 -10 10 0 6 5 10 10 10
+                6 0 10 -4 10 -10z m340 0 c0 -5 -4 -10 -10 -10 -5 0 -10 5 -10 10 0 6 5 10 10
+                10 6 0 10 -4 10 -10z"/>
+                <path d="M440 390 c0 -33 3 -40 19 -40 11 0 23 -4 26 -10 3 -5 22 -10 42 -10
+                32 0 35 2 29 25 -17 69 -23 75 -71 75 l-45 0 0 -40z m81 -6 c13 -35 7 -39 -30
+                -23 -39 17 -42 49 -6 49 18 0 28 -7 36 -26z"/>
+                <path d="M440 300 c0 -5 9 -10 20 -10 11 0 20 5 20 10 0 6 -9 10 -20 10 -11 0
+                -20 -4 -20 -10z"/>
+                </g>
+                </svg</p>
             </div>
 
             <div class="title_image"><a href="https://www.holcim.pl/" target="_blank">
