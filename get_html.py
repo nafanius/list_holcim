@@ -1,4 +1,4 @@
-
+# <link rel="stylesheet" type="text/css" href="static/styles/styles.css">
 # Создаем HTML-шаблон
 html_template = """
 <!DOCTYPE html>
@@ -8,28 +8,192 @@ html_template = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Holcim Lista</title>
-    <link rel="stylesheet" type="text/css" href="static/styles/styles.css">
-</head>
+    <style>
+        * {
+            margin: 0px;
+        }
 
-<body style="background: linear-gradient(121deg, #e5fff4 0%, #9ec8ff 100%);">
+        body {
+            background: linear-gradient(144deg, #f0fded 20%, #a5ecfd 100%);
+
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        img {
+            display: inline;
+            margin: 5px;
+            filter: drop-shadow(9px -5px 3px #a1a1a1);
+
+        }
+
+        @keyframes myAnim {
+            0% {
+                animation-timing-function: ease-in;
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            38% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            55% {
+                animation-timing-function: ease-in;
+                transform: scale(0.7);
+            }
+
+            72% {
+                animation-timing-function: ease-out;
+                transform: scale(1);
+            }
+
+            81% {
+                animation-timing-function: ease-in;
+                transform: scale(0.84);
+            }
+
+            89% {
+                animation-timing-function: ease-out;
+                transform: scale(1);
+            }
+
+            95% {
+                animation-timing-function: ease-in;
+                transform: scale(0.95);
+            }
+
+            100% {
+                animation-timing-function: ease-out;
+                transform: scale(1);
+            }
+        }
+
+        .main {
+            text-align: left;
+            align-content: center;
+            display: block;
+        }
+
+        .title_div {
+            display: flex;
+            padding: 5px;
+            flex-direction: row;
+            align-items: left;
+            text-align: left;
+        }
+
+        .title_text {
+            flex: 1;
+            display: inline-block;
+            text-align: start;
+            order: 1;
+            margin: 3px;
+        }
+
+        .title_image {
+            max-width: 100%;
+            height: auto;
+            order: 2;
+            margin: 3px;
+        }
+
+        .main_list {
+            display: block;
+            flex-direction: row;
+            text-align: center;
+            align-content: center;
+            margin: 5px;
+            padding: 5px;
+            justify-content: center;
+            filter: drop-shadow(7px 8px 10px #9e9a9a);
+            border-radius: 10px;
+        }
+
+        .main_list>p {
+            margin-top: 10px;
+            margin-left: 3px;
+            font-size: larger;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .libold{
+            font-weight: bold
+        }
+
+        .list{
+            display: block;
+            margin: 3px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        #brend {
+            color: rgb(59, 59, 124)
+        
+        }
+
+        #cong {
+            font-size: large;
+            margin: 3px;
+            color: rgb(231, 118, 43);
+            font-weight: bold;
+            animation: myAnim 4s linear 1s 1 alternate both;
+
+        }
+
+        #war {
+            font-size: large;
+            color: rgb(238, 36, 36);
+            font-weight: bold;
+        }
+
+
+        @media (max-width: 500px) {
+            .title_div {
+                flex-direction: column;
+            
+            }
+            .title_text {
+                order: 2;
+            }
+            .title_image {
+                order: 1;
+            }
+        }
+    </style>
+
+    </head>
+
+<body>
     <div class="main">
         <div class="title_div">
             <div class="title_text">
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
                 <p>{{ Zaktualizowano }}</p>
-                <p style="color: rgb(59, 59, 124);">{{ brend }}</p>
-                <p style="font-size: large; color: rgb(231, 118, 43);">{{cong}}</p>
-                <p style="font-size: large; color: rgb(238, 36, 36); font-weight: bold;">{{war}}</p>
+                <p id="brend">{{ brend }}</p>
+                <p id="cong">{{ cong }}</p>
+                <p id="war">{{ war }}</p>
             </div>
 
-            <div class="title_image"><a href="https://www.holcim.pl/" target="_blank" style="filter: drop-shadow(5px -1px 5px #19345d);"><img
-                        src="static/image/holcim_logo_color.svg" alt="Holcim"></a></div>
+            <div class="title_image"><a href="https://www.holcim.pl/" target="_blank">
+                        <img src="static/image/holcim_logo_color.svg" alt="Holcim"></a></div>
         </div>
     </div>
 
     <div class="main_list">
         <p>{{ element1[0] }}</p>
-        <div class="main_list" style="filter: drop-shadow(7px 8px 10px #9e9a9a); background-color: rgb(189, 255, 193); border-radius: 16px;">
+        <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
                     <li class="libold">ROZKŁAD:</li>
@@ -49,7 +213,7 @@ html_template = """
         </div>
 
         <p>{{ element2[0] }}</p>
-        <div class="main_list" style="filter: drop-shadow(7px 8px 10px #9e9a9a); background-color: rgb(255, 247, 188); border-radius: 16px;">
+        <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
                     <li class="libold">ROZKŁAD:</li>
@@ -69,7 +233,7 @@ html_template = """
         </div>
 
         <p>{{ element3[0] }}</p>
-        <div class="main_list" style="filter: drop-shadow(7px 8px 10px #9e9a9a); background-color: rgb(255, 188, 188); border-radius: 16px">
+        <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
                     <li class="libold">ROZKŁAD:</li>
