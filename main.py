@@ -19,8 +19,8 @@ def get_dict():
 
         args = parser.parse_args()
 
-        dictinary["brend"] = args.by_who if args.by_who else 'production by "Trans-Serwis" :)'
-        dictinary["cong"] = args.cong if args.conf else ''
+        dictinary["brend"] = args.by_who if args.by_who else 'production by \"Trans-Serwis\" :)</span>'
+        dictinary["cong"] = args.cong if args.cong else ''
         dictinary["war"] = args.war if args.war else ''
 
         return dictinary
@@ -44,7 +44,7 @@ def save_html(data):
 
 
 def upload_directory_to_s3(
-    directory_path, bucket_name, index_file, s3_base_path="", region="eu-central-1"
+    directory_path, bucket_name, s3_base_path="", region="eu-central-1"
 ):
     session = boto3.Session(region_name=region)
     s3_client = session.client("s3")
@@ -69,23 +69,26 @@ def upload_directory_to_s3(
                     s3_path,
                     ExtraArgs={"ContentType": "text/html"},
                 )
+                # s3_client.put_object_acl(
+                #     ACL="public-read", Bucket=bucket_name, Key=s3_path)
                 print(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
+
             except FileNotFoundError:
                 print(f"The file {s3_path} was not found.")
             except NoCredentialsError:
                 print("Credentials not available.")
-    try:
-        # Загружаем файл в S3
-        s3_client.put_object_acl(
-            ACL="public-read", Bucket=bucket_name, Key=index_file)
+    # try:
+    #     # Загружаем файл в S3
+    #     s3_client.put_object_acl(
+    #         ACL="public-read", Bucket=bucket_name, Key=index_file)
 
-    except FileNotFoundError:
-        print(f"The file {index_file} was not found.")
-    # except NoCredentialsError:
-        print("Credentials not available.")
+    # except FileNotFoundError:
+    #     print(f"The file {index_file} was not found.")
+    # # except NoCredentialsError:
+    #     print("Credentials not available.")
 
 
 if __name__ == "__main__":
     # print(get_dict())
     save_html(get_dict())
-    upload_directory_to_s3("./site", "list-holcim", "index.html")
+    upload_directory_to_s3("./site", "list-holcim")

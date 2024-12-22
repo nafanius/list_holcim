@@ -14,6 +14,7 @@ li {
 img {
     display: inline;
     margin: 5px;
+    filter: drop-shadow(21px 6px 31px #000000);
 }
 .main {
     text-align: left;
