@@ -266,7 +266,7 @@ html_template = """
                 <path d="M440 300 c0 -5 9 -10 20 -10 11 0 20 5 20 10 0 6 -9 10 -20 10 -11 0
                 -20 -4 -20 -10z"/>
                 </g>
-                </svg</p>
+                </svg></p>
             </div>
 
             <div class="title_image"><a href="https://www.holcim.pl/" target="_blank">
