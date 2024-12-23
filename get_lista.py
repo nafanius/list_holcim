@@ -2,18 +2,19 @@ import ezsheets
 
 import openpyxl
 from datetime import time
+from datetime import date as datetime_date
 from datetime import datetime, timedelta
 import os
 import re
 
+
 def has_53rd_week(year):
     # Получаем день недели для 31 декабря указанного года
-    dec_31 = datetime.date(year, 12, 31)
+    dec_31 = datetime_date(year, 12, 31)
     # Определяем номер недели для 31 декабря
     week_number = dec_31.isocalendar()[1]
     # Проверяем, если номер недели равен 53
     return week_number == 53
-
 
 
 def generate_name_of_file_google():
@@ -23,7 +24,9 @@ def generate_name_of_file_google():
     now = datetime.now()
     current_week_number = now.isocalendar()[1]
     current_year = now.year
-    if  current_week_number < 52 or (current_week_number == 52 and has_53rd_week(current_year)):
+    if current_week_number < 52 or (
+        current_week_number == 52 and has_53rd_week(current_year)
+    ):
         list_of_download_files.append(f"Tydz {current_week_number}.{current_year}")
         list_of_download_files.append(f"Tydz {current_week_number + 1}.{current_year}")
     else:
@@ -36,18 +39,19 @@ def generate_name_of_file_google():
 def get_from_google_sheet():
     for file in generate_name_of_file_google():
         try:
-            directory = 'excel_files'
+            directory = "excel_files"
             ss = ezsheets.Spreadsheet(file)
             ss_name = ss.title
-            file_path = os.path.join(directory, f'{ss_name}.xlsx')
+            file_path = os.path.join(directory, f"{ss_name}.xlsx")
             ss.downloadAsExcel(file_path)
         except Exception as err:
             print(err)
             print("ERRR")
             continue
 
+
 def form_lista_beton(excel_file, day):
-    '''дастоём расписание из файла'''
+    """дастоём расписание из файла"""
     lista_beton = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -58,36 +62,51 @@ def form_lista_beton(excel_file, day):
     sheet = wb[wb.sheetnames[day]]
 
     def fill_list_beton(times_download, row, column, wenz):
-        time_pattern = r'\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b'
+        time_pattern = r"\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b"
         match = re.search(time_pattern, str(times_download))
         if match:
             hours, minutes = match.groups()
             times_download = time(int(hours), int(minutes))
-            lista_beton.append((sheet.cell(row=row, column=column + 4).value, times_download,
-                                sheet.cell(row=row, column=column + 1).value,
-                                sheet.cell(row=row, column=column + 2).value,
-                                sheet.cell(row=row, column=column + 10).value,
-                                sheet.cell(row=row, column=column + 13).value,
-                                sheet.cell(row=row, column=column + 11).value, wenz))
+            lista_beton.append(
+                (
+                    sheet.cell(row=row, column=column + 4).value,
+                    times_download,
+                    sheet.cell(row=row, column=column + 1).value,
+                    sheet.cell(row=row, column=column + 2).value,
+                    sheet.cell(row=row, column=column + 10).value,
+                    sheet.cell(row=row, column=column + 13).value,
+                    sheet.cell(row=row, column=column + 11).value,
+                    wenz,
+                )
+            )
 
     for row_in_file in range(1, sheet.max_row):
         c = sheet.cell(row=row_in_file, column=3).value
         if "zawodzie 2 " in str(c).lower():
             for row_in_beton in range(11, 42):
-                fill_list_beton(sheet.cell(row=row_in_file + row_in_beton, column=3).value, row_in_file + row_in_beton,
-                                3, "2")
+                fill_list_beton(
+                    sheet.cell(row=row_in_file + row_in_beton, column=3).value,
+                    row_in_file + row_in_beton,
+                    3,
+                    "2",
+                )
 
         if "zawodzie 1 " in str(c).lower():
             for row_in_beton in range(11, 42):
-                fill_list_beton(sheet.cell(row=row_in_file + row_in_beton, column=3).value, row_in_file + row_in_beton,
-                                3, "1")
+                fill_list_beton(
+                    sheet.cell(row=row_in_file + row_in_beton, column=3).value,
+                    row_in_file + row_in_beton,
+                    3,
+                    "1",
+                )
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
     return lista_beton
 
+
 def form_lista(excel_file, day):
-    '''дастоём расписание из файла'''
+    """дастоём расписание из файла"""
     lista = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -97,21 +116,29 @@ def form_lista(excel_file, day):
     sheet = wb[wb.sheetnames[day]]
 
     def fill_list(time_start, row, column):
-        time_pattern = r'\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b'
+        time_pattern = r"\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b"
         match = re.search(time_pattern, str(time_start))
         if match:
             hours, minutes = match.groups()
             time_start = time(int(hours), int(minutes))
-            lista.append((time_start, str(sheet.cell(row=row, column=column - 1).value).strip()))
+            lista.append(
+                (time_start, str(sheet.cell(row=row, column=column - 1).value).strip())
+            )
 
     for row_in_file in range(1, sheet.max_row):
         c = sheet.cell(row=row_in_file, column=3).value
         if "zawodzie 2 " in str(c).lower() or "zawodzie 1 " in str(c).lower():
             for row_in_list_time in range(15):
-                fill_list(sheet.cell(row=row_in_file + row_in_list_time, column=12).value,
-                          row_in_file + row_in_list_time, 12)
-                fill_list(sheet.cell(row=row_in_file + row_in_list_time, column=15).value,
-                          row_in_file + row_in_list_time, 15)
+                fill_list(
+                    sheet.cell(row=row_in_file + row_in_list_time, column=12).value,
+                    row_in_file + row_in_list_time,
+                    12,
+                )
+                fill_list(
+                    sheet.cell(row=row_in_file + row_in_list_time, column=15).value,
+                    row_in_file + row_in_list_time,
+                    15,
+                )
 
     lista = sorted(lista, key=lambda event: event[0])
 
@@ -119,7 +146,7 @@ def form_lista(excel_file, day):
 
 
 def lista_in_bot(lista):
-    """"фотрмируем list в текстовый формат для высолки в бот """
+    """ "фотрмируем list в текстовый формат для высолки в бот"""
 
     if not lista:
         return ""
@@ -129,8 +156,10 @@ def lista_in_bot(lista):
 
     return lista_text
 
+
 def lista_in_bot_beton(lista_beton):
-    """"фотрмируем list в текстовый формат для высолки в бот """
+    """ "фотрмируем list в текстовый формат для высолки в бот"""
+
     def sum_of_metres(data):
         sum_m = 0
         try:
@@ -146,7 +175,7 @@ def lista_in_bot_beton(lista_beton):
         try:
             data = str(data)
             data = data.strip()
-            data = re.sub(r'\s+', ' ', data)
+            data = re.sub(r"\s+", " ", data)
             return data
         except (TypeError, ValueError):
             return ""
@@ -156,7 +185,7 @@ def lista_in_bot_beton(lista_beton):
     lista_text = ""
     sum_metres = 0
     for metres, times, firm, name, uwagi, przebieg, tel, wenz in lista_beton:
-        times = times.strftime('%H:%M')
+        times = times.strftime("%H:%M")
         if tel:
             if isinstance(tel, float):
                 tel = str(int(tel)).strip()
@@ -173,11 +202,13 @@ def lista_in_bot_beton(lista_beton):
         sum_metres = sum_metres + sum_of_metres(metres)
         metres = str(metres).strip()
 
-
-        lista_text += (f"{times} {metres} węzeł {wenz}\n"
-                       f"{firm}\n{name} {uwagi+' '+przebieg }\n{tel}\n"
-                       f"--------------------\n")
+        lista_text += (
+            f"{times} {metres} węzeł {wenz}\n"
+            f"{firm}\n{name} {uwagi+' '+przebieg }\n{tel}\n"
+            f"--------------------\n"
+        )
     return lista_text, sum_metres
+
 
 def find_day_request():
     list_of_days = []
@@ -188,89 +219,233 @@ def find_day_request():
     day_of_week = now.weekday()
     current_year = now.year
     if day_of_week in (0, 1, 2, 3):
-        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             now.strftime('%d.%m.%Y')))
-        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        list_of_days.append((day_of_week + 2, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 1,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 2,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
 
-    #пятница - воскресенье если есть 53 неделя или неделя меньше 52
-    elif day_of_week == 4 and (current_week_number < 52 or (current_week_number == 52 and has_53rd_week(current_year))):
-        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             now.strftime('%d.%m.%Y')))
-        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
-    elif day_of_week == 5 and (current_week_number < 52 or (current_week_number == 52 and has_53rd_week(current_year))):
-        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             now.strftime('%d.%m.%Y')))
-        list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-        list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
-    elif day_of_week == 6 and (current_week_number < 52 or (current_week_number == 52 and has_53rd_week(current_year))):
-        list_of_days.append((0, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        list_of_days.append((1, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-        list_of_days.append((2, f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+    # пятница - воскресенье если есть 53 неделя или неделя меньше 52
+    elif day_of_week == 4 and (
+        current_week_number < 52
+        or (current_week_number == 52 and has_53rd_week(current_year))
+    ):
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 1,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
+    elif day_of_week == 5 and (
+        current_week_number < 52
+        or (current_week_number == 52 and has_53rd_week(current_year))
+    ):
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                1,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
+    elif day_of_week == 6 and (
+        current_week_number < 52
+        or (current_week_number == 52 and has_53rd_week(current_year))
+    ):
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                1,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                2,
+                f"./excel_files/Tydz {current_week_number + 1}.{current_year}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
 
-    #если это 52 последняя неделя или если это 53 неделя в году
-    elif day_of_week == 4 and ((current_week_number == 52 and not has_53rd_week(current_year)) or has_53rd_week(current_year)):
-        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             now.strftime('%d.%m.%Y')))
-        list_of_days.append((day_of_week + 1, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
-    elif day_of_week == 5 and ((current_week_number == 52 and not has_53rd_week(current_year)) or has_53rd_week(current_year)):
-        list_of_days.append((day_of_week, f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
-                             now.strftime('%d.%m.%Y')))
-        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-        list_of_days.append((1, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
-    elif day_of_week == 6 and ((current_week_number == 52 and not has_53rd_week(current_year)) or has_53rd_week(current_year)):
-        list_of_days.append((0, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=1)).strftime('%d.%m.%Y')))
-        list_of_days.append((1, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=2)).strftime('%d.%m.%Y')))
-        list_of_days.append((2, f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
-                             (now + timedelta(days=3)).strftime('%d.%m.%Y')))
+    # если это 52 последняя неделя или если это 53 неделя в году
+    elif day_of_week == 4 and (
+        (current_week_number == 52 and not has_53rd_week(current_year))
+        or has_53rd_week(current_year)
+    ):
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 1,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
+    elif day_of_week == 5 and (
+        (current_week_number == 52 and not has_53rd_week(current_year))
+        or has_53rd_week(current_year)
+    ):
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                1,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
+    elif day_of_week == 6 and (
+        (current_week_number == 52 and not has_53rd_week(current_year))
+        or has_53rd_week(current_year)
+    ):
+        list_of_days.append(
+            (
+                0,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                1,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                2,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=3)).strftime("%d.%m.%Y"),
+            )
+        )
 
     return list_of_days
 
+
 def combination_of_some_days_list():
     """формируем общий лист на несколько дней в зависимости от дня недели"""
-    day_of_week_list = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
+    day_of_week_list = [
+        "poniedziałek",
+        "wtorek",
+        "środa",
+        "czwartek",
+        "piątek",
+        "sobota",
+        "niedziela",
+    ]
     get_from_google_sheet()
     dict_list = {}
     dict_beton = {}
     number_day = 1
     for day, file, date in find_day_request():
         if not lista_in_bot(form_lista(file, day)):
-            dict_list[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***", "Dane są niedostępne"]
+            dict_list[f"element{number_day}"] = [
+                f"***{date} {day_of_week_list[day]}***",
+                "Dane są niedostępne",
+            ]
             number_day += 1
             continue
 
-        dict_list[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***"] + (lista_in_bot(form_lista(file, day))).split("\n")
+        dict_list[f"element{number_day}"] = [
+            f"***{date} {day_of_week_list[day]}***"
+        ] + (lista_in_bot(form_lista(file, day))).split("\n")
         number_day += 1
 
     for day, file, date in find_day_request():
         if not lista_in_bot_beton(form_lista_beton(file, day)):
-            dict_beton[f"element{number_day}"] = [f"***{date} {day_of_week_list[day]}***", "Dane są niedostępne"]
+            dict_beton[f"element{number_day}"] = [
+                f"***{date} {day_of_week_list[day]}***",
+                "Dane są niedostępne",
+            ]
             number_day += 1
             continue
         lista, meter = lista_in_bot_beton(form_lista_beton(file, day))
 
-        dict_beton[f"element{number_day}"] = [f"***{date}  {day_of_week_list[day]}***", f"Metres {meter}"] + lista.split("\n")
+        dict_beton[f"element{number_day}"] = [
+            f"***{date}  {day_of_week_list[day]}***",
+            f"Metres {meter}",
+        ] + lista.split("\n")
         number_day += 1
-
 
     return dict_list | dict_beton
 
-if __name__ == '__main__':
-    print(combination_of_some_days_list())
+
+if __name__ == "__main__":
+    # print(combination_of_some_days_list())
+    print(has_53rd_week(2024))
