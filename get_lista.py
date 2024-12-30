@@ -24,12 +24,17 @@ def generate_name_of_file_google():
     now = datetime.now()
     current_week_number = now.isocalendar()[1]
     current_year = now.year
-    if current_week_number < 52 or (
-        current_week_number == 52 and has_53rd_week(current_year)
-    ):
+    if (current_week_number < 52 and  current_week_number != 1) or (
+        current_week_number == 52 and has_53rd_week(current_year)):
+        print(1)
         list_of_download_files.append(f"Tydz {current_week_number}.{current_year}")
         list_of_download_files.append(f"Tydz {current_week_number + 1}.{current_year}")
+    elif current_week_number == 1 and current_year == (now - timedelta(weeks=1)).year:
+        print(2)
+
+        list_of_download_files.append(f"Tydz {1}.{current_year + 1}")
     else:
+        print(3)
         list_of_download_files.append(f"Tydz {current_week_number}.{current_year}")
         list_of_download_files.append(f"Tydz {1}.{current_year + 1}")
 
@@ -218,7 +223,8 @@ def find_day_request():
     current_week_number = now.isocalendar()[1]
     day_of_week = now.weekday()
     current_year = now.year
-    if day_of_week in (0, 1, 2, 3):
+    if day_of_week in (0, 1, 2, 3) and (current_week_number < 52 and  current_week_number != 1) or (
+        current_week_number == 52 and has_53rd_week(current_year)):
         list_of_days.append(
             (
                 day_of_week,
@@ -319,6 +325,29 @@ def find_day_request():
         )
 
     # если это 52 последняя неделя или если это 53 неделя в году
+    elif day_of_week in (0, 1, 2, 3) and (current_week_number == 1 and current_year == (now - timedelta(weeks=1)).year):
+        list_of_days.append(
+            (
+                day_of_week,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                now.strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 1,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=1)).strftime("%d.%m.%Y"),
+            )
+        )
+        list_of_days.append(
+            (
+                day_of_week + 2,
+                f"./excel_files/Tydz {1}.{current_year + 1}.xlsx",
+                (now + timedelta(days=2)).strftime("%d.%m.%Y"),
+            )
+        )
+
     elif day_of_week == 4 and (
         (current_week_number == 52 and not has_53rd_week(current_year))
         or has_53rd_week(current_year)
