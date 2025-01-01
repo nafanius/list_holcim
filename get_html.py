@@ -27,7 +27,7 @@ html_template = """
             overflow-wrap: break-word;
         }
 
-        @keyframes myAnim {
+        @keyframes congrad {
             0% {
                 animation-timing-function: ease-in;
                 opacity: 0;
@@ -68,6 +68,33 @@ html_template = """
             100% {
                 animation-timing-function: ease-out;
                 transform: scale(1);
+            }
+        }
+        @keyframes warning {
+            0%,
+            100% {
+                transform: translateX(0%);
+                transform-origin: 50% 50%;
+            }
+
+            15% {
+                transform: translateX(-30px) rotate(-6deg);
+            }
+
+            30% {
+                transform: translateX(15px) rotate(6deg);
+            }
+
+            45% {
+                transform: translateX(-15px) rotate(-3.6deg);
+            }
+
+            60% {
+                transform: translateX(9px) rotate(2.4deg);
+            }
+
+            75% {
+                transform: translateX(-6px) rotate(-1.2deg);
             }
         }
 
@@ -185,13 +212,14 @@ html_template = """
             margin: 3px;
             color: rgb(231, 118, 43);
             font-weight: bold;
-            animation: myAnim 5s linear 1s 1 alternate both;
+            animation: congrat 5s linear 1s 1 alternate both;
         }
 
         #war {
             font-size: large;
             color: rgb(238, 36, 36);
             font-weight: bold;
+            animation: warning 2s ease 0s infinite normal forwards;
         }
 
         #logo {
@@ -348,8 +376,8 @@ html_template = """
                 </ul>
             </div>
         </div>
-        <footer>
-            <p> ⓒ production by Ilin Maksim fizruk.ilin@gmail.com</p>
+        <footer style="margin-top: 3px">
+            <p> ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
         </footer>
 
     </div>
