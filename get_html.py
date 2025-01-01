@@ -141,9 +141,9 @@ html_template = """
 
         .title_image {
             max-width: 100%;
+            text-align: center;
             height: auto;
             order: 2;
-            margin: 3px;
         }
 
         .main_list {
@@ -185,7 +185,7 @@ html_template = """
             margin: 3px;
             color: rgb(231, 118, 43);
             font-weight: bold;
-            animation: myAnim 4s linear 1s 1 alternate both;
+            animation: myAnim 5s linear 1s 1 alternate both;
         }
 
         #war {
@@ -201,12 +201,12 @@ html_template = """
         }
 
         #betonka {
-            animation: beton 4s linear 1s 1 alternate forwards;
+            animation: beton 5s linear 2s 1 alternate forwards;
         }
 
         #bet {
             text-align: right;
-            padding-right: 5px;
+            padding-right: 15px;
         }
 
 
@@ -230,11 +230,6 @@ html_template = """
     <div class="main">
         <div class="title_div">
             <div class="title_text">
-                <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
-                <p>{{ Zaktualizowano }}</p>
-                <p id="brend">{{ brend }}</p>
-                <p id="cong">{{ cong }}</p>
-                <p id="war">{{ war }}</p>
                 <p id="bet"><svg id="betonka" xmlns="http://www.w3.org/2000/svg" version="1.1" width="64px" height="54px" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g><path style="opacity:0.873" fill="#080604" d="M 4.5,8.5 C 18.9304,6.54517 30.0971,11.5452 38,23.5C 38.2395,25.9769 37.4062,28.1435 35.5,30C 37.0533,33.2166 38.0533,36.7166 38.5,40.5C 39.4977,32.5277 39.831,24.5277 39.5,16.5C 45.2055,16.1712 50.8722,16.5046 56.5,17.5C 57.3323,20.161 58.1656,22.8276 59,25.5C 59.3777,32.5798 60.211,39.5798 61.5,46.5C 59.5,46.5 57.5,46.5 55.5,46.5C 55.0348,50.6294 52.7015,52.6294 48.5,52.5C 44.2985,52.6294 41.9652,50.6294 41.5,46.5C 34.8333,46.5 28.1667,46.5 21.5,46.5C 21.0348,50.6294 18.7015,52.6294 14.5,52.5C 10.2985,52.6294 7.96518,50.6294 7.5,46.5C 5.5,46.5 3.5,46.5 1.5,46.5C 1.14999,40.0448 1.81665,33.7115 3.5,27.5C 2.83333,24.1667 2.16667,20.8333 1.5,17.5C 2.22107,14.3948 3.22107,11.3948 4.5,8.5 Z M 11.5,30.5 C 15.9331,33.6982 20.9331,35.5316 26.5,36C 21.5111,36.4993 16.5111,36.6659 11.5,36.5C 11.5,34.5 11.5,32.5 11.5,30.5 Z"/></g>
                 <g><path style="opacity:1" fill="#f2b05b" d="M 6.5,10.5 C 11.2943,10.9462 15.961,11.9462 20.5,13.5C 18.0841,18.0006 15.4175,22.3339 12.5,26.5C 11.5224,26.0233 10.6891,25.3567 10,24.5C 7.62795,19.9317 6.46129,15.265 6.5,10.5 Z"/></g>
@@ -256,6 +251,11 @@ html_template = """
                 <g><path style="opacity:1" fill="#b1b3b7" d="M 13.5,44.5 C 15.337,44.6395 15.6704,45.3061 14.5,46.5C 13.7025,46.0431 13.3691,45.3764 13.5,44.5 Z"/></g>
                 <g><path style="opacity:1" fill="#b1b3b7" d="M 47.5,44.5 C 49.337,44.6395 49.6704,45.3061 48.5,46.5C 47.7025,46.0431 47.3691,45.3764 47.5,44.5 Z"/></g>
                 </svg></p>
+                <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
+                <p>{{ Zaktualizowano }}</p>
+                <p id="brend">{{ brend }}</p>
+                <p id="cong">{{ cong }}</p>
+                <p id="war">{{ war }}</p>
             </div>
 
             <div class="title_image"><a href="https://www.holcim.pl/" target="_blank">
