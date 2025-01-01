@@ -196,7 +196,7 @@ html_template = """
 
         #logo {
             display: inline;
-            margin: 5px;
+            margin-top: 5px;
             filter: drop-shadow(9px -5px 3px #a1a1a1);
         }
 
@@ -348,6 +348,9 @@ html_template = """
                 </ul>
             </div>
         </div>
+        <footer>
+            <p> ⓒ production by Ilin Maksim fizruk.ilin@gmail.com</p>
+        </footer>
 
     </div>
 </body>

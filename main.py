@@ -20,7 +20,7 @@ def get_dict():
         args = parser.parse_args()
 
         dictinary["brend"] = (
-            args.by_who if args.by_who else 'production by "Trans-Serwis" :)</span>'
+            args.by_who if args.by_who else 'Produced to "Trans-Serwis"</span>'
         )
         dictinary["cong"] = args.cong if args.cong else ""
         dictinary["war"] = args.war if args.war else ""
@@ -78,15 +78,6 @@ def upload_directory_to_s3(
                 print(f"The file {s3_path} was not found.")
             except NoCredentialsError:
                 print("Credentials not available.")
-    # try:
-    #     # Загружаем файл в S3
-    #     s3_client.put_object_acl(
-    #         ACL="public-read", Bucket=bucket_name, Key=index_file)
-
-    # except FileNotFoundError:
-    #     print(f"The file {index_file} was not found.")
-    # # except NoCredentialsError:
-    #     print("Credentials not available.")
 
 
 if __name__ == "__main__":
