@@ -95,7 +95,7 @@ def form_lista_beton(excel_file, day):
                 )
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
-
+    print(lista_beton)
     return lista_beton
 
 
@@ -136,6 +136,7 @@ def form_lista(excel_file, day):
 
     lista = sorted(lista, key=lambda event: event[0])
 
+    print(lista)
     return lista
 
 
@@ -354,7 +355,8 @@ def combination_of_some_days_list():
     dict_beton = {}
     number_day = 1
     for day, file, date in find_day_request():
-        if not lista_in_site(form_lista(file, day)):
+        split_text = (lista_in_site(form_lista(file, day))).split("\n")
+        if split_text == ['']:
             dict_list[f"element{number_day}"] = [
                 f"***{date} {day_of_week_list[day]}***",
                 "Dane są niedostępne",
@@ -364,28 +366,29 @@ def combination_of_some_days_list():
 
         dict_list[f"element{number_day}"] = [
                                                 f"***{date} {day_of_week_list[day]}***"
-                                            ] + (lista_in_site(form_lista(file, day))).split("\n")
+                                            ] + split_text
         number_day += 1
 
     for day, file, date in find_day_request():
-        if not lista_in_site_beton(form_lista_beton(file, day)):
+        try:
+            lista, meter = lista_in_site_beton(form_lista_beton(file, day))
+
+            dict_beton[f"element{number_day}"] = [
+                                                     f"***{date}  {day_of_week_list[day]}***",
+                                                     f"Metres {meter}",
+                                                 ] + lista.split("\n")
+            number_day += 1
+        except ValueError:
             dict_beton[f"element{number_day}"] = [
                 f"***{date} {day_of_week_list[day]}***",
                 "Dane są niedostępne",
             ]
             number_day += 1
-            continue
-        lista, meter = lista_in_site_beton(form_lista_beton(file, day))
-
-        dict_beton[f"element{number_day}"] = [
-                                                 f"***{date}  {day_of_week_list[day]}***",
-                                                 f"Metres {meter}",
-                                             ] + lista.split("\n")
-        number_day += 1
 
     return dict_list | dict_beton
 
 
 if __name__ == "__main__":
     # print(combination_of_some_days_list())
+    combination_of_some_days_list()
     pass
