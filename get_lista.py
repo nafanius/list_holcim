@@ -2,11 +2,23 @@ import ezsheets
 
 import openpyxl
 from datetime import time
-from datetime import date as datetime_date
+import logging
 from datetime import datetime, timedelta
 import os
 import re
 
+
+# region logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+lg = logging.debug
+cr = logging.critical
+inf = logging.info
+exp = logging.exception
+# logging.disable(logging.DEBUG)
+# logging.disable(logging.INFO)
+# logging.disable(logging.CRITICAL)
+# logging_end
+# endregion
 
 
 def generate_name_of_file_google():
@@ -18,12 +30,10 @@ def generate_name_of_file_google():
     current_year = now.year
 
     if current_week_number == 1 and current_year == (now - timedelta(weeks=1)).year:
-        print(1)
         list_of_download_files.append(f"Tydz {1}.{current_year + 1}")
         list_of_download_files.append(f"Tydz {2}.{current_year + 1}")
 
     else:
-        print(2)
         list_of_download_files.append(f"Tydz {current_week_number}.{current_year}")
         list_of_download_files.append(f"Tydz {current_week_number + 1}.{current_year}")
 
@@ -39,8 +49,8 @@ def save_google_sheet():
             file_path = os.path.join(directory, f"{ss_name}.xlsx")
             ss.downloadAsExcel(file_path)
         except Exception as err:
-            print(err)
-            print("ERRR")
+            lg(err)
+            lg("ERRR")
             continue
 
 
@@ -50,7 +60,7 @@ def form_lista_beton(excel_file, day):
     try:
         wb = openpyxl.load_workbook(excel_file)
     except:
-        print("такого файла нет " + excel_file)
+        lg("такого файла нет " + excel_file)
         return []
 
     sheet = wb[wb.sheetnames[day]]
@@ -95,7 +105,6 @@ def form_lista_beton(excel_file, day):
                 )
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
-    print(lista_beton)
     return lista_beton
 
 
@@ -105,7 +114,7 @@ def form_lista(excel_file, day):
     try:
         wb = openpyxl.load_workbook(excel_file)
     except:
-        print("такого файла нет " + excel_file)
+        lg("такого файла нет " + excel_file)
         return []
     sheet = wb[wb.sheetnames[day]]
 
@@ -136,7 +145,6 @@ def form_lista(excel_file, day):
 
     lista = sorted(lista, key=lambda event: event[0])
 
-    print(lista)
     return lista
 
 
@@ -375,7 +383,8 @@ def combination_of_some_days_list():
 
             dict_beton[f"element{number_day}"] = [
                                                      f'***{date}  {day_of_week_list[day]}***',
-                                                     f'<span style="font-weight: bold">zaplanowano metrów {meter}</span>',
+                                                     f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
+                                                     f' {meter}</p>',
                                                  ] + lista.split("\n")
             number_day += 1
         except ValueError:
@@ -389,6 +398,5 @@ def combination_of_some_days_list():
 
 
 if __name__ == "__main__":
-    # print(combination_of_some_days_list())
-    combination_of_some_days_list()
+    lg(combination_of_some_days_list())
     pass
