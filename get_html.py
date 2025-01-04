@@ -196,6 +196,15 @@ html_template = """
             font-weight: bold
         }
 
+        .lidel{
+            color: rgb(238, 36, 36);
+            text-decoration: line-through;
+        }
+
+        .liadd{
+            color: rgb(7, 88, 0);
+        }
+
         .list{
             display: block;
             margin: 3px;
@@ -333,6 +342,14 @@ html_template = """
                     {% for item in element4[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
+
+                    {% for item in element4_del %}
+                    <li class="lidel">{{ item }}</li>
+                    {% endfor %}
+
+                    {% for item in element4_add %}
+                    <li class="liadd">{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -353,6 +370,14 @@ html_template = """
                     {% for item in element5[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
+
+                    {% for item in element5_del %}
+                    <li class="lidel">{{ item }}</li>
+                    {% endfor %}
+
+                    {% for item in element5_add %}
+                    <li class="liadd">{{ item }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -372,6 +397,14 @@ html_template = """
                     <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element6[1:] %}
                     <li>{{ item }}</li>
+                    {% endfor %}
+                
+                    {% for item in element6_del %}
+                    <li class="lidel">{{ item }}</li>
+                    {% endfor %}
+
+                    {% for item in element6_add %}
+                    <li class="liadd">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
