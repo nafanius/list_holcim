@@ -198,12 +198,11 @@ html_template = """
 
         .lidel{
             color: rgb(238, 36, 36);
-            text-decoration: line-through;
             font-weight: bold;
         }
 
         .liadd{
-            color: rgb(0, 199, 10);
+            color: rgb(0, 139, 7);
             font-weight: bold;
         }
 
