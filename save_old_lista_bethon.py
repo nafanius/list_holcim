@@ -40,7 +40,6 @@ def get_list_of_beton():
             if datetime.strptime(item, '%d.%m.%Y') < datetime(year=now.year, month=now.month, day=now.day):
                 del dict_new_of_beton[item]
 
-        print(dict_new_of_beton)
         return dict_new_of_beton
     except Exception as err:
         print(err)

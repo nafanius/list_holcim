@@ -8,13 +8,14 @@ import save_old_lista_bethon
 import os
 import re
 
-
 # region logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 lg = logging.debug
 cr = logging.critical
 inf = logging.info
 exp = logging.exception
+
+
 # logging.disable(logging.DEBUG)
 # logging.disable(logging.INFO)
 # logging.disable(logging.CRITICAL)
@@ -107,11 +108,12 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
-    del_lista, add_lista= save_old_lista_bethon.check_del_add_lista(date_of_day_text, lista_beton)
+    del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(date_of_day_text, lista_beton)
 
-    save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text:lista_beton})
+    save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text: lista_beton})
 
-
+    print(del_lista)
+    print(add_lista)
     return lista_beton, del_lista, add_lista
 
 
@@ -254,7 +256,6 @@ def find_day_request():
             else:
                 return (week + 1, year), (week + 1, year), (week + 1, year)
 
-
     if day_of_week in (0, 1, 2, 3):
         weeks_years = create_week_and_year_to_file_name(1, current_week_number, current_year)
 
@@ -350,7 +351,6 @@ def find_day_request():
             )
         )
 
-
     return list_of_days
 
 
@@ -385,21 +385,43 @@ def combination_of_some_days_list():
         number_day += 1
 
     for day, file, date_of_day in find_day_request():
-        try:
-            lista, meter = lista_in_text_beton(form_lista_beton(file, day, date_of_day)[0])
+        list_of_three_lists = form_lista_beton(file, day, date_of_day)
+        list_of_three_lists_text = [lista_in_text_beton(list_of_three_lists[0]),
+                                    lista_in_text_beton(list_of_three_lists[1]),
+                                    lista_in_text_beton(list_of_three_lists[2])]
 
-            dict_beton[f"element{number_day}"] = [
-                                                     f'***{date_of_day}  {day_of_week_list[day]}***',
-                                                     f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
-                                                     f' {meter}</p>',
-                                                 ] + lista.split("\n")
-            number_day += 1
-        except ValueError:
-            dict_beton[f"element{number_day}"] = [
-                f"***{date_of_day} {day_of_week_list[day]}***",
-                "Dane są niedostępne",
-            ]
-            number_day += 1
+        for i in range(len(list_of_three_lists_text)):
+            if i == 0:
+                try:
+                    lista, meter = list_of_three_lists_text[i]
+                    dict_beton[f"element{number_day}"] = [
+                                                             f'***{date_of_day}  {day_of_week_list[day]}***',
+                                                             f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
+                                                             f' {meter}</p>',
+                                                         ] + lista.split("\n")
+
+                    number_day += 1
+                except ValueError:
+                    dict_beton[f"element{number_day}"] = [
+                        f"***{date_of_day} {day_of_week_list[day]}***",
+                        "Dane są niedostępne",
+                    ]
+                    number_day += 1
+            elif i == 1:
+                try:
+                    lista_del, _ = list_of_three_lists_text[i]
+                    dict_beton[f"element{number_day-1}_del"] = (["Usunięte od ostatniej aktualizacji", "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"]
+                                                              + lista_del.split("\n"))
+                except ValueError:
+                    dict_beton[f"element{number_day-1}_del"] = []
+
+            elif i == 2:
+                try:
+                    lista_add, _ = list_of_three_lists_text[i]
+                    dict_beton[f"element{number_day-1}_add"] = (["Dodane od ostatniej aktualizacji", "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"]
+                                                              + lista_add.split("\n"))
+                except ValueError:
+                    dict_beton[f"element{number_day-1}_add"] = []
 
     return dict_list | dict_beton
 
