@@ -30,7 +30,7 @@ def generate_name_of_file_google():
     return list_of_download_files
 
 
-def get_from_google_sheet():
+def save_google_sheet():
     for file in generate_name_of_file_google():
         try:
             directory = "excel_files"
@@ -45,7 +45,7 @@ def get_from_google_sheet():
 
 
 def form_lista_beton(excel_file, day):
-    """дастоём расписание из файла"""
+    """дастоём расписание отгрузок из файла excel_file возвращаем lista_beton"""
     lista_beton = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -140,19 +140,19 @@ def form_lista(excel_file, day):
     return lista
 
 
-def lista_in_site(lista):
+def lista_in_text(lista):
     """ "фотрмируем list в текстовый формат для высолки в бот"""
 
     if not lista:
         return ""
     lista_text = ""
-    for time, person in lista:
-        lista_text += f"{time.strftime('%H:%M')} {person}\n"
+    for time_in_list, person in lista:
+        lista_text += f"{time_in_list.strftime('%H:%M')} {person}\n"
 
     return lista_text
 
 
-def lista_in_site_beton(lista_beton):
+def lista_in_text_beton(lista_beton):
     """ "фотрмируем list в текстовый формат для высолки в бот"""
 
     def sum_of_metres(data):
@@ -350,12 +350,12 @@ def combination_of_some_days_list():
         "sobota",
         "niedziela",
     ]
-    get_from_google_sheet()
+    save_google_sheet()
     dict_list = {}
     dict_beton = {}
     number_day = 1
     for day, file, date in find_day_request():
-        split_text = (lista_in_site(form_lista(file, day))).split("\n")
+        split_text = (lista_in_text(form_lista(file, day))).split("\n")
         if split_text == ['']:
             dict_list[f"element{number_day}"] = [
                 f"***{date} {day_of_week_list[day]}***",
@@ -371,7 +371,7 @@ def combination_of_some_days_list():
 
     for day, file, date in find_day_request():
         try:
-            lista, meter = lista_in_site_beton(form_lista_beton(file, day))
+            lista, meter = lista_in_text_beton(form_lista_beton(file, day))
 
             dict_beton[f"element{number_day}"] = [
                                                      f"***{date}  {day_of_week_list[day]}***",
