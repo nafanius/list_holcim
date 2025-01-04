@@ -374,8 +374,8 @@ def combination_of_some_days_list():
             lista, meter = lista_in_text_beton(form_lista_beton(file, day))
 
             dict_beton[f"element{number_day}"] = [
-                                                     f"***{date}  {day_of_week_list[day]}***",
-                                                     f"Metres {meter}",
+                                                     f'***{date}  {day_of_week_list[day]}***',
+                                                     f'<span style="font-weight: bold">zaplanowano metrów {meter}</span>',
                                                  ] + lista.split("\n")
             number_day += 1
         except ValueError:
