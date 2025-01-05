@@ -217,7 +217,7 @@ def lista_in_text_beton(lista_beton):
             lista_text += [
                 f'{times} {metres} węzeł {wenz}',
                 f'{firm}',
-                f'{name} {uwagi + ' ' + przebieg}',
+                f'{name} {uwagi + " " + przebieg}',
                 f'{tel}',
                 f'--------------------'
             ]
