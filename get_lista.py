@@ -195,7 +195,7 @@ def lista_in_text_beton(lista_beton):
         return ""
     lista_text = ""
     sum_metres = 0
-    for metres, times, firm, name, uwagi, przebieg, tel, wenz in lista_beton:
+    for metres, times, firm, name, uwagi, przebieg, tel, wenz, sort in lista_beton:
         times = times.strftime("%H:%M")
         if tel:
             if isinstance(tel, float):
@@ -212,13 +212,26 @@ def lista_in_text_beton(lista_beton):
         uwagi = convert_to_string(uwagi)
         sum_metres = sum_metres + sum_of_metres(metres)
         metres = str(metres).strip()
+        if sort == 0:
+            lista_text += (
+                f"{times} {metres} węzeł {wenz}\n"
+                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
+                f"--------------------\n"
+            )
+        elif sort == 1:
+             lista_text += (
+                f"{times} {metres} węzeł {wenz}\n"
+                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
+                f"--------------------\n"
+            )
+        elif sort == 2:
+            lista_text += (
+                f"{times} {metres} węzeł {wenz}\n"
+                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
+                f"--------------------\n"
+            )
 
-        lista_text += (
-            f"{times} {metres} węzeł {wenz}\n"
-            f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
-            f"--------------------\n"
-        )
-    return lista_text, sum_metres
+    return lista_text, f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {sum_metres}</p>'
 
 
 def find_day_request():
@@ -389,7 +402,7 @@ def combination_of_some_days_list():
 
 
         try:
-            lista, meter = lista_in_text_beton(form_lista_beton(file, day, date_of_day)[0])
+            lista, meter = lista_in_text_beton(list_ready_to_covert_text)
 
             dict_beton[f"element{number_day}"] = [
                                                      f'***{date_of_day}  {day_of_week_list[day]}***',
