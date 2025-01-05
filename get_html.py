@@ -193,17 +193,7 @@ html_template = """
         }
 
         .libold{
-            font-weight: bold;
-        }
-
-        .lidel{
-            color: rgb(238, 36, 36);
-            font-weight: bold;
-        }
-
-        .liadd{
-            color: rgb(0, 139, 7);
-            font-weight: bold;
+            font-weight: bold
         }
 
         .list{
@@ -324,6 +314,7 @@ html_template = """
                 </svg></a>
             </div>
         </div>
+        <p style="padding-left: 5px; padding-top: 5px; ">zostało  <span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span style="color: rgb(0, 139, 7); font-weight: bold;">  nowe</span></p>
     </div>
 
     <div class="main_list">
@@ -342,14 +333,6 @@ html_template = """
                     <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element4[1:] %}
                     <li>{{ item }}</li>
-                    {% endfor %}
-
-                    {% for item in element4_del %}
-                    <li class="lidel">{{ item }}</li>
-                    {% endfor %}
-
-                    {% for item in element4_add %}
-                    <li class="liadd">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -371,14 +354,6 @@ html_template = """
                     {% for item in element5[1:] %}
                     <li>{{ item }}</li>
                     {% endfor %}
-
-                    {% for item in element5_del %}
-                    <li class="lidel">{{ item }}</li>
-                    {% endfor %}
-
-                    {% for item in element5_add %}
-                    <li class="liadd">{{ item }}</li>
-                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -398,14 +373,6 @@ html_template = """
                     <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
                     {% for item in element6[1:] %}
                     <li>{{ item }}</li>
-                    {% endfor %}
-                
-                    {% for item in element6_del %}
-                    <li class="lidel">{{ item }}</li>
-                    {% endfor %}
-
-                    {% for item in element6_add %}
-                    <li class="liadd">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
