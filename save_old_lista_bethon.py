@@ -60,6 +60,11 @@ def check_del_add_lista(date_of_lista, currant_list_beton):
     for i in currant_list_beton:
         if i not in old_stan_lista_beton:
             add_lista.append(i)
+
+    # для контроля отображения
+    # del_lista = del_lista + currant_list_beton[2:3]
+    # add_lista = add_lista + currant_list_beton[0:2]
+
     return del_lista, add_lista
 
 

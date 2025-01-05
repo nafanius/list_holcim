@@ -171,10 +171,11 @@ def lista_in_text(lista):
 def lista_in_text_beton(lista_beton):
     """ "фотрмируем list в текстовый формат для высолки в бот"""
 
-    def sum_of_metres(data):
+    def sum_of_metres(data, sort):
         sum_m = 0
         try:
-            sum_m += float(data)
+            if sort in (0,2):
+                sum_m += float(data)
         except (ValueError, TypeError):
             # Игнорируем элементы, которые не являются числами
             pass
@@ -210,7 +211,7 @@ def lista_in_text_beton(lista_beton):
         name = convert_to_string(name)
         tel = convert_to_string(tel)
         uwagi = convert_to_string(uwagi)
-        sum_metres = sum_metres + sum_of_metres(metres)
+        sum_metres = sum_metres + sum_of_metres(metres, sort)
         metres = str(metres).strip()
         if sort == 0:
             lista_text += [
