@@ -188,7 +188,7 @@ html_template = """
             align-content: center;
             padding: 5px;
             justify-content: center;
-            filter: drop-shadow(7px 8px 10px #9e9a9a);
+            filter: drop-shadow(3px -2px 5px #cac9c9);
             border-radius: 10px;
         }
 
