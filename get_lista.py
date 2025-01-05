@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import save_old_lista_bethon
 import os
 import re
+from convert_lists import get_list_from_three_norm_del_add
 
 # region logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -14,12 +15,9 @@ lg = logging.debug
 cr = logging.critical
 inf = logging.info
 exp = logging.exception
-
-
 # logging.disable(logging.DEBUG)
 # logging.disable(logging.INFO)
 # logging.disable(logging.CRITICAL)
-# logging_end
 # endregion
 
 
@@ -51,8 +49,8 @@ def save_google_sheet():
             file_path = os.path.join(directory, f"{ss_name}.xlsx")
             ss.downloadAsExcel(file_path)
         except Exception as err:
-            lg(err)
-            lg("ERRR")
+            inf(err)
+            inf("ERRR")
             continue
 
 
@@ -61,8 +59,9 @@ def form_lista_beton(excel_file, day, date_of_day_text):
     lista_beton = []
     try:
         wb = openpyxl.load_workbook(excel_file)
-    except:
-        lg("такого файла нет " + excel_file)
+    except Exception as err:
+
+        inf(f"{err}\nтакого файла нет " + excel_file)
         return []
 
     sheet = wb[wb.sheetnames[day]]
@@ -123,7 +122,7 @@ def form_lista(excel_file, day):
     try:
         wb = openpyxl.load_workbook(excel_file)
     except:
-        lg("такого файла нет " + excel_file)
+        inf("такого файла нет " + excel_file)
         return []
     sheet = wb[wb.sheetnames[day]]
 
@@ -385,47 +384,29 @@ def combination_of_some_days_list():
         number_day += 1
 
     for day, file, date_of_day in find_day_request():
-        list_of_three_lists = form_lista_beton(file, day, date_of_day)
-        list_of_three_lists_text = [lista_in_text_beton(list_of_three_lists[0]),
-                                    lista_in_text_beton(list_of_three_lists[1]),
-                                    lista_in_text_beton(list_of_three_lists[2])]
+        list_of_lists_norm_del_add = form_lista_beton(file, day, date_of_day)
+        list_ready_to_covert_text = get_list_from_three_norm_del_add(*list_of_lists_norm_del_add)
 
-        for i in range(len(list_of_three_lists_text)):
-            if i == 0:
-                try:
-                    lista, meter = list_of_three_lists_text[i]
-                    dict_beton[f"element{number_day}"] = [
-                                                             f'***{date_of_day}  {day_of_week_list[day]}***',
-                                                             f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
-                                                             f' {meter}</p>',
-                                                         ] + lista.split("\n")
 
-                    number_day += 1
-                except ValueError:
-                    dict_beton[f"element{number_day}"] = [
-                        f"***{date_of_day} {day_of_week_list[day]}***",
-                        "Dane są niedostępne",
-                    ]
-                    number_day += 1
-            elif i == 1:
-                try:
-                    lista_del, _ = list_of_three_lists_text[i]
-                    dict_beton[f"element{number_day-1}_del"] = (["Usunięte od ostatniej aktualizacji", "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"]
-                                                              + lista_del.split("\n"))
-                except ValueError:
-                    dict_beton[f"element{number_day-1}_del"] = []
+        try:
+            lista, meter = lista_in_text_beton(form_lista_beton(file, day, date_of_day)[0])
 
-            elif i == 2:
-                try:
-                    lista_add, _ = list_of_three_lists_text[i]
-                    dict_beton[f"element{number_day-1}_add"] = (["Dodane od ostatniej aktualizacji", "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"]
-                                                              + lista_add.split("\n"))
-                except ValueError:
-                    dict_beton[f"element{number_day-1}_add"] = []
+            dict_beton[f"element{number_day}"] = [
+                                                     f'***{date_of_day}  {day_of_week_list[day]}***',
+                                                     f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
+                                                     f' {meter}</p>',
+                                                 ] + lista.split("\n")
+            number_day += 1
+        except ValueError:
+            dict_beton[f"element{number_day}"] = [
+                f"***{date_of_day} {day_of_week_list[day]}***",
+                "Dane są niedostępne",
+            ]
+            number_day += 1
 
     return dict_list | dict_beton
 
 
 if __name__ == "__main__":
-    lg(combination_of_some_days_list())
+    inf(combination_of_some_days_list())
     pass
