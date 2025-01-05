@@ -193,7 +193,7 @@ def lista_in_text_beton(lista_beton):
 
     if not lista_beton:
         return ""
-    lista_text = ""
+    lista_text = []
     sum_metres = 0
     for metres, times, firm, name, uwagi, przebieg, tel, wenz, sort in lista_beton:
         times = times.strftime("%H:%M")
@@ -213,23 +213,29 @@ def lista_in_text_beton(lista_beton):
         sum_metres = sum_metres + sum_of_metres(metres)
         metres = str(metres).strip()
         if sort == 0:
-            lista_text += (
-                f"{times} {metres} węzeł {wenz}\n"
-                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
-                f"--------------------\n"
-            )
+            lista_text += [
+                f'{times} {metres} węzeł {wenz}',
+                f'{firm}',
+                f'{name} {uwagi + ' ' + przebieg}',
+                f'{tel}',
+                f'--------------------'
+            ]
         elif sort == 1:
-             lista_text += (
-                f"{times} {metres} węzeł {wenz}\n"
-                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
-                f"--------------------\n"
-            )
+            lista_text += [
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{times} {metres} węzeł {wenz}</span>',
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{firm}</span>',
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{name} {uwagi + " " + przebieg}</span>',
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{tel}</span>',
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">--------------------</span>'
+            ]
         elif sort == 2:
-            lista_text += (
-                f"{times} {metres} węzeł {wenz}\n"
-                f"{firm}\n{name} {uwagi + ' ' + przebieg}\n{tel}\n"
-                f"--------------------\n"
-            )
+            lista_text += [
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{times} {metres} węzeł {wenz}</span>',
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{firm}</span>',
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{name} {uwagi + " " + przebieg}</span>',
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{tel}</span>',
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">--------------------</span>'
+            ]
 
     return lista_text, f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {sum_metres}</p>'
 
@@ -404,11 +410,7 @@ def combination_of_some_days_list():
         try:
             lista, meter = lista_in_text_beton(list_ready_to_covert_text)
 
-            dict_beton[f"element{number_day}"] = [
-                                                     f'***{date_of_day}  {day_of_week_list[day]}***',
-                                                     f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów -'
-                                                     f' {meter}</p>',
-                                                 ] + lista.split("\n")
+            dict_beton[f"element{number_day}"] = [f'***{date_of_day}  {day_of_week_list[day]}***', f'{meter}'] + lista
             number_day += 1
         except ValueError:
             dict_beton[f"element{number_day}"] = [
