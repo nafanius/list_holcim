@@ -103,42 +103,50 @@ html_template = """
                 animation-timing-function: ease-in;
                 opacity: 0;
                 transform: translateX(-250px);
+                filter: drop-shadow(-90px -3px 30px #a1a1a1);
             }
 
             38% {
                 animation-timing-function: ease-out;
                 opacity: 1;
                 transform: translateX(0);
+                filter: drop-shadow(-60px -3px 15px #a1a1a1);
             }
 
             55% {
                 animation-timing-function: ease-in;
                 transform: translateX(-68px);
+                filter: drop-shadow(-30px -3px 7px #a1a1a1);
             }
 
             72% {
                 animation-timing-function: ease-out;
                 transform: translateX(0);
+                filter: drop-shadow(-15px -3px 3px #a1a1a1);
             }
 
             81% {
                 animation-timing-function: ease-in;
                 transform: translateX(-28px);
+                filter: drop-shadow(-7px -3px 3px #a1a1a1);
             }
 
             90% {
                 animation-timing-function: ease-out;
                 transform: translateX(0);
+                filter: drop-shadow(0px -3px 3px #a1a1a1);
             }
 
             95% {
                 animation-timing-function: ease-in;
                 transform: translateX(-8px);
+                filter: drop-shadow(0px -3px 3px #a1a1a1);
             }
 
             100% {
                 animation-timing-function: ease-out;
                 transform: translateX(0);
+                filter: drop-shadow(3px -3px 3px #a1a1a1);
             }
         }
 
@@ -225,7 +233,7 @@ html_template = """
         #logo {
             display: inline;
             margin-top: 5px;
-            filter: drop-shadow(9px -5px 3px #a1a1a1);
+            filter: drop-shadow(3px -3px 3px #a1a1a1);
         }
 
         #betonka {
