@@ -268,12 +268,11 @@ html_template = """
     <div class="main">
         <div class="title_div">
             <div class="title_text">
-
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
-                <p>Zaktualizowano na: 05.01.2025 11:08</p>
-                <p id="brend">Produced for "Trans-Serwis"</p>
-                <p id="cong"></p>
-                <p id="war"></p>
+                <p>{{ Zaktualizowano }}</p>
+                <p id="brend">{{ brend }}</p>
+                <p id="cong">{{ cong }}</p>
+                <p id="war">{{ war }}</p>
             </div>
 
             <div class="title_image"><a style="text-decoration: none;" href="https://www.holcim.pl/" target="_blank">
