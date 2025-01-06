@@ -276,7 +276,7 @@ html_template = """
                 <p id="war"></p>
             </div>
 
-            <div class="title_image"><a href="https://www.holcim.pl/" target="_blank">
+            <div class="title_image"><a style="text-decoration: none;" href="https://www.holcim.pl/" target="_blank">
                 <svg id="logo" xmlns="http://www.w3.org/2000/svg" width="284" height="67" fill="none"
                     viewBox="0 0 284 67">
                     <g clip-path="url(#clip0)">
