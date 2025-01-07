@@ -43,7 +43,7 @@ def load_dict_from_pickle(directory = "save_old_dict"):
 
 
     # Удаление файлов старше 3 часов
-    three_hours_ago = time.time() - 3 * 3600
+    three_hours_ago = time.time() - 4 * 3600
     for file, mtime in files:
         if mtime < three_hours_ago:
             os.remove(os.path.join(directory, file))

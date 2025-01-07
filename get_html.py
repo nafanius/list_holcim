@@ -224,7 +224,7 @@ html_template = """
             font-size: large;
             color: rgb(238, 36, 36);
             font-weight: bold;
-            animation: warning 2s ease 0s infinite normal forwards;
+            animation: warning 3s ease 2s infinite normal forwards;
         }
 
         #logo {
@@ -391,7 +391,7 @@ html_template = """
         </div>
         <p style="padding-left: 5px; padding-top: 5px; ">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
-                style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span></p>
+                style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
     </div>
 
     <div class="main_list">
