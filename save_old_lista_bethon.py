@@ -1,28 +1,66 @@
 import pickle
+import time
+import os
 from datetime import datetime, timedelta
 
+save_number = 1
+global_dic = {}
 
-
-def save_dict_to_pickle(dictionary, filename):
+def save_dict_to_pickle(dictionary, directory = "save_old_dict"):
     """
     Сохраняет словарь в файл формата pickle.
 
+    :param directory:
     :param dictionary: Словарь, который нужно сохранить.
-    :param filename: Имя файла, в который будет сохранен словарь.
     """
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    # Генерация имени нового файла
+    current_time = datetime.now()
+    new_filename = f"{current_time.strftime('%Y%m%d_%H%M%S')}.pkl"
+    filename = os.path.join(directory, new_filename)
 
     with open(filename, 'wb') as f:
         pickle.dump(dictionary, f)
 
 
 
-def load_dict_from_pickle(filename):
+
+
+def load_dict_from_pickle(directory = "save_old_dict"):
     """
     Загружает список из файла формата pickle.
 
     :param filename: Имя файла, из которого нужно загрузить словарь.
     :return: Загруженный словарь.
     """
+    files = [
+        (file, os.path.getmtime(os.path.join(directory, file)))
+        for file in os.listdir(directory)
+        if os.path.isfile(os.path.join(directory, file))
+    ]
+
+
+
+    # Удаление файлов старше 3 часов
+    three_hours_ago = time.time() - 3 * 3600
+    for file, mtime in files:
+        if mtime < three_hours_ago:
+            os.remove(os.path.join(directory, file))
+            print(f"Удалён файл: {file}")
+
+    # Обновляем список файлов после удаления
+    files = [
+        (file, os.path.getmtime(os.path.join(directory, file)))
+        for file in os.listdir(directory)
+        if os.path.isfile(os.path.join(directory, file))
+    ]
+
+    # Если есть файлы, ищем самый старый
+    if files:
+        oldest_file = min(files, key=lambda f: f[1])[0]
+        filename = os.path.join(directory, oldest_file)
+
     try:
         with open(filename, 'rb') as f:
             return pickle.load(f)
@@ -32,8 +70,9 @@ def load_dict_from_pickle(filename):
 
 def get_list_of_beton():
     '''формирует из сохраненого списка актуальный удаляет записи с датой меньше текущей'''
+
     try:
-        dict_old_of_beton = load_dict_from_pickle("old_dic_of_beton.pkl")
+        dict_old_of_beton = load_dict_from_pickle()
         dict_new_of_beton = dict_old_of_beton.copy()
         now = datetime.now()
         for item in dict_old_of_beton.keys():
@@ -46,8 +85,20 @@ def get_list_of_beton():
         return {}
 
 def combine_dict_from_get_list(dict_of_day):
+    global save_number
+    global global_dic
     current_dic = get_list_of_beton()
-    save_dict_to_pickle(current_dic | dict_of_day, "old_dic_of_beton.pkl")
+    print(f"SAVE NUMDER {save_number} ")
+
+    if save_number == 1:
+        global_dic = current_dic | dict_of_day
+        save_number += 1
+    elif save_number != 1 and save_number != 3 :
+        global_dic = global_dic | dict_of_day
+        save_number += 1
+    else:
+        global_dic = global_dic | dict_of_day
+        save_dict_to_pickle(global_dic)
 
 def check_del_add_lista(date_of_lista, currant_list_beton):
     del_lista = []
