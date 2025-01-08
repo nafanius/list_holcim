@@ -389,7 +389,7 @@ html_template = """
                 </a>
             </div>
         </div>
-        <p style="padding-left: 5px; padding-top: 5px; ">zostało <span
+        <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
     </div>
