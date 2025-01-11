@@ -171,10 +171,10 @@ def lista_in_text(lista):
     """ "фотрмируем list в текстовый формат для высолки в бот"""
 
     if not lista:
-        return ""
-    lista_text = ""
+        return []
+    lista_text = []
     for time_in_list, person in lista:
-        lista_text += f"{time_in_list.strftime('%H:%M')} {person}\n"
+        lista_text.append(f"{time_in_list.strftime('%H:%M')} {person}")
 
     return lista_text
 
@@ -400,8 +400,8 @@ def combination_of_some_days_list():
     dict_beton = {}
     number_day = 1
     for day, file, date_of_day in find_day_request():
-        split_text = (lista_in_text(form_lista(file, day))).split("\n")
-        if split_text == ['']:
+        split_text = lista_in_text(form_lista(file, day))
+        if split_text == []:
             dict_list[f"element{number_day}"] = [
                 f"***{date_of_day} {day_of_week_list[day]}***",
                 "Dane są niedostępne",
