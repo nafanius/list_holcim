@@ -410,7 +410,7 @@ def combination_of_some_days_list():
             continue
 
         dict_list[f"element{number_day}"] = [
-                                                f"***{date_of_day} {day_of_week_list[day]}***"
+                                                f"***{date_of_day} {day_of_week_list[day]}***", "",
                                             ] + split_text
         number_day += 1
 

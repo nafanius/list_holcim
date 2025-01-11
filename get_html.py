@@ -201,6 +201,19 @@ html_template = """
             font-weight: bold
         }
 
+        .lirozklad {
+            list-style: decimal;
+            position: relative;
+            margin-left: 1.4em;
+        }
+
+        .lirozklad::marker {
+            position: absolute;
+            left: 0;
+            color: rgb(75, 1, 1);
+            font-size: 0.9em;
+        }
+
         .list {
             display: block;
             margin: 3px;
@@ -399,9 +412,10 @@ html_template = """
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
-                    <li class="libold">ROZKŁAD:</li>
-                    {% for item in element1[1:] %}
-                    <li>{{ item }}</li>
+                    <p class="libold">ROZKŁAD:</p>
+                    <p>{{ element1[1] }}</p>
+                    {% for item in element1[2:] %}
+                    <li class="lirozklad">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -419,9 +433,10 @@ html_template = """
         <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
-                    <li class="libold">ROZKŁAD:</li>
-                    {% for item in element2[1:] %}
-                    <li>{{ item }}</li>
+                    <p class="libold">ROZKŁAD:</p>
+                    <p>{{ element2[1] }}</p>
+                    {% for item in element2[2:] %}
+                    <li class="lirozklad">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -439,9 +454,10 @@ html_template = """
         <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
             <div class="list">
                 <ul>
-                    <li class="libold">ROZKŁAD:</li>
-                    {% for item in element3[1:] %}
-                    <li>{{ item }}</li>
+                    <p class="libold">ROZKŁAD:</p>
+                    <p>{{ element3[1] }}</p>
+                    {% for item in element3[2:] %}
+                    <li class="lirozklad">{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>
