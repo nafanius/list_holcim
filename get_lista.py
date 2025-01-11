@@ -22,7 +22,9 @@ exp = logging.exception
 
 
 def generate_name_of_file_google():
-    """генерируем имя файлов для загрузки"""
+    """Generating file names for download files
+    :return list_of_download_files: return list of file names
+    """
     list_of_download_files = []
 
     now = datetime.now()
@@ -41,9 +43,13 @@ def generate_name_of_file_google():
 
 
 def save_google_sheet():
+    """save googlsheet file like a Excel file in  directory = 'excel_files'
+    """
     for file in generate_name_of_file_google():
         try:
             directory = "excel_files"
+            if not os.path.exists(directory):
+                os.makedirs(directory)
             ss = ezsheets.Spreadsheet(file)
             ss_name = ss.title
             file_path = os.path.join(directory, f"{ss_name}.xlsx")
@@ -55,7 +61,12 @@ def save_google_sheet():
 
 
 def form_lista_beton(excel_file, day, date_of_day_text):
-    """дастоём расписание отгрузок из файла excel_file возвращаем lista_beton"""
+    """We retrieve the shipping schedule from the excel_file and return lista_beton
+    :param excel_file: excel file
+    :param day: day request
+    :param date_of_day_tex: data of day request - '12.03.2024'
+    :return lista_beton, del_lista, add_lista: 3 list of cartage with old add del
+    """
     lista_beton = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -86,8 +97,8 @@ def form_lista_beton(excel_file, day, date_of_day_text):
             )
 
     for row_in_file in range(1, sheet.max_row):
-        c = sheet.cell(row=row_in_file, column=3).value
-        if "zawodzie 2 " in str(c).lower():
+        find_line = sheet.cell(row=row_in_file, column=3).value
+        if "zawodzie 2 " in str(find_line).lower():
             for row_in_beton in range(11, 42):
                 fill_list_beton(
                     sheet.cell(row=row_in_file + row_in_beton, column=3).value,
@@ -96,7 +107,7 @@ def form_lista_beton(excel_file, day, date_of_day_text):
                     "2",
                 )
 
-        if "zawodzie 1 " in str(c).lower():
+        if "zawodzie 1 " in str(find_line).lower():
             for row_in_beton in range(11, 42):
                 fill_list_beton(
                     sheet.cell(row=row_in_file + row_in_beton, column=3).value,
