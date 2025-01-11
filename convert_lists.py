@@ -1,8 +1,9 @@
 def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     """ add
-    :pharm lista_norm: The list has not changed since the last time.
-    :pharm list_del:  The list with removed items.
-    :pharm lista_add: The list with new items
+    :param lista_norm: The list has not changed since the last time.
+    :param list_del:  The list with removed items.
+    :param lista_add: The list with new items
+    :return: list of cartege with three sort - add del norm
     """
 
     # Add the index of the list to which the element belongs at the end of the element
