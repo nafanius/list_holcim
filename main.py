@@ -9,6 +9,8 @@ import argparse
 
 
 def get_dict():
+    """creation and return of a dictionary with all data for HTML"""
+
     def parsing_args(dictinary):
         parser = argparse.ArgumentParser(
             description="Добавляем теги с приветствием и прочим"
@@ -38,6 +40,11 @@ def get_dict():
 
 
 def save_html(data):
+    """Fills the HTML template from the dictionary and saves the completed HTML to a file
+
+    Args:
+        data (dictionary): dictionary with data
+    """
     template = Template(html_template)
     rendered_html = template.render(data)
     with open("./site/index.html", "w", encoding="utf-8") as f:
@@ -47,6 +54,14 @@ def save_html(data):
 def upload_directory_to_s3(
     directory_path, bucket_name, s3_base_path="", region="eu-central-1"
 ):
+    """Uploads the 'site' folder to an AWS S3 bucket
+
+    Args:
+        directory_path (str): The directory where the index and all nested folders and files are located
+        bucket_name (str): bucket name
+        s3_base_path (str, optional): The directory where we write files to the S3 bucket. Defaults to "".
+        region (str, optional): region  Defaults to "eu-central-1".
+    """    
     session = boto3.Session(region_name=region)
     s3_client = session.client("s3")
 

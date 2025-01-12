@@ -10,7 +10,9 @@ import re
 from convert_lists import get_list_from_three_norm_del_add
 
 # region logging
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 lg = logging.debug
 cr = logging.critical
 inf = logging.info
@@ -22,8 +24,10 @@ exp = logging.exception
 
 
 def generate_name_of_file_google():
-    """Generating file names for download files
-    :return list_of_download_files: return list of file names
+    """Forms the file names that need to be downloaded based on the current date, returning a list of file names
+
+    Returns:
+        list of str: list of file names
     """
     list_of_download_files = []
 
@@ -42,12 +46,14 @@ def generate_name_of_file_google():
     return list_of_download_files
 
 
-def save_google_sheet():
-    """save googlsheet file like a Excel file in  directory = 'excel_files'
+def save_google_sheet(directory="excel_files"):
+    """save googlsheet file like a Excel in directory
+
+    Args:
+        directory (str, optional): The directory where the file is save. Defaults to 'excel_files'.
     """
     for file in generate_name_of_file_google():
         try:
-            directory = "excel_files"
             if not os.path.exists(directory):
                 os.makedirs(directory)
             ss = ezsheets.Spreadsheet(file)
@@ -62,10 +68,14 @@ def save_google_sheet():
 
 def form_lista_beton(excel_file, day, date_of_day_text):
     """We retrieve the shipping schedule from the excel_file and return lista_beton
-    :param excel_file: excel file
-    :param day: day request
-    :param date_of_day_tex: data of day request - '12.03.2024'
-    :return lista_beton, del_lista, add_lista: 3 list of cartage with old add del
+
+    Args:
+        excel_file (str): name of excel file
+        day (int): number of the day  of the week
+        date_of_day_text (str): date of day request - '12.03.2024'
+
+    Returns:
+        list: lista_beton, del_lista, add_lista: 3 list of cartage with old add del
     """
     lista_beton = []
     try:
@@ -118,7 +128,9 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
-    del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(date_of_day_text, lista_beton)
+    del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(
+        date_of_day_text, lista_beton
+    )
 
     save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text: lista_beton})
 
@@ -128,7 +140,15 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
 
 def form_lista(excel_file, day):
-    """дастоём расписание из файла"""
+    """_summary_
+
+    Args:
+        excel_file (str): name of excel file
+        day (int): the number of the day of the week
+
+    Returns:
+        list: Departure schedule list
+    """
     lista = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -168,7 +188,14 @@ def form_lista(excel_file, day):
 
 
 def lista_in_text(lista):
-    """ "фотрмируем list в текстовый формат для высолки в бот"""
+    """Generates a list in text form from the list of departure data
+
+    Args:
+        lista (list): List of date depurture shedule list
+
+    Returns:
+        list: The generated list for populating the departure list in HTML
+    """
 
     if not lista:
         return []
@@ -180,12 +207,19 @@ def lista_in_text(lista):
 
 
 def lista_in_text_beton(lista_beton):
-    """ "фотрмируем list в текстовый формат для высолки в бот"""
+    """Generates a list in text form from the list of shipment data
+
+    Args:
+        lista_beton (list): List of date depurture shipment list
+
+    Returns:
+        list: The generated list for populating the shipment list in HTML
+    """
 
     def sum_of_metres(data, sort):
         sum_m = 0
         try:
-            if sort in (0,2):
+            if sort in (0, 2):
                 sum_m += float(data)
         except (ValueError, TypeError):
             # Игнорируем элементы, которые не являются числами
@@ -226,11 +260,11 @@ def lista_in_text_beton(lista_beton):
         metres = str(metres).strip()
         if sort == 0:
             lista_text += [
-                f'{times} {metres} węzeł {wenz}',
-                f'{firm}',
+                f"{times} {metres} węzeł {wenz}",
+                f"{firm}",
                 f'{name} {uwagi + " " + przebieg}',
-                f'{tel}',
-                f'--------------------'
+                f"{tel}",
+                f"--------------------",
             ]
         elif sort == 1:
             lista_text += [
@@ -238,7 +272,7 @@ def lista_in_text_beton(lista_beton):
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{firm}</span>',
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{name} {uwagi + " " + przebieg}</span>',
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{tel}</span>',
-                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">--------------------</span>'
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">--------------------</span>',
             ]
         elif sort == 2:
             lista_text += [
@@ -246,13 +280,24 @@ def lista_in_text_beton(lista_beton):
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{firm}</span>',
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{name} {uwagi + " " + przebieg}</span>',
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{tel}</span>',
-                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">--------------------</span>'
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">--------------------</span>',
             ]
 
-    return lista_text, f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {sum_metres}</p>'
+    return (
+        lista_text,
+        f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {sum_metres}</p>',
+    )
 
 
 def find_day_request():
+    """Generates a list of requests for three days depending on the current date
+    and day of the week
+
+    Returns:
+        list: A list of three tuples containing the number of the day of the week,
+              the name of the Excel file from which to take data, and the date string of
+              the request day
+    """
     list_of_days = []
 
     now = datetime.now()
@@ -287,7 +332,9 @@ def find_day_request():
                 return (week + 1, year), (week + 1, year), (week + 1, year)
 
     if day_of_week in (0, 1, 2, 3):
-        weeks_years = create_week_and_year_to_file_name(1, current_week_number, current_year)
+        weeks_years = create_week_and_year_to_file_name(
+            1, current_week_number, current_year
+        )
 
         list_of_days.append(
             (
@@ -312,7 +359,9 @@ def find_day_request():
         )
 
     elif day_of_week == 4:
-        weeks_years = create_week_and_year_to_file_name(2, current_week_number, current_year)
+        weeks_years = create_week_and_year_to_file_name(
+            2, current_week_number, current_year
+        )
         list_of_days.append(
             (
                 day_of_week,
@@ -335,7 +384,9 @@ def find_day_request():
             )
         )
     elif day_of_week == 5:
-        weeks_years = create_week_and_year_to_file_name(3, current_week_number, current_year)
+        weeks_years = create_week_and_year_to_file_name(
+            3, current_week_number, current_year
+        )
         list_of_days.append(
             (
                 day_of_week,
@@ -358,7 +409,9 @@ def find_day_request():
             )
         )
     elif day_of_week == 6:
-        weeks_years = create_week_and_year_to_file_name(4, current_week_number, current_year)
+        weeks_years = create_week_and_year_to_file_name(
+            4, current_week_number, current_year
+        )
         list_of_days.append(
             (
                 0,
@@ -385,7 +438,11 @@ def find_day_request():
 
 
 def combination_of_some_days_list():
-    """формируем общий лист на несколько дней в зависимости от дня недели"""
+    """Generates two dictionaries with three days of departure and shipment schedules
+
+    Returns:
+        two dict:  two dictionaries with three days of departure and shipment schedules
+    """    
     day_of_week_list = [
         "poniedziałek",
         "wtorek",
@@ -395,11 +452,16 @@ def combination_of_some_days_list():
         "sobota",
         "niedziela",
     ]
+
+    #  We save the latest Excel files from Google Drive.
     save_google_sheet()
+
     dict_list = {}
     dict_beton = {}
+    list_of_day = find_day_request()
+    
     number_day = 1
-    for day, file, date_of_day in find_day_request():
+    for day, file, date_of_day in list_of_day:
         split_text = lista_in_text(form_lista(file, day))
         if split_text == []:
             dict_list[f"element{number_day}"] = [
@@ -410,19 +472,24 @@ def combination_of_some_days_list():
             continue
 
         dict_list[f"element{number_day}"] = [
-                                                f"***{date_of_day} {day_of_week_list[day]}***", "",
-                                            ] + split_text
+            f"***{date_of_day} {day_of_week_list[day]}***",
+            "",
+        ] + split_text
         number_day += 1
 
-    for day, file, date_of_day in find_day_request():
+    for day, file, date_of_day in list_of_day:
         list_of_lists_norm_del_add = form_lista_beton(file, day, date_of_day)
-        list_ready_to_covert_text = get_list_from_three_norm_del_add(*list_of_lists_norm_del_add)
-
+        list_ready_to_covert_text = get_list_from_three_norm_del_add(
+            *list_of_lists_norm_del_add
+        )
 
         try:
             lista, meter = lista_in_text_beton(list_ready_to_covert_text)
 
-            dict_beton[f"element{number_day}"] = [f'***{date_of_day}  {day_of_week_list[day]}***', f'{meter}'] + lista
+            dict_beton[f"element{number_day}"] = [
+                f"***{date_of_day}  {day_of_week_list[day]}***",
+                f"{meter}",
+            ] + lista
             number_day += 1
         except ValueError:
             dict_beton[f"element{number_day}"] = [
@@ -436,4 +503,3 @@ def combination_of_some_days_list():
 
 if __name__ == "__main__":
     inf(combination_of_some_days_list())
-    pass
