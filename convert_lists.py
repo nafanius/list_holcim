@@ -1,9 +1,15 @@
 def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
-    """ add
-    :param lista_norm: The list has not changed since the last time.
-    :param list_del:  The list with removed items.
-    :param lista_add: The list with new items
-    :return: list of cartege with three sort - add del norm
+    """It creates a comprehensive list from elements that existed, were removed,
+     or are new, adding an index at the end of each element: 0 for
+      existing, 1 for removed, and 2 for new
+
+    Args:
+        lista_norm (list): The list has not changed since the last time
+        lista_del (list): The list with removed items
+        lista_add (list): The list with new items, sort items by time> metrs> firm
+
+    Returns:
+        list: list of cartege with three sort - add del norm
     """
 
     # Add the index of the list to which the element belongs at the end of the element

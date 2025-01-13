@@ -7,11 +7,11 @@ save_number = 1
 global_dic = {}
 
 def save_dict_to_pickle(dictionary, directory = "save_old_dict"):
-    """
-    Сохраняет словарь в файл формата pickle.
+    """Saves the dictionary to a file in pickle format
 
-    :param directory:
-    :param dictionary: Словарь, который нужно сохранить.
+    Args:
+        dictionary (dic): The dictionary to save
+        directory (str, optional): the directory where we save.  Defaults to "save_old_dict".
     """
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -27,7 +27,17 @@ def save_dict_to_pickle(dictionary, directory = "save_old_dict"):
 
 
 
-def load_dict_from_pickle(directory = "save_old_dict"):
+def load_dict_from_pickle(hours = 4, directory = "save_old_dict"):
+    """Loads a dictionary from the saved oldest file that is not older than the configured time
+
+    Args:
+        directory (str, optional): _description_. Defaults to "save_old_dict".
+        hours (int):     Defaults to 4
+
+    Returns:
+        _type_: _description_
+    """
+
     """
     Загружает список из файла формата pickle.
 
@@ -40,23 +50,21 @@ def load_dict_from_pickle(directory = "save_old_dict"):
         if os.path.isfile(os.path.join(directory, file))
     ]
 
-
-
-    # Удаление файлов старше 3 часов
-    three_hours_ago = time.time() - 4 * 3600
+    # Deleting files older than 4 hours 
+    three_hours_ago = time.time() - hours * 3600
     for file, mtime in files:
         if mtime < three_hours_ago:
             os.remove(os.path.join(directory, file))
             print(f"Удалён файл: {file}")
 
-    # Обновляем список файлов после удаления
+    # Updating the list of files after deletion
     files = [
         (file, os.path.getmtime(os.path.join(directory, file)))
         for file in os.listdir(directory)
         if os.path.isfile(os.path.join(directory, file))
     ]
 
-    # Если есть файлы, ищем самый старый
+    # If there are files, find the oldest one
     if files:
         oldest_file = min(files, key=lambda f: f[1])[0]
         filename = os.path.join(directory, oldest_file)
@@ -69,7 +77,12 @@ def load_dict_from_pickle(directory = "save_old_dict"):
         return {}
 
 def get_list_of_beton():
-    '''формирует из сохраненого списка актуальный удаляет записи с датой меньше текущей'''
+    """Generates an up-to-date list from the saved list by removing entries with
+      a date earlier than the current date
+
+    Returns:
+        dict: Returns a dictionary with dates that are current as of now.
+    """    
 
     try:
         dict_old_of_beton = load_dict_from_pickle()
@@ -85,22 +98,37 @@ def get_list_of_beton():
         return {}
 
 def combine_dict_from_get_list(dict_of_day):
+    """It creates a dictionary from 3 days in 3 iterations, each iteration
+     being 1 day. The overall dictionary is saved in the global variable `global_dic`
+     and save  summary this dictionary in pickle file
+
+    Args:
+        dict_of_day (dict): A single day's dictionary
+    """    
     global save_number
     global global_dic
     current_dic = get_list_of_beton()
-    print(f"SAVE NUMDER {save_number} ")
+    print(f"SAVE NUMDER {save_number} ") 
 
-    if save_number == 1:
+    if save_number in (1, 2):
         global_dic = current_dic | dict_of_day
-        save_number += 1
-    elif save_number != 1 and save_number != 3 :
-        global_dic = global_dic | dict_of_day
         save_number += 1
     else:
         global_dic = global_dic | dict_of_day
         save_dict_to_pickle(global_dic)
 
 def check_del_add_lista(date_of_lista, currant_list_beton):
+    """It checks for any removed or new entries in the new dictionary
+     compared to the old one and returns two dictionaries: one for
+      removed entries and one for new entries
+
+    Args:
+        date_of_lista (str): date of day request - '12.03.2024'
+        currant_list_beton (list): new list of shipment
+
+    Returns:
+        two lists: list of removed entries, list of new entries
+    """    
     del_lista = []
     add_lista = []
     current_dic = get_list_of_beton()
