@@ -110,8 +110,11 @@ def combine_dict_from_get_list(dict_of_day):
     current_dic = get_list_of_beton()
     print(f"SAVE NUMDER {save_number} ") 
 
-    if save_number in (1, 2):
+    if save_number == 1:
         global_dic = current_dic | dict_of_day
+        save_number += 1
+    elif save_number != 1 and save_number != 3 :
+        global_dic = global_dic | dict_of_day
         save_number += 1
     else:
         global_dic = global_dic | dict_of_day
