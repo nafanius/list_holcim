@@ -402,6 +402,9 @@ html_template = """
                 </a>
             </div>
         </div>
+        <div id="ww_7367f5689bf4c" v='1.3' loc='id' a='{"t":"ticker","lang":"pl","ids":["wl7640"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: 
+        <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a></div>
+        <script async src="https://app3.weatherwidget.org/js/?id=ww_7367f5689bf4c"></script>
         <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
