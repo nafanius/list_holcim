@@ -66,7 +66,7 @@ def upload_directory_to_s3(
     s3_client = session.client("s3")
 
     # Walk through all the files and directories in the specified directory
-    for root, dirs, files in os.walk(directory_path):
+    for root, _, files in os.walk(directory_path):
         for file in files:
             # Construct the full local file path
             local_path = os.path.join(root, file)

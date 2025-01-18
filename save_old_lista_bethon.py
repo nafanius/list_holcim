@@ -23,10 +23,6 @@ def save_dict_to_pickle(dictionary, directory = "save_old_dict"):
     with open(filename, 'wb') as f:
         pickle.dump(dictionary, f)
 
-
-
-
-
 def load_dict_from_pickle(hours = 4, directory = "save_old_dict"):
     """Loads a dictionary from the saved oldest file that is not older than the configured time
 
@@ -150,3 +146,5 @@ def check_del_add_lista(date_of_lista, currant_list_beton):
     return del_lista, add_lista
 
 
+if __name__ == "__main__":
+    print(get_list_of_beton())
