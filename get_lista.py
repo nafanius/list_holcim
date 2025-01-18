@@ -1,6 +1,9 @@
 import threading
 import ezsheets
 
+import get_del_new_lists
+
+
 import data_sql
 import openpyxl
 from datetime import time
@@ -131,11 +134,15 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
-    del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(
+    # del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(
+    #     date_of_day_text, lista_beton
+    # )
+
+    del_lista, add_lista = get_del_new_lists.check_del_add_lista(
         date_of_day_text, lista_beton
     )
 
-    save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text: lista_beton})
+    # save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text: lista_beton})
 
     print(del_lista)
     print(add_lista)

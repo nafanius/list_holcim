@@ -1,4 +1,5 @@
 import time
+from datetime import time as time_from_datatime
 import json
 from sqlalchemy import (
     create_engine,
@@ -25,12 +26,12 @@ class Beton(Base):
 
     id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
-    list_beton = Column(String)
+    list_data = Column(String)
     day = Column(Integer)
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.id_event_time}, name ={self.list_beton})>"
+        return f"<User(user_id={self.id_event_time}, name ={self.list_data})>"
 
 
 class Lista(Base):
@@ -38,12 +39,12 @@ class Lista(Base):
 
     id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
-    list_send = Column(String)
+    list_data = Column(String)
     day = Column(Integer)
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.id_event_time}, name ={self.list_send})>"
+        return f"<User(user_id={self.id_event_time}, name ={self.list_data})>"
 
 
 # Создание базы данных SQLite в файле
@@ -64,7 +65,7 @@ def record_beton(data):
         beton = Beton(
             id_event_time=time.time(),
             date_text=data["date_of_day_text"],
-            list_beton=serialized_list_beton,
+            list_data=serialized_list_beton,
             day=data["day"],
             status=0,
         )
@@ -91,7 +92,7 @@ def record_lista(data):
         lista = Lista(
             id_event_time=time.time(),
             date_text=data["date_of_day_text"],
-            list_send=serialized_list,
+            list_data=serialized_list,
             day=data["day"],
             status=0,
         )
@@ -109,13 +110,18 @@ def record_lista(data):
         session.close()
 
 
-def delete_records_below_threshold(threshold, base_name):
+def delete_records_below_threshold(threshold, base):
     """"Deletes all records from [base name] with id_event_time less than [threshold]
 
     Args:
         threshold (float): Time as a float from the beginning of the epoch
-        base_name (object Base): base name
+        base_name (str): base name
     """    
+
+    if base == "beton":
+        base_name = Beton
+    elif base == "lista":
+        base_name = Lista
 
     session = Session()
 
@@ -135,6 +141,33 @@ def delete_records_below_threshold(threshold, base_name):
     finally:
         session.close()
 
+def get_oldest_list_beton_or_lista(base, date_of_lista):
+    
+    if base == "beton":
+        base_name = Beton
+    elif base == "lista":
+        base_name = Lista
+
+    session = Session()
+
+    try:
+        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista).order_by(base_name.id_event_time.asc()).first()
+        print(result)
+        
+        if result:
+            if base == "beton":
+                deserialized_list = json.loads(result[0])
+                result_list = [(item[0], time_from_datatime.fromisoformat(item[1]), *item[2:]) for item in deserialized_list]
+                return result_list
+            
+            elif base == "lista":
+                pass
+           
+        return []
+    
+    finally:
+        session.close()
+    
 
 # TODO удалить это ниже этой отметки
 
