@@ -1,3 +1,4 @@
+import threading
 import ezsheets
 
 import data_sql
@@ -23,6 +24,7 @@ exp = logging.exception
 # logging.disable(logging.CRITICAL)
 # endregion
 
+db_lock = threading.Lock()
 
 def generate_name_of_file_google():
     """Forms the file names that need to be downloaded based on the current date, returning a list of file names
@@ -139,7 +141,9 @@ def form_lista_beton(excel_file, day, date_of_day_text):
     print(add_lista)
 
     # добавил сохранение в базе данных листы бетона
-    data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day})
+    with db_lock:
+        data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day})
+    
     return lista_beton, del_lista, add_lista
 
 
@@ -189,7 +193,9 @@ def form_lista(excel_file, day, date_of_day_text):
     lista = sorted(lista, key=lambda event: event[0])
 
     # добавил сохранение в базе данных lista
-    data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day})
+    with db_lock:
+        data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day})
+    
     return lista
 
 

@@ -23,27 +23,27 @@ Base = declarative_base()
 class Beton(Base):
     __tablename__ = "beton"
 
-    event_time = Column(Float, primary_key=True)
+    id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
     list_beton = Column(String)
     day = Column(Integer)
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.event_time}, name ={self.list_beton})>"
+        return f"<User(user_id={self.id_event_time}, name ={self.list_beton})>"
 
 
 class Lista(Base):
     __tablename__ = "lista"
 
-    event_time = Column(Float, primary_key=True)
+    id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
     list_send = Column(String)
     day = Column(Integer)
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.event_time}, name ={self.list_send})>"
+        return f"<User(user_id={self.id_event_time}, name ={self.list_send})>"
 
 
 # Создание базы данных SQLite в файле
@@ -62,7 +62,7 @@ def record_beton(data):
     serialized_list_beton = json.dumps(get_list_beton_serialize)
     try:
         beton = Beton(
-            event_time=time.time(),
+            id_event_time=time.time(),
             date_text=data["date_of_day_text"],
             list_beton=serialized_list_beton,
             day=data["day"],
@@ -89,7 +89,7 @@ def record_lista(data):
     serialized_list = json.dumps(get_list_serialize)
     try:
         lista = Lista(
-            event_time=time.time(),
+            id_event_time=time.time(),
             date_text=data["date_of_day_text"],
             list_send=serialized_list,
             day=data["day"],
@@ -105,6 +105,33 @@ def record_lista(data):
     except Exception as e:
         print("Ошибка при добавлении данных:", e)
         session.rollback()
+    finally:
+        session.close()
+
+
+def delete_records_below_threshold(threshold, base_name):
+    """"Deletes all records from [base name] with id_event_time less than [threshold]
+
+    Args:
+        threshold (float): Time as a float from the beginning of the epoch
+        base_name (object Base): base name
+    """    
+
+    session = Session()
+
+    try:
+        # Отберите записи с большим или меньшим значением первичного ключа
+        records_to_delete = session.query(base_name).filter(base_name.id_event_time < threshold).order_by(base_name.id_event_time).all()
+
+        # Удалите выбранные записи
+        for record in records_to_delete:
+            session.delete(record)
+        
+        # Подтвердите изменения
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"An error occurred: {e}")
     finally:
         session.close()
 
