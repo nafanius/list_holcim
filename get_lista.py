@@ -342,6 +342,8 @@ def find_day_request():
                 return (2, year + 1), (2, year + 1), (2, year + 1)
             else:
                 return (week + 1, year), (week + 1, year), (week + 1, year)
+        else:
+            return []
 
     if day_of_week in (0, 1, 2, 3):
         weeks_years = create_week_and_year_to_file_name(
@@ -351,21 +353,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 2,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx", # type: ignore # type: ignore
+                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
@@ -377,21 +379,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
@@ -402,21 +404,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
@@ -427,21 +429,21 @@ def find_day_request():
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 2,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx", # type: ignore
+                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )

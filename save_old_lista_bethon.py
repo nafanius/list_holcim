@@ -1,7 +1,7 @@
 import pickle
 import time
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 save_number = 1
 global_dic = {}
