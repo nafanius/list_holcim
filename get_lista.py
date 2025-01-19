@@ -9,7 +9,6 @@ import openpyxl
 from datetime import time
 import logging
 from datetime import datetime, timedelta
-import save_old_lista_bethon
 import os
 import re
 from convert_lists import get_list_from_three_norm_del_add
@@ -134,19 +133,11 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
-    # fixme удалить вместе с файлами после реарганизации бота
-    # del_lista, add_lista = save_old_lista_bethon.check_del_add_lista(
-    #     date_of_day_text, lista_beton
-    # )
-
+   
     del_lista, add_lista = get_del_new_lists.check_del_add_lista(
         date_of_day_text, lista_beton
     )
 
-    # fixme сохранена только для совместимости с телеграм 
-    # ботем удалить и строку и файл и связаную с ним папку с файлами
-    # пусть работает до реаргонизации бота
-    save_old_lista_bethon.combine_dict_from_get_list({date_of_day_text: lista_beton})
 
     print(del_lista)
     print(add_lista)
