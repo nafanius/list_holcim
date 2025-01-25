@@ -28,6 +28,7 @@ exp = logging.exception
 
 db_lock = threading.Lock()
 
+# region excel file
 def generate_name_of_file_google():
     """Forms the file names that need to be downloaded based on the current date, returning a list of file names
 
@@ -148,6 +149,7 @@ def form_lista_beton(excel_file, day, date_of_day_text):
     
     return lista_beton, del_lista, add_lista
 
+# endregion excel file
 
 def form_lista(excel_file, day, date_of_day_text):
     """_summary_
@@ -240,38 +242,16 @@ def lista_in_text_beton(lista_beton):
             pass
         return sum_m
 
-    def convert_to_string(data):
-        if not data:
-            return ""
-        try:
-            data = str(data)
-            data = data.strip()
-            data = re.sub(r"\s+", " ", data)
-            return data
-        except (TypeError, ValueError):
-            return ""
-
     if not lista_beton:
         return ""
+    
     lista_text = []
     sum_metres = 0
-    for metres, times, firm, name, uwagi, przebieg, tel, wenz, sort in lista_beton:
-        times = times.strftime("%H:%M")
-        if tel:
-            if isinstance(tel, float):
-                tel = str(int(tel)).strip()
-            elif isinstance(tel, str):
-                tel = tel.strip()
-        else:
-            tel = ""
 
-        przebieg = convert_to_string(przebieg)
-        firm = convert_to_string(firm)
-        name = convert_to_string(name)
-        tel = convert_to_string(tel)
-        uwagi = convert_to_string(uwagi)
+    for metres, times, firm, name, uwagi, przebieg, tel, wenz, sort in lista_beton:
+        
         sum_metres = sum_metres + sum_of_metres(metres, sort)
-        metres = str(metres).strip()
+
         if sort == 0:
             lista_text += [
                 f"{times} {metres} węzeł {wenz}",
@@ -476,22 +456,22 @@ def combination_of_some_days_list():
     dict_beton = {}
     list_of_day = find_day_request()
     
-    number_day = 1
+    number_elements = 1
     for day, file, date_of_day in list_of_day:
         split_text = lista_in_text(form_lista(file, day, date_of_day))
         if split_text == []:
-            dict_list[f"element{number_day}"] = [
+            dict_list[f"element{number_elements}"] = [
                 f"***{date_of_day} {day_of_week_list[day]}***",
                 "Dane są niedostępne",
             ]
-            number_day += 1
+            number_elements += 1
             continue
 
-        dict_list[f"element{number_day}"] = [
+        dict_list[f"element{number_elements}"] = [
             f"***{date_of_day} {day_of_week_list[day]}***",
             "",
         ] + split_text
-        number_day += 1
+        number_elements += 1
 
     for day, file, date_of_day in list_of_day:
         list_of_lists_norm_del_add = form_lista_beton(file, day, date_of_day)
@@ -502,17 +482,17 @@ def combination_of_some_days_list():
         try:
             lista, meter = lista_in_text_beton(list_ready_to_covert_text)
 
-            dict_beton[f"element{number_day}"] = [
+            dict_beton[f"element{number_elements}"] = [
                 f"***{date_of_day}  {day_of_week_list[day]}***",
                 f"{meter}",
             ] + lista # type: ignore
-            number_day += 1
+            number_elements += 1
         except ValueError:
-            dict_beton[f"element{number_day}"] = [
+            dict_beton[f"element{number_elements}"] = [
                 f"***{date_of_day} {day_of_week_list[day]}***",
                 "Dane są niedostępne",
             ]
-            number_day += 1
+            number_elements += 1
 
     return dict_list | dict_beton
 

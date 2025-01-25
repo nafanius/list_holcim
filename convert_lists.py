@@ -1,3 +1,78 @@
+import re
+
+def converter(list_for_convert):
+    # print(type(list_for_convert), len(list_for_convert))
+    def convert_to_string(data):
+        if not data:
+            return ""
+        try:
+            data = str(data)
+            data = data.strip()
+            data = re.sub(r"\s+", " ", data)
+            return data
+        except (TypeError, ValueError):
+            return ""
+        
+
+    print(list_for_convert, len(list_for_convert)) 
+    metres, times, firm, name, uwagi, przebieg, tel, wenz, sort = list_for_convert
+
+    times = times.strftime("%H:%M")
+    if tel:
+        if isinstance(tel, float):
+            tel = str(int(tel)).strip()
+        elif isinstance(tel, str):
+            tel = tel.strip()
+    else:
+        tel = ""
+
+    przebieg = convert_to_string(przebieg)
+    firm = convert_to_string(firm)
+    name = convert_to_string(name)
+    tel = convert_to_string(tel)
+    uwagi = convert_to_string(uwagi)
+    metres = convert_to_string(metres)
+            
+    return [metres, times, firm, name, uwagi, przebieg, tel, wenz, sort]
+
+
+
+def compare_lists_by_tuples(del_lista, add_lista):
+    matching_indices = []
+    
+    for index1, tuple1 in enumerate(del_lista):
+        for index2, tuple2 in enumerate(add_lista):
+            if tuple1[:3] == tuple2[:3] and tuple1[6] == tuple2[6]:
+                matching_indices.append((index1, index2))
+    del_lista, add_lista = make_list_with_teg(del_lista, add_lista, matching_indices)
+    return del_lista, add_lista
+
+def make_list_with_teg(del_lista, add_lista, matching_indices):
+    del_lista_with_teg = del_lista
+    add_lista_without_change = add_lista
+    del_elem_from_add_lista = [tup[1] for tup in matching_indices]
+    
+
+    for matching in matching_indices:
+        item_del = del_lista[matching[0]]
+        item_add = add_lista[matching[1]]
+
+        for index, (elem1, elem2) in enumerate(zip(item_del[:7], item_add[:7])):
+            if elem1 != elem2:
+                change_elem = f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{elem1}</span> <span style="color: rgb(0, 139, 7); font-weight: bold;">{elem2}</span>'
+                del_lista_with_teg[matching[0][index]] =  change_elem
+        del_lista_with_teg[matching[0]][8] = 0
+
+    
+    del_elem_from_add_lista.sort(reverse=True)
+    for index in del_elem_from_add_lista:
+        if 0 <= index < len(add_lista_without_change):
+            del add_lista_without_change[index]
+    
+
+    return del_lista_with_teg, add_lista_without_change
+
+
 def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     """It creates a comprehensive list from elements that existed, were removed,
      or are new, adding an index at the end of each element: 0 for
@@ -18,9 +93,15 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     lista_del = [tup + (1,) for tup in lista_del]
     lista_add = [tup + (2,) for tup in lista_add]
 
+    lista_norm = list(map(converter, lista_norm))
+    lista_del = list(map(converter, lista_del))
+    lista_add = list(map(converter, lista_add))
+    
+    lista_del, lista_add = compare_lists_by_tuples(lista_del, lista_add)
+
     # If we do not find it in the list of new ones, then we add from the list of those that were already there.
-    replacement_dict = {tup[:8]: tup for tup in lista_add}
-    lista_norm_add = [replacement_dict.get(tup[:8], tup) for tup in lista_norm]
+    replacement_dict = {tuple(tup[:8]): tup for tup in lista_add}
+    lista_norm_add = [replacement_dict.get(tuple(tup[:8]), tup) for tup in lista_norm]
 
     # add list of removed items
     lista_norm_del_add = lista_norm_add + lista_del
