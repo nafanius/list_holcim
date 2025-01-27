@@ -1,7 +1,6 @@
 import re
 
 def converter(list_for_convert):
-    # print(type(list_for_convert), len(list_for_convert))
     def convert_to_string(data):
         if not data:
             return ""
@@ -14,7 +13,6 @@ def converter(list_for_convert):
             return ""
         
 
-    print(list_for_convert, len(list_for_convert)) 
     metres, times, firm, name, uwagi, przebieg, tel, wenz, sort = list_for_convert
 
     times = times.strftime("%H:%M")
@@ -59,8 +57,9 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
 
         for index, (elem1, elem2) in enumerate(zip(item_del[:7], item_add[:7])):
             if elem1 != elem2:
-                change_elem = f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{elem1}</span> <span style="color: rgb(0, 139, 7); font-weight: bold;">{elem2}</span>'
-                del_lista_with_teg[matching[0][index]] =  change_elem
+                change_elem = (f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{elem1}</span>'
+                               f' <span style="color: rgb(0, 139, 7); font-weight: bold;">{elem2}</span>')
+                del_lista_with_teg[matching[0]][index] =  change_elem
         del_lista_with_teg[matching[0]][8] = 0
 
     
@@ -103,8 +102,12 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     replacement_dict = {tuple(tup[:8]): tup for tup in lista_add}
     lista_norm_add = [replacement_dict.get(tuple(tup[:8]), tup) for tup in lista_norm]
 
-    # add list of removed items
-    lista_norm_del_add = lista_norm_add + lista_del
+    # If we do not find it in the list of new ones, then we add from the list of those that were already there.
+    replacement_dict = {tuple(tup[:8]): tup for tup in lista_del}
+    lista_norm_del_add = [replacement_dict.get(tuple(tup[:8]), tup) for tup in lista_norm_add]
+
+    # # add list of removed items
+    # lista_norm_del_add = lista_del + lista_norm_add
 
     # sorted by time, meters, name of firm
     lista_norm_del_add = sorted(lista_norm_del_add, key=lambda event: (event[1], event[2], event[3]))
