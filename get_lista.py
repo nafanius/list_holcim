@@ -140,8 +140,8 @@ def form_lista_beton(excel_file, day, date_of_day_text):
     )
 
 
-    print(del_lista)
-    print(add_lista)
+    inf(del_lista)
+    inf(add_lista)
 
     # добавил сохранение в базе данных листы бетона
     with db_lock:

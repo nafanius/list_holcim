@@ -13,6 +13,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from settings import Settings
+import logging
+
+
+# region logging
+
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+lg = logging.debug
+cr = logging.critical
+inf = logging.info
+exp = logging.exception
+# logging.disable(logging.DEBUG)
+# logging.disable(logging.INFO)
+# logging.disable(logging.CRITICAL)
+# logging_end
+# endregion
 
 # Создание базового класса
 Base = declarative_base()
@@ -73,11 +88,11 @@ def record_beton(data):
         session.add(beton)
         session.commit()
     except IntegrityError as e:
-        print("Ошибка целостности данных: возможно, дубликат ключа")
+        inf("Ошибка целостности данных: возможно, дубликат ключа")
         session.rollback()  # Отмена всех изменений в текущей транзакции
 
     except Exception as e:
-        print("Ошибка при добавлении данных:", e)
+        inf("Ошибка при добавлении данных:", e)
         session.rollback()
     finally:
         session.close()
@@ -100,11 +115,11 @@ def record_lista(data):
         session.add(lista)
         session.commit()
     except IntegrityError as e:
-        print("Ошибка целостности данных: возможно, дубликат ключа")
+        inf("Ошибка целостности данных: возможно, дубликат ключа")
         session.rollback()  # Отмена всех изменений в текущей транзакции
 
     except Exception as e:
-        print("Ошибка при добавлении данных:", e)
+        inf("Ошибка при добавлении данных:", e)
         session.rollback()
     finally:
         session.close()
@@ -137,7 +152,7 @@ def delete_records_below_threshold(threshold, base):
         session.commit()
     except Exception as e:
         session.rollback()
-        print(f"An error occurred: {e}")
+        inf(f"An error occurred: {e}")
     finally:
         session.close()
 
