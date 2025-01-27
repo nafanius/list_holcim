@@ -102,12 +102,15 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     replacement_dict = {tuple(tup[:8]): tup for tup in lista_add}
     lista_norm_add = [replacement_dict.get(tuple(tup[:8]), tup) for tup in lista_norm]
 
-    # If we do not find it in the list of new ones, then we add from the list of those that were already there.
-    replacement_dict = {tuple(tup[:3]): tup for tup in lista_del}
-    lista_norm_del_add = [replacement_dict.get(tuple(tup[:3]), tup) for tup in lista_norm_add]
+    # добавляем всё что lista_del и всё что lista_norm_add кроме того что есть в  lista_del
+    lista_norm_del_add = lista_del.copy() 
+        
+    for sublist2 in lista_norm_add:
+        if not any(l1[:3] == sublist2[:3] for l1 in lista_del):  
+            lista_norm_del_add.append(sublist2)
 
-    # # add list of removed items
-    # lista_norm_del_add = lista_del + lista_norm_add
+
+
 
     # sorted by time, meters, name of firm
     lista_norm_del_add = sorted(lista_norm_del_add, key=lambda event: (event[1], event[2], event[3]))
