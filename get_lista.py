@@ -279,7 +279,7 @@ def lista_in_text_beton(lista_beton):
 
     return (
         lista_text,
-        f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {sum_metres}</p>',
+        f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {round(sum_metres, 1)}</p>',
     )
 
 

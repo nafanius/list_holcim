@@ -27,7 +27,7 @@ html_template = """
             overflow-wrap: break-word;
         }
 
-        @keyframes congrad {
+        @keyframes congrat {
             0% {
                 animation-timing-function: ease-in;
                 opacity: 0;
