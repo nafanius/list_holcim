@@ -1,12 +1,13 @@
 import threading
 import ezsheets
-
+import time as time
+from settings import Settings
 import get_del_new_lists
 
 
 import data_sql
 import openpyxl
-from datetime import time
+from datetime import time as datetime_time
 import logging
 from datetime import datetime, timedelta
 import os
@@ -98,7 +99,7 @@ def form_lista_beton(excel_file, day, date_of_day_text):
         match = re.search(time_pattern, str(times_download))
         if match:
             hours, minutes = match.groups()
-            times_download = time(int(hours), int(minutes))
+            times_download = datetime_time(int(hours), int(minutes))
             lista_beton.append(
                 (
                     sheet.cell(row=row, column=column + 4).value,
@@ -174,7 +175,7 @@ def form_lista(excel_file, day, date_of_day_text):
         match = re.search(time_pattern, str(time_start))
         if match:
             hours, minutes = match.groups()
-            time_start = time(int(hours), int(minutes))
+            time_start = datetime_time(int(hours), int(minutes))
             lista.append(
                 (time_start, str(sheet.cell(row=row, column=column - 1).value).strip())
             )
@@ -200,6 +201,11 @@ def form_lista(excel_file, day, date_of_day_text):
     with db_lock:
         data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day})
     
+    # удаляем записи старше 4 часов
+    threshold = time.time() - Settings.time_of_compare * 3600
+    with db_lock:
+        data_sql.delete_records_below_threshold(threshold, "lista")
+
     return lista
 
 

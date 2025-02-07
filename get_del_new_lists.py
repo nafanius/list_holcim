@@ -1,10 +1,11 @@
 import threading
 import time
 import data_sql
+from settings import Settings
 
 db_lock = threading.Lock()
 
-def get_old_list_beton(date, hours = 4):
+def get_old_list_beton(date, hours = Settings.time_of_compare):
 
     threshold = time.time() - hours * 3600
 

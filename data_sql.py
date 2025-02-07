@@ -46,7 +46,7 @@ class Beton(Base):
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.id_event_time}, name ={self.list_data})>"
+        return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
 
 
 class Lista(Base):
@@ -59,7 +59,7 @@ class Lista(Base):
     status = Column(Integer)
 
     def __repr__(self):
-        return f"<User(user_id={self.id_event_time}, name ={self.list_data})>"
+        return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
 
 
 # Создание базы данных SQLite в файле
