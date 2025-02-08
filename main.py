@@ -1,4 +1,5 @@
-from get_lista import combination_of_some_days_list
+from get_lista import combination_of_some_days_list, find_day_request
+from static_forms import rozklad_curs, get_list_construction_place
 from jinja2 import Template
 from get_html import html_template
 from datetime import datetime
@@ -7,6 +8,8 @@ from botocore.exceptions import NoCredentialsError
 import os
 import argparse
 import logging
+from pprint import pprint
+
 
 # region logging
 
@@ -46,6 +49,19 @@ def get_dict():
 
     now = datetime.now()
     data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
+
+    # добавляем статистику
+    list_date_for_stat = [t[2] for t in find_day_request()]
+    day_number = 1
+    for date_for_stat in list_date_for_stat:
+        rozklad_curs_data = rozklad_curs(get_list_construction_place(date_for_stat))
+        
+        data[f"count_{day_number}"] = rozklad_curs_data[1]
+        data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
+        data[f"rozklad_curs_{day_number}"] = rozklad_curs_data[0]
+        
+        
+        day_number += 1
 
     parsing_args(data)
 
@@ -109,6 +125,6 @@ def upload_directory_to_s3(
 
 
 if __name__ == "__main__":
-    # inf(get_dict())
+    pprint(get_dict())
     save_html(get_dict())
     upload_directory_to_s3("./site", "list-holcim")

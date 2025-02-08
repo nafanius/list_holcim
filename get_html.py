@@ -221,6 +221,12 @@ html_template = """
             text-align: left;
         }
 
+        .rozklad_curs_tab {
+            font-size: 0.9em;
+            justify-content: center;
+            text-align: center;
+        }
+
         #brend {
             color: rgb(59, 59, 124)
         }
@@ -430,6 +436,11 @@ html_template = """
                     {% endfor %}
                 </ul>
             </div>
+            <div class="list">
+                <p class="libold">ilosć kursów {{ count_1 }}</p>
+                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
+                {{ rozklad_curs_1 }}
+            </div>
         </div>
 
         <p>{{ element2[0] }}</p>
@@ -451,6 +462,11 @@ html_template = """
                     {% endfor %}
                 </ul>
             </div>
+            <div class="list">
+                <p class="libold">ilosć kursów {{ count_2 }}</p>
+                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
+                {{ rozklad_curs_2 }}
+            </div>
         </div>
 
         <p>{{ element3[0] }}</p>
@@ -471,6 +487,11 @@ html_template = """
                     <li>{{ item }}</li>
                     {% endfor %}
                 </ul>
+            </div>
+            <div class="list">
+                <p class="libold">ilosć kursów {{ count_3 }}</p>
+                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
+                {{ rozklad_curs_3 }}
             </div>
         </div>
         <footer style="margin-top: 3px">

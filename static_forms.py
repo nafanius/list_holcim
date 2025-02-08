@@ -1,5 +1,6 @@
 from data_sql import get_newest_list_beton_or_lista
 from order import Order
+import re
 
 import logging
 from pprint import pprint
@@ -21,7 +22,7 @@ lg = logging.debug
 cr = logging.critical
 inf = logging.info
 exp = logging.exception
-logging.disable(logging.DEBUG)
+# logging.disable(logging.DEBUG)
 # logging.disable(logging.INFO)
 # logging.disable(logging.CRITICAL)
 # logging_end
@@ -90,7 +91,11 @@ def rozklad_curs(df_orders=get_list_construction_place()):
     rozklad_curs.columns = ["time", 'metrów', 'budowa', 'reszta', 'mat', 'p/d']
 
     html_table = rozklad_curs.to_html(
-        index=True, table_id="rozklad_curs", classes='rozklad_curs_tab')
+        index=False, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
+    
+    # html_table = re.sub(r'<tr style="text-align: right;">', '<tr>', html_table)
+
+    
 
     return html_table, rozklad_curs.shape[0], bud_without_dry["meter"].sum()
 
