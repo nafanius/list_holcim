@@ -222,7 +222,7 @@ html_template = """
         }
 
         .rozklad_curs_tab {
-            font-size: 0.9em;
+            font-size: 0.8em;
             justify-content: center;
             text-align: center;
         }

@@ -91,7 +91,7 @@ def rozklad_curs(df_orders=get_list_construction_place()):
     rozklad_curs.columns = ["time", 'metrów', 'budowa', 'reszta', 'mat', 'p/d']
 
     html_table = rozklad_curs.to_html(
-        index=False, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
+        index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
     
     # html_table = re.sub(r'<tr style="text-align: right;">', '<tr>', html_table)
 
