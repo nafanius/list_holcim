@@ -18,7 +18,7 @@ lg = logging.debug
 cr = logging.critical
 inf = logging.info
 exp = logging.exception
-# logging.disable(logging.DEBUG)
+logging.disable(logging.DEBUG)
 # logging.disable(logging.INFO)
 # logging.disable(logging.CRITICAL)
 # logging_end
@@ -125,6 +125,6 @@ def upload_directory_to_s3(
 
 
 if __name__ == "__main__":
-    pprint(get_dict())
+    # pprint(get_dict())
     save_html(get_dict())
     upload_directory_to_s3("./site", "list-holcim")

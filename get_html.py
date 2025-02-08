@@ -179,8 +179,8 @@ html_template = """
         }
 
         .main_list {
-            display: block;
-            flex-direction: row;
+            display: flex;
+            flex-direction: column;;
             text-align: center;
             align-content: center;
             padding: 5px;
@@ -226,6 +226,41 @@ html_template = """
             justify-content: center;
             text-align: center;
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .content {
+            background: local;
+            
+        }
+
+        .button-like {
+            display: inline-block;
+            padding: 10px 10px;
+            margin: 2px;
+            background-color: #003e7c;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .button-push {
+            display: inline-block;
+            padding: 10px 10px;
+            margin: 2px;
+            background-color:rgb(77, 158, 30);
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            }
+        
 
         #brend {
             color: rgb(59, 59, 124)
@@ -280,6 +315,28 @@ html_template = """
             }
         }
     </style>
+    <script>
+            function toggleVisibility(divId, buttonId) {
+                const div = document.getElementById(divId);
+                const button = document.getElementById(buttonId);
+
+                // Переключаем видимость элемента
+                if (div.classList.contains('hidden')) {
+                    div.classList.remove('hidden');
+                } else {
+                    div.classList.add('hidden');
+                };
+
+                // Изменяем текст кнопки
+                if (div.classList.contains('hidden')) {
+                    button.classList.remove('button-like');
+                    button.classList.add('button-push');
+                } else {
+                    button.classList.remove('button-push');
+                    button.classList.add('button-like');
+                }
+            }
+        </script>
 
 </head>
 
@@ -419,81 +476,119 @@ html_template = """
     <div class="main_list">
         <p>{{ element1[0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
-            <div class="list">
-                <ul>
-                    <p class="libold">ROZKŁAD:</p>
-                    <p>{{ element1[1] }}</p>
-                    {% for item in element1[2:] %}
-                    <li class="lirozklad">{{ item }}</li>
-                    {% endfor %}
-                </ul>
+            
+            <button id="button1" class="button-push" onclick="toggleVisibility('div1', 'button1')">ROZKŁAD</button>
+            <div id="div1" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ element1[1] }}</p>
+                        {% for item in element1[2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <ul>
-                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
-                    {% for item in element4[1:] %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
+
+            <button id="button2" class="button-push" onclick="toggleVisibility('div2', 'button2')">ZAMÓWIENIA</button>
+            <div id="div2" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in element4[1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <p class="libold">ilosć kursów {{ count_1 }}</p>
-                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
-                {{ rozklad_curs_1 }}
+
+            <button id="button3" class="button-push" onclick="toggleVisibility('div3', 'button3')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div3" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ count_1 }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
+                    {{ rozklad_curs_1 }}
+                </div>
             </div>
         </div>
 
         <p>{{ element2[0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
-            <div class="list">
-                <ul>
-                    <p class="libold">ROZKŁAD:</p>
-                    <p>{{ element2[1] }}</p>
-                    {% for item in element2[2:] %}
-                    <li class="lirozklad">{{ item }}</li>
-                    {% endfor %}
-                </ul>
+            
+            <button id="button4" class="button-push" onclick="toggleVisibility('div4', 'button4')">ROZKŁAD</button>
+            <div id="div4" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold ">ROZKŁAD:</p>
+                        <p>{{ element2[1] }}</p>
+                        {% for item in element2[2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <ul>
-                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
-                    {% for item in element5[1:] %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
+
+            <button id="button5" class="button-push" onclick="toggleVisibility('div5', 'button5')">ZAMÓWIENIA</button>
+            <div id="div5" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in element5[1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <p class="libold">ilosć kursów {{ count_2 }}</p>
-                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
-                {{ rozklad_curs_2 }}
+
+            <button id="button6" class="button-push" onclick="toggleVisibility('div6', 'button6')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div6" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ count_2 }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
+                    {{ rozklad_curs_2 }}
+                </div>
             </div>
         </div>
 
         <p>{{ element3[0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
-            <div class="list">
-                <ul>
-                    <p class="libold">ROZKŁAD:</p>
-                    <p>{{ element3[1] }}</p>
-                    {% for item in element3[2:] %}
-                    <li class="lirozklad">{{ item }}</li>
-                    {% endfor %}
-                </ul>
+            
+            <button id="button7" class="button-push" onclick="toggleVisibility('div7', 'button7')">ROZKŁAD</button>
+            <div id="div7" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ element3[1] }}</p>
+                        {% for item in element3[2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <ul>
-                    <li class="libold">HARMONOGRAM ZAŁADUNKÓW:</li>
-                    {% for item in element6[1:] %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
+            
+            <button id="button8" class="button-push" onclick="toggleVisibility('div8', 'button8')">ZAMÓWIENIA</button>
+            <div id="div8" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in element6[1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="list">
-                <p class="libold">ilosć kursów {{ count_3 }}</p>
-                <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
-                {{ rozklad_curs_3 }}
+
+            <button id="button9" class="button-push" onclick="toggleVisibility('div9', 'button9')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div9" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ count_3 }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
+                    {{ rozklad_curs_3 }}
+                </div>
             </div>
         </div>
+
+
         <footer style="margin-top: 3px">
             <p> ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
         </footer>
