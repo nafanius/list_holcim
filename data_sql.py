@@ -1,3 +1,4 @@
+from pprint import pprint 
 import time
 from datetime import time as time_from_datatime
 import json
@@ -182,4 +183,33 @@ def get_oldest_list_beton_or_lista(base, date_of_lista):
     
     finally:
         session.close()
+
+def get_newest_list_beton_or_lista(base, date_of_lista):
     
+    if base == "beton":
+        base_name = Beton
+    elif base == "lista":
+        base_name = Lista
+
+    session = Session()
+
+    try:
+        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista).order_by(base_name.id_event_time.desc()).first()
+        
+        if result:
+            if base == "beton":
+                deserialized_list = json.loads(result[0])
+                result_list = [(item[0], time_from_datatime.fromisoformat(item[1]), *item[2:]) for item in deserialized_list]
+                return result_list
+            
+            elif base == "lista":
+                pass
+           
+        return []
+    
+    finally:
+        session.close()
+    
+    
+if __name__ == '__main__':
+    pprint(get_newest_list_beton_or_lista('beton', '03.02.2025'))
