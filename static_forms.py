@@ -146,9 +146,9 @@ def rozklad_curs(df_orders=get_list_construction_place()):
                 )
             ),
 
-            xaxis_title_font_size=9,
-            yaxis_title_font_size=9,
-            font=dict(size=7),
+            xaxis_title_font_size=10,
+            yaxis_title_font_size=10,
+            font=dict(size=10),
             legend=dict(
                 orientation="v",         # Горизонтальная ориентация
                 yanchor="top",        # Выравнивание по нижнему краю
@@ -156,7 +156,7 @@ def rozklad_curs(df_orders=get_list_construction_place()):
                 xanchor="right",        # Центрирование по горизонтали
                 x=1,                    # Горизонтальная позиция по центру
                 font=dict(
-                    size=9         # Размер текста в легенде
+                    size=10         # Размер текста в легенде
                 )
             )
         )
