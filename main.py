@@ -59,6 +59,8 @@ def get_dict():
         data[f"count_{day_number}"] = rozklad_curs_data[1]
         data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
         data[f"rozklad_curs_{day_number}"] = rozklad_curs_data[0]
+        data[f"grap_intens_{day_number}"] = rozklad_curs_data[3]
+
         
         
         day_number += 1

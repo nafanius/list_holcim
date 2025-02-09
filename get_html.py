@@ -260,7 +260,14 @@ html_template = """
             border-radius: 4px;
             text-decoration: none;
             }
-        
+
+        .full-width-graph {
+            display: inline-block;
+            width: 100%;
+            margin: 0px
+            justify-content: center;
+            text-align: center;
+           }
 
         #brend {
             color: rgb(59, 59, 124)
@@ -508,6 +515,9 @@ html_template = """
                     <p class="libold">ilosć kursów {{ count_1 }}</p>
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
                     {{ rozklad_curs_1 }}
+                    <div class="full-width-graph">
+                    {{ grap_intens_1 }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -546,6 +556,9 @@ html_template = """
                     <p class="libold">ilosć kursów {{ count_2 }}</p>
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
                     {{ rozklad_curs_2 }}
+                    <div class="full-width-graph">
+                    {{ grap_intens_2 }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -584,6 +597,9 @@ html_template = """
                     <p class="libold">ilosć kursów {{ count_3 }}</p>
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
                     {{ rozklad_curs_3 }}
+                    <div class="full-width-graph">
+                    {{ grap_intens_3 }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -467,14 +467,14 @@ def combination_of_some_days_list():
         split_text = lista_in_text(form_lista(file, day, date_of_day))
         if split_text == []:
             dict_list[f"element{number_elements}"] = [
-                f"***{date_of_day} {day_of_week_list[day]}***",
+                f"{date_of_day} {day_of_week_list[day]}",
                 "Dane są niedostępne",
             ]
             number_elements += 1
             continue
 
         dict_list[f"element{number_elements}"] = [
-            f"***{date_of_day} {day_of_week_list[day]}***",
+            f"{date_of_day} {day_of_week_list[day]}",
             "",
         ] + split_text
         number_elements += 1
@@ -489,13 +489,13 @@ def combination_of_some_days_list():
             lista, meter = lista_in_text_beton(list_ready_to_covert_text)
 
             dict_beton[f"element{number_elements}"] = [
-                f"***{date_of_day}  {day_of_week_list[day]}***",
+                f"{date_of_day}  {day_of_week_list[day]}",
                 f"{meter}",
             ] + lista # type: ignore
             number_elements += 1
         except ValueError:
             dict_beton[f"element{number_elements}"] = [
-                f"***{date_of_day} {day_of_week_list[day]}***",
+                f"{date_of_day} {day_of_week_list[day]}",
                 "Dane są niedostępne",
             ]
             number_elements += 1
