@@ -92,29 +92,33 @@ def rozklad_curs(df_orders=get_list_construction_place()):
         rozklad_curs = rozklad_curs.reset_index(drop=True)
         rozklad_curs.index = rozklad_curs.index+1
 
-        rozklad_curs.columns = ["time", 'metrów', 'budowa', 'reszta', 'mat', 'p/d']
+        rozklad_curs.columns = ["time", 'metrów',
+                                'budowa', 'reszta', 'mat', 'p/d']
 
         html_table = rozklad_curs.to_html(
             index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
-        
+
         # html_table = re.sub(r'<tr style="text-align: right;">', '<tr>', html_table)
-    
-        graph.set_index('list_of_loads',inplace=True)
+
+        graph.set_index('list_of_loads', inplace=True)
         graph_corect = graph.resample('h').sum()
-        graph_corect = graph_corect[['list_of_courses','reszta', 'name']]
-        graph_corect.columns = ['intensywność m/g','nadal trzeba wysłać', 'name']
+        graph_corect = graph_corect[['list_of_courses', 'reszta', 'name']]
+        graph_corect.columns = ['intensywność m/g',
+                                'nadal trzeba wysłać', 'name']
 
         fig = px.line(graph_corect, x=graph_corect.index,
-                    y=['intensywność m/g','nadal trzeba wysłać','name'],
-                    labels={'list_of_loads': 'time'},       
-                    title='Intensywność pracy',
-                    hover_data={'name': True},
-                    markers=True
-                    )
-                    
+                      y=['intensywność m/g', 'nadal trzeba wysłać', 'name'],
+                      labels={'list_of_loads': 'time'},
+                      title='Intensywność pracy',
+                      hover_data={'name': True},
+                      markers=True
+                      )
+
         fig.update_layout(
-            plot_bgcolor='rgba(255, 255, 255, 0)',   # Установить цвет фона графика в прозрачный
-            paper_bgcolor='rgba(255, 255, 255, 0.5)',  # Установить цвет фона области фигуры в прозрачный
+            # Установить цвет фона графика в прозрачный
+            plot_bgcolor='rgba(255, 255, 255, 0)',
+            # Установить цвет фона области фигуры в прозрачный
+            paper_bgcolor='rgba(255, 255, 255, 0.5)',
             yaxis_title='Metrów',
             margin=dict(l=1, r=1, t=15, b=5),
             legend_title='',
@@ -126,8 +130,8 @@ def rozklad_curs(df_orders=get_list_construction_place()):
                         family='Arial',
                         size=12,
                         color='black'
-                    )  # Размер шрифта для заголовка
-            
+                )  # Размер шрифта для заголовка
+
             ),
             xaxis=dict(
                 automargin=True,
@@ -157,19 +161,23 @@ def rozklad_curs(df_orders=get_list_construction_place()):
             )
         )
         fig.update_traces(
-            hovertemplate='<b>%{customdata[0]}</b><extra></extra>',  # Отображение только комментария
+            # Отображение только комментария
+            hovertemplate='<b>%{customdata[0]}</b><extra></extra>',
             line=dict(width=2)
         )
 
-        graph_html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-
-
+        graph_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={
+            'displayModeBar': True,        # Отображение панели управления
+            'displaylogo': False,
+            'editable': False,
+            'responsive': True,
+            'staticPlot': True,
+        }
+        )
 
     except Exception as err:
         inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
         return "<p>Brak</p>", 0, 0, "<p>Brak</p>"
-
-    
 
     return html_table, rozklad_curs.shape[0], bud_without_dry["meter"].sum(), graph_html
 

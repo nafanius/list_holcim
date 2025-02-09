@@ -264,7 +264,7 @@ html_template = """
         .full-width-graph {
             display: inline-block;
             width: 100%;
-            margin: 0px
+            margin: 0px;
             justify-content: center;
             text-align: center;
            }
@@ -516,7 +516,9 @@ html_template = """
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
                     {{ rozklad_curs_1 }}
                     <div class="full-width-graph">
-                    {{ grap_intens_1 }}
+                        <script>
+                            {{ grap_intens_1 }}
+                        </script>
                     </div>
                 </div>
             </div>
@@ -557,7 +559,9 @@ html_template = """
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
                     {{ rozklad_curs_2 }}
                     <div class="full-width-graph">
-                    {{ grap_intens_2 }}
+                        <script>
+                            {{ grap_intens_2 }}
+                        </script>
                     </div>
                 </div>
             </div>
@@ -598,7 +602,9 @@ html_template = """
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
                     {{ rozklad_curs_3 }}
                     <div class="full-width-graph">
-                    {{ grap_intens_3 }}
+                        <script>
+                            {{ grap_intens_3 }}
+                        </script>
                     </div>
                 </div>
             </div>
