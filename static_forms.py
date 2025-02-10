@@ -101,7 +101,13 @@ def rozklad_curs(df_orders=get_list_construction_place()):
         # html_table = re.sub(r'<tr style="text-align: right;">', '<tr>', html_table)
 
         graph.set_index('list_of_loads', inplace=True)
+
+        nadal_reszta= graph[['reszta']].resample('h').mean()
+
         graph_corect = graph.resample('h').sum()
+        
+        graph_corect.loc[:,'reszta'] = nadal_reszta.fillna(0)
+
         graph_corect = graph_corect[['list_of_courses', 'reszta', 'name']]
         graph_corect.columns = ['intensywność m/g',
                                 'nadal trzeba wysłać', 'name']
