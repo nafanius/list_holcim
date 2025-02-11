@@ -34,7 +34,9 @@ exp = logging.exception
 # endregion
 
 
-def get_list_construction_place(date_order="10.02.2025"):
+count_graph = 1
+
+def get_list_construction_place(date_order="11.02.2025"):
     """возвращает список словарей словарь заказов на основание класса order его 
     переменные которые достаёт из базы данных на дату
 
@@ -74,6 +76,7 @@ def get_list_construction_place(date_order="10.02.2025"):
 def rozklad_curs(df_orders=get_list_construction_place()):
 
     try:
+        global count_graph
         bud = DataFrame(df_orders)
 
         # УБЕРАЕМ СУХОЙ БЕТОН
@@ -161,8 +164,9 @@ def rozklad_curs(df_orders=get_list_construction_place()):
             )
  
         html_buffer = io.StringIO()
-        chart.save(html_buffer, format='html', embed_options={'actions': False}, fullhtml=False)
 
+        chart.save(html_buffer, format='html', embed_options={'actions': False}, fullhtml=False,  output_div=f'chart{count_graph}')
+        count_graph +=1
         graph_html = html_buffer.getvalue()
         html_buffer.close()
 

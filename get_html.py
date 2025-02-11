@@ -598,7 +598,7 @@ html_template = """
                     <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
                     {{ rozklad_curs_3 }}
                     <div class="full-width-graph">
-                            {{ grap_intens_3 }}
+                        {{ grap_intens_3 }}
                     </div>
                 </div>
             </div>
