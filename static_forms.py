@@ -1,6 +1,10 @@
 from data_sql import get_newest_list_beton_or_lista
 from order import Order
 import re
+import altair as alt
+import io
+
+
 
 import logging
 from pprint import pprint
@@ -129,74 +133,109 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
         graph_corect.loc[:,'nadal trzeba wysłać'] = pd.to_numeric(nadal_reszta.fillna(0.0))
 
-        fig = px.line(graph_corect, x=graph_corect.index,
-                      y=['intensywność m/g', 'nadal trzeba wysłać', 'name'],
-                      labels={'list_of_loads': 'time'},
-                      title='Intensywność pracy',
-                      hover_data={'name': True},
-                      markers=True
-                      )
 
-        fig.update_layout(
-            # Установить цвет фона графика в прозрачный
-            plot_bgcolor='rgba(255, 255, 255, 0)',
-            # Установить цвет фона области фигуры в прозрачный
-            paper_bgcolor='rgba(255, 255, 255, 0.5)',
-            yaxis_title='Metrów',
-            margin=dict(l=1, r=1, t=15, b=5),
-            legend_title='',
-            title=dict(
-                y=0.91,
-                x=0.09,  # Смещение заголовка вправо
-                xanchor='left',  # Определяет выравнивание заголовка
-                font=dict(
-                        family='Arial',
-                        size=12,
-                        color='black'
-                )  # Размер шрифта для заголовка
 
-            ),
-            xaxis=dict(
-                automargin=True,
-                title=dict(
-                    standoff=5  # Установка отступа для названия оси X
-                )
-            ),
-            yaxis=dict(
-                automargin=True,
-                title=dict(
-                    standoff=5  # Установка отступа для названия оси Y
-                )
-            ),
 
-            xaxis_title_font_size=10,
-            yaxis_title_font_size=10,
-            font=dict(size=10),
-            legend=dict(
-                orientation="v",         # Горизонтальная ориентация
-                yanchor="top",        # Выравнивание по нижнему краю
-                y=0.98,                  # Расположение немного выше границы графика
-                xanchor="right",        # Центрирование по горизонтали
-                x=1,                    # Горизонтальная позиция по центру
-                font=dict(
-                    size=10         # Размер текста в легенде
-                )
+        graph_corect = graph_corect.reset_index()
+        graph_corect = graph_corect.melt('list_of_loads', var_name='series', value_name='Metry')
+
+        chart =  alt.Chart(graph_corect, background='rgba(255, 255, 255, 0.5)').mark_line().encode(
+            x= alt.X('list_of_loads:T',axis=alt.Axis(title='time', format='%H:%M')),
+            y= alt.Y('Metry:Q', axis=alt.Axis(title='metrs')),
+            color=alt.Color('series:N',
+                            legend=alt.Legend(
+                            title="INTENSYWNOŚĆ PRACY",                # Название легенды
+                            titleFontSize=14,             # Размер шрифта заголовка
+                            labelFontSize=12,             # Размер шрифта меток
+                            orient='top',               # Положение легенды
+                            padding=1                   # Внутренний отступ
+                        ))
+            ).transform_filter(
+                alt.FieldOneOfPredicate(field='series', oneOf=['intensywność m/g', 'nadal trzeba wysłać'])
+            ).properties(
+                width='container',
+                height= 300
+            ).configure_view(
+                strokeWidth=0
+
             )
-        )
-        fig.update_traces(
-            # Отображение только комментария
-            hovertemplate='<b>%{customdata[0]}</b><extra></extra>',
-            line=dict(width=2)
-        )
+ 
+        html_buffer = io.StringIO()
+        chart.save(html_buffer, format='html', embed_options={'actions': False}, fullhtml=False)
 
-        graph_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={
-            'displayModeBar': True,        # Отображение панели управления
-            'displaylogo': False,
-            'editable': False,
-            'responsive': True,
-            'staticPlot': True,
-        }
-        )
+        graph_html = html_buffer.getvalue()
+        html_buffer.close()
+
+
+
+        # fig = px.line(graph_corect, x=graph_corect.index,
+        #               y=['intensywność m/g', 'nadal trzeba wysłać', 'name'],
+        #               labels={'list_of_loads': 'time'},
+        #               title='Intensywność pracy',
+        #               hover_data={'name': True},
+        #               markers=True
+        #               )
+
+        # fig.update_layout(
+        #     # Установить цвет фона графика в прозрачный
+        #     plot_bgcolor='rgba(255, 255, 255, 0)',
+        #     # Установить цвет фона области фигуры в прозрачный
+        #     paper_bgcolor='rgba(255, 255, 255, 0.5)',
+        #     yaxis_title='Metrów',
+        #     margin=dict(l=1, r=1, t=15, b=5),
+        #     legend_title='',
+        #     title=dict(
+        #         y=0.91,
+        #         x=0.09,  # Смещение заголовка вправо
+        #         xanchor='left',  # Определяет выравнивание заголовка
+        #         font=dict(
+        #                 family='Arial',
+        #                 size=12,
+        #                 color='black'
+        #         )  # Размер шрифта для заголовка
+
+        #     ),
+        #     xaxis=dict(
+        #         automargin=True,
+        #         title=dict(
+        #             standoff=5  # Установка отступа для названия оси X
+        #         )
+        #     ),
+        #     yaxis=dict(
+        #         automargin=True,
+        #         title=dict(
+        #             standoff=5  # Установка отступа для названия оси Y
+        #         )
+        #     ),
+
+        #     xaxis_title_font_size=10,
+        #     yaxis_title_font_size=10,
+        #     font=dict(size=10),
+        #     legend=dict(
+        #         orientation="v",         # Горизонтальная ориентация
+        #         yanchor="top",        # Выравнивание по нижнему краю
+        #         y=0.98,                  # Расположение немного выше границы графика
+        #         xanchor="right",        # Центрирование по горизонтали
+        #         x=1,                    # Горизонтальная позиция по центру
+        #         font=dict(
+        #             size=10         # Размер текста в легенде
+        #         )
+        #     )
+        # )
+        # fig.update_traces(
+        #     # Отображение только комментария
+        #     hovertemplate='<b>%{customdata[0]}</b><extra></extra>',
+        #     line=dict(width=2)
+        # )
+
+        # graph_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={
+        #     'displayModeBar': True,        # Отображение панели управления
+        #     'displaylogo': False,
+        #     'editable': False,
+        #     'responsive': True,
+        #     'staticPlot': True,
+        # }
+        # )
 
     except Exception as err:
         inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
