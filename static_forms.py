@@ -102,9 +102,9 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
         graph.set_index('list_of_loads', inplace=True)
 
-        nadal_reszta= graph[['reszta']].resample('h').mean()
+        nadal_reszta= graph[['reszta']].resample('30T').quantile(0.75)
 
-        graph_corect = graph.resample('h').sum()
+        graph_corect = graph.resample('30T').sum()
         
         graph_corect.loc[:,'reszta'] = nadal_reszta.fillna(0)
 
