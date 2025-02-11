@@ -6,7 +6,7 @@ import logging
 from pprint import pprint
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import plotly.express as px
 from pandas import Series, DataFrame
 rng = np.random.default_rng(123545)
@@ -102,15 +102,32 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
         graph.set_index('list_of_loads', inplace=True)
 
-        nadal_reszta= graph[['reszta']].resample('30T').quantile(0.75)
 
-        graph_corect = graph.resample('30T').sum()
-        
-        graph_corect.loc[:,'reszta'] = nadal_reszta.fillna(0)
+
+
+        # todo разкоментировать в случае применнения среднего взвешаного
+        # def weighted_mean(values):
+        #     '''  Функция для вычисления взвешенного среднего'''
+        #     weights = np.arange(1, len(values) + 1)  # Пример: веса нарастают
+        #     return np.average(values, weights=weights)
+
+        # nadal_reszta = pd.to_numeric(graph['reszta']).resample('30min').apply(weighted_mean)
+
+        nadal_reszta = pd.to_numeric(graph['reszta']).resample('30min').quantile(0.90).rolling(window=2).mean()
+
+        graph_corect = graph.resample('30min').sum()
+        graph_corect['list_of_courses'] = pd.to_numeric(graph_corect['list_of_courses']).rolling(window=2).mean()
+        graph_corect.loc[:,'list_of_courses'] = graph_corect.loc[:,'list_of_courses'].fillna(0.0)
 
         graph_corect = graph_corect[['list_of_courses', 'reszta', 'name']]
         graph_corect.columns = ['intensywność m/g',
                                 'nadal trzeba wysłać', 'name']
+
+        graph_corect['nadal trzeba wysłać'] =  pd.to_numeric(graph_corect['nadal trzeba wysłać'])
+        
+
+
+        graph_corect.loc[:,'nadal trzeba wysłać'] = pd.to_numeric(nadal_reszta.fillna(0.0))
 
         fig = px.line(graph_corect, x=graph_corect.index,
                       y=['intensywność m/g', 'nadal trzeba wysłać', 'name'],

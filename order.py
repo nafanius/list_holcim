@@ -95,17 +95,18 @@ class Order:
 
         return data_time_order - datetime.timedelta(minutes=30)
 
-
     def get_finish_time_and_form_list_of_loads(self):
         shipping_duration = 0
         self.list_of_loads += [self.start_time,]
         for cours in self.list_of_courses[:-1]:
             if self.pompa_dzwig:  # if it's pompa
                 shipping_duration += cours * Settings.unloading_time_for_pomp
-                self.list_of_loads += [self.list_of_loads[-1] + datetime.timedelta(minutes=cours * Settings.unloading_time_for_pomp),]
+                self.list_of_loads += [self.list_of_loads[-1] + datetime.timedelta(
+                    minutes=cours * Settings.unloading_time_for_pomp),]
             else:
                 shipping_duration += cours * Settings.unloading_time_for_crane  # if it's crane
-                self.list_of_loads += [self.list_of_loads[-1] + datetime.timedelta(minutes=cours * Settings.unloading_time_for_crane),]
+                self.list_of_loads += [self.list_of_loads[-1] + datetime.timedelta(
+                    minutes=cours * Settings.unloading_time_for_crane),]
 
         return self.start_time + datetime.timedelta(minutes=shipping_duration)
 
@@ -113,10 +114,10 @@ class Order:
     # def convert_to_dict_for_df(self):
     #     return {}
     def check_pompa_dzwig(self):
-        if self.metres > 18 and self.times < datetime.time(13 , 0):  # if it's pompa
+        if ((self.metres < 18 and self.times < datetime.time(13, 0))
+                or (self.metres > 18)):  # if it's pompa
             return True
         return False
-
 
     def check_zaprawa(self):
         if (
@@ -132,7 +133,7 @@ class Order:
         if re.search(Settings.names_dry_concret, self.name):
             return False
         return True
-    
+
     def get_reszta(self):
         reszta = []
         metres = self.metres
@@ -140,11 +141,8 @@ class Order:
         for cours in self.list_of_courses:
             reszta.append(metres - cours)
             metres -= cours
-        
+
         return reszta
-            
-
-
 
     @classmethod
     def how_many(cls):
@@ -167,7 +165,7 @@ if __name__ == "__main__":
         count += 1
 
     pprint(orders)
-    
+
     df_bud = []
     for key_bud in orders.keys():
         bud = orders[key_bud]
@@ -187,15 +185,15 @@ if __name__ == "__main__":
             )
         )
         df_bud.append({
-            "name":bud.name,
-            "metr":bud.metres,
-            "time":bud.times,
-            "start_time":bud.start_time,
-            "finish_time":bud.finish_time,
-            "list_of_loads":bud.list_of_loads,
-            "it_is_zaprawa":bud.it_is_zaprawa,
-            "it_is_concret":bud.it_is_concret,
-            "list_of_courses":bud.list_of_courses,
-            "date_order":bud.date_order,
-            "date_order":bud.date_order,
+            "name": bud.name,
+            "metr": bud.metres,
+            "time": bud.times,
+            "start_time": bud.start_time,
+            "finish_time": bud.finish_time,
+            "list_of_loads": bud.list_of_loads,
+            "it_is_zaprawa": bud.it_is_zaprawa,
+            "it_is_concret": bud.it_is_concret,
+            "list_of_courses": bud.list_of_courses,
+            "date_order": bud.date_order,
+            "date_order": bud.date_order,
         })
