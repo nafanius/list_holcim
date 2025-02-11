@@ -157,7 +157,7 @@ def rozklad_curs(df_orders=get_list_construction_place()):
                 alt.FieldOneOfPredicate(field='series', oneOf=['intensywność m/g', 'nadal trzeba wysłać'])
             ).properties(
                 width='container',
-                height= 300
+                height= 200
             ).configure_view(
                 strokeWidth=0
 
@@ -170,6 +170,30 @@ def rozklad_curs(df_orders=get_list_construction_place()):
         graph_html = html_buffer.getvalue()
         html_buffer.close()
 
+        counts = graph['pompa_dzwig'].value_counts().reset_index()
+
+        counts['percentage'] = counts['count'] / counts['count'].sum()
+        counts["pompa_dzwig"] = counts["pompa_dzwig"].replace({False: 'Dzwig', True: 'Pompa'})
+
+        chart = alt.Chart(counts, background='rgba(255, 255, 255, 0.5)').mark_arc().encode(
+                    theta=alt.Theta(field='percentage', type='quantitative'),
+                    color=alt.Color(field='pompa_dzwig',
+                                    type='nominal',
+                                    legend=alt.Legend(title=''))
+                                    
+                ).encode(
+                    text=alt.Text('label:N')  # Задаем метку с названием категории и процентом
+                ).properties(
+                    width='container',
+                    height=100,
+                    title='stosunek dzwig/pompa'
+                )
+
+        html_buffer = io.StringIO()
+        chart.save(html_buffer, format='html', embed_options={'actions': False}, fullhtml=False,  output_div=f'chart{count_graph}')
+        count_graph +=1
+        graph_html_pie = html_buffer.getvalue()
+        html_buffer.close()
 
 
         # fig = px.line(graph_corect, x=graph_corect.index,
@@ -243,9 +267,9 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
     except Exception as err:
         inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
-        return "<p>Brak</p>", 0, 0, "<p>Brak</p>"
+        return "<p>Brak</p>", 0, 0, "<p>Brak</p>", "<p>Brak</p>"
 
-    return html_table, rozklad_curs.shape[0], bud_without_dry["meter"].sum(), graph_html
+    return html_table, rozklad_curs.shape[0], bud_without_dry["meter"].sum(), graph_html, graph_html_pie
 
 
 if __name__ == "__main__":

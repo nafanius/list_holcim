@@ -518,6 +518,9 @@ html_template = """
                     <div class="full-width-graph">
                         {{ grap_intens_1 }}
                     </div>
+                    <div class="full-width-graph">
+                        {{ grap_intens_pie_1 }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -559,6 +562,9 @@ html_template = """
                     <div class="full-width-graph">
                         {{ grap_intens_2 }}
                     </div>
+                    <div class="full-width-graph">
+                        {{ grap_intens_pie_2 }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -599,6 +605,9 @@ html_template = """
                     {{ rozklad_curs_3 }}
                     <div class="full-width-graph">
                         {{ grap_intens_3 }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ grap_intens_pie_3 }}
                     </div>
                 </div>
             </div>
