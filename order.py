@@ -14,7 +14,7 @@ class Order:
     ):
 
         self.date_order = date_order
-        self.metres = metres
+        self.metres = self.convert_to_float(metres)
         self.times = times
         self.firm = self.convert_to_string(firm)
         self.name = self.convert_to_string(name)
@@ -42,6 +42,21 @@ class Order:
                 return data.strip()
         else:
             return ""
+        
+    
+
+    def convert_to_float(self, data):
+        if data:
+            if isinstance(data, float):
+                return data
+            elif isinstance(data, int):
+                return float(data)
+            else:
+                return 0
+        else:
+            return 0
+        
+
 
     def convert_to_string(self, data):
         if not data:
@@ -55,6 +70,10 @@ class Order:
             return ""
 
     def get_list_courses(self):
+
+        if self.metres == 0:
+            return [0,]
+
         # Определение значения каждого элемента при равном делении
         base_value = int(self.metres // 8)
 

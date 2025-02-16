@@ -157,7 +157,7 @@ def rozklad_curs(df_orders=get_list_construction_place()):
                 alt.FieldOneOfPredicate(field='series', oneOf=['intensywność m/g', 'nadal trzeba wysłać'])
             ).properties(
                 width='container',
-                height= 200
+                height= 150
             ).configure_view(
                 strokeWidth=0
 
