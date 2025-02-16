@@ -107,31 +107,28 @@ def form_lista_beton(excel_file, day, date_of_day_text):
                     sheet.cell(row=row, column=column + 1).value,
                     sheet.cell(row=row, column=column + 2).value,
                     sheet.cell(row=row, column=column + 10).value,
-                    sheet.cell(row=row, column=column + 13).value,
+                    f"{sheet.cell(row=row, column=column + 13).value} {sheet.cell(row=row, column=column + 14).value}",
                     sheet.cell(row=row, column=column + 11).value,
                     wenz,
+                    sheet.cell(row=row, column=column + 8).value,
                 )
             )
 
     for row_in_file in range(1, sheet.max_row):
         find_line = sheet.cell(row=row_in_file, column=3).value
-        if "zawodzie 2 " in str(find_line).lower():
+        if ("zawodzie 2 " in str(find_line).lower()) or ("zawodzie 1 " in str(find_line).lower()):
+            number_wenz = "1"
+            if "zawodzie 2 " in  str(find_line).lower():
+                number_wenz = "2"
+
             for row_in_beton in range(11, 42):
                 fill_list_beton(
                     sheet.cell(row=row_in_file + row_in_beton, column=3).value,
                     row_in_file + row_in_beton,
                     3,
-                    "2",
+                    number_wenz,
                 )
 
-        if "zawodzie 1 " in str(find_line).lower():
-            for row_in_beton in range(11, 42):
-                fill_list_beton(
-                    sheet.cell(row=row_in_file + row_in_beton, column=3).value,
-                    row_in_file + row_in_beton,
-                    3,
-                    "1",
-                )
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
 
@@ -254,9 +251,12 @@ def lista_in_text_beton(lista_beton):
     lista_text = []
     sum_metres = 0
 
-    for metres, times, firm, name, uwagi, przebieg, tel, wenz, sort in lista_beton:
+    for metres, times, firm, name, uwagi, przebieg, tel, wenz, pomp, sort in lista_beton:
         
         sum_metres = sum_metres + sum_of_metres(metres, sort)
+        text_pomp_gzwig = 'dzwig'
+        if pomp:
+            text_pomp_gzwig = 'pompa'
 
         if sort == 0:
             lista_text += [
@@ -264,6 +264,7 @@ def lista_in_text_beton(lista_beton):
                 f"{firm}",
                 f'{name} {uwagi + " " + przebieg}',
                 f"{tel}",
+                f"{text_pomp_gzwig}",
                 f"--------------------",
             ]
         elif sort == 1:
@@ -272,6 +273,7 @@ def lista_in_text_beton(lista_beton):
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{firm}</span>',
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{name} {uwagi + " " + przebieg}</span>',
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{tel}</span>',
+                f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{text_pomp_gzwig}</span>',
                 f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">--------------------</span>',
             ]
         elif sort == 2:
@@ -280,6 +282,7 @@ def lista_in_text_beton(lista_beton):
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{firm}</span>',
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{name} {uwagi + " " + przebieg}</span>',
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{tel}</span>',
+                f'<span style="color: rgb(0, 139, 7); font-weight: bold;">{text_pomp_gzwig}</span>',
                 f'<span style="color: rgb(0, 139, 7); font-weight: bold;">--------------------</span>',
             ]
 

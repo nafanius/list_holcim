@@ -10,7 +10,7 @@ class Order:
     count_ordres = 0
 
     def __init__(
-        self, date_order, metres, times, firm, name, uwagi, przebieg, tel, wenz
+        self, date_order, metres, times, firm, name, uwagi, przebieg, tel, wenz, pompa_dzwig
     ):
 
         self.date_order = date_order
@@ -23,8 +23,8 @@ class Order:
         self.tel = self.convert_to_string(self.tel_to_string(tel))
         self.wenz = wenz
         self.list_of_loads = []
+        self.pompa_dzwig = self.check_pompa_dzwig(pompa_dzwig)
 
-        self.pompa_dzwig = self.check_pompa_dzwig()
         self.list_of_courses = self.get_list_courses()
         self.start_time = self.get_start_time()
         self.finish_time = self.get_finish_time_and_form_list_of_loads()
@@ -132,10 +132,15 @@ class Order:
     # todo возможно передеть все переменные вычесленные в json и обработать потом в DATAFRAME
     # def convert_to_dict_for_df(self):
     #     return {}
-    def check_pompa_dzwig(self):
-        if ((self.metres < 18 and self.times < datetime.time(13, 0))
-                or (self.metres > 18)):  # if it's pompa
+    def check_pompa_dzwig(self, pompa_gwig):
+        if pompa_gwig:  # if it's pompa
+            data = str(pompa_gwig)
+            data = data.strip()
+            if data == '501':
+                return False
+        
             return True
+            
         return False
 
     def check_zaprawa(self):

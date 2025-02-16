@@ -12,8 +12,17 @@ def converter(list_for_convert):
         except (TypeError, ValueError):
             return ""
         
+    def convert_to_true_false(data):
+        if not data:
+            return False
+        if data == '501':
+            return False
+        return True
+    
+        
 
-    metres, times, firm, name, uwagi, przebieg, tel, wenz, sort = list_for_convert
+
+    metres, times, firm, name, uwagi, przebieg, tel, wenz, pomp, sort = list_for_convert
 
     times = times.strftime("%H:%M")
     if tel:
@@ -30,8 +39,9 @@ def converter(list_for_convert):
     tel = convert_to_string(tel)
     uwagi = convert_to_string(uwagi)
     metres = convert_to_string(metres)
+    pomp = convert_to_string(convert_to_true_false(pomp))
             
-    return [metres, times, firm, name, uwagi, przebieg, tel, wenz, sort]
+    return [metres, times, firm, name, uwagi, przebieg, tel, wenz, pomp, sort]
 
 
 
@@ -42,6 +52,7 @@ def compare_lists_by_tuples(del_lista, add_lista):
         for index2, tuple2 in enumerate(add_lista):
             if tuple1[:3] == tuple2[:3] and tuple1[6] == tuple2[6]:
                 matching_indices.append((index1, index2))
+                
     del_lista, add_lista = make_list_with_teg(del_lista, add_lista, matching_indices)
     return del_lista, add_lista
 
@@ -87,7 +98,7 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     """
 
     # Add the index of the list to which the element belongs at the end of the element
-    # 0-normal 1-del  2 - add
+    # 0-normal 1-del  2 - add (SORT)
     lista_norm = [tup + (0,) for tup in lista_norm]
     lista_del = [tup + (1,) for tup in lista_del]
     lista_add = [tup + (2,) for tup in lista_add]

@@ -36,7 +36,7 @@ exp = logging.exception
 
 count_graph = 1
 
-def get_list_construction_place(date_order="11.02.2025"):
+def get_list_construction_place(date_order="17.02.2025"):
     """возвращает список словарей словарь заказов на основание класса order его 
     переменные которые достаёт из базы данных на дату
 
