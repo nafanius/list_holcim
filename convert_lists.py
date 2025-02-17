@@ -40,7 +40,7 @@ def converter(list_for_convert):
     tel = convert_to_string(tel)
     uwagi = convert_to_string(uwagi)
     metres = convert_to_string(metres)
-    pomp = convert_to_string(convert_to_true_false(pomp))
+    pomp = convert_to_true_false(convert_to_string(pomp))
             
     return [metres, times, firm, name, uwagi, przebieg, tel, wenz, pomp, sort]
 
@@ -67,12 +67,12 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
         item_del = del_lista[matching[0]]
         item_add = add_lista[matching[1]]
 
-        for index, (elem1, elem2) in enumerate(zip(item_del[:7], item_add[:7])):
+        for index, (elem1, elem2) in enumerate(zip(item_del[:8], item_add[:8])):
             if elem1 != elem2:
                 change_elem = (f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{elem1}</span>'
                                f' <span style="color: rgb(0, 139, 7); font-weight: bold;">{elem2}</span>')
                 del_lista_with_teg[matching[0]][index] =  change_elem
-        del_lista_with_teg[matching[0]][8] = 0
+        del_lista_with_teg[matching[0]][9] = 0
 
     
     del_elem_from_add_lista.sort(reverse=True)
