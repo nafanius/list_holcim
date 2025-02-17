@@ -1,16 +1,20 @@
 from data_sql import get_newest_list_beton_or_lista
+import data_sql
 from order import Order
 import re
 import altair as alt
 import io
+import threading
+from datetime import datetime
 
 
+
+db_lock = threading.Lock()
 
 import logging
 from pprint import pprint
 import numpy as np
 import pandas as pd
-# import matplotlib.pyplot as plt
 import plotly.express as px
 from pandas import Series, DataFrame
 rng = np.random.default_rng(123545)
@@ -36,7 +40,7 @@ exp = logging.exception
 
 count_graph = 1
 
-def get_list_construction_place(date_order="17.02.2025"):
+def get_list_construction_place(date_order):
     """возвращает список словарей словарь заказов на основание класса order его 
     переменные которые достаёт из базы данных на дату
 
@@ -73,7 +77,9 @@ def get_list_construction_place(date_order="17.02.2025"):
     return df_bud
 
 
-def rozklad_curs(df_orders=get_list_construction_place()):
+def rozklad_curs(date_of_request="17.02.2025"):
+
+    df_orders = get_list_construction_place(date_of_request)
 
     try:
         global count_graph
@@ -81,9 +87,11 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
         # УБЕРАЕМ СУХОЙ БЕТОН
         bud_without_dry = bud[bud["it_is_zaprawa"] | bud["it_is_concret"]]
+
+
         # оставляем название курсы метров и курсы выселки
         rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'it_is_zaprawa', 'pompa_dzwig']].explode(
-            ['list_of_loads', 'list_of_courses', 'reszta']).sort_values('list_of_loads')
+            ['list_of_loads', 'list_of_courses', 'reszta'])
 
         graph = rozklad_curs.copy()
 
@@ -95,13 +103,29 @@ def rozklad_curs(df_orders=get_list_construction_place()):
             {True: 'zap', False: 'bet'})
         rozklad_curs["pompa_dzwig"] = rozklad_curs["pompa_dzwig"].replace(
             {True: 'pom', False: 'dz'})
+        
+
+        # todo тут встовляем проверку есть ли изменения которые прислали с бота
+        # with db_lock:
+        #     df_changes = pd.read_sql_table('changes', con=data_sql.engine)
+
+        
+        rozklad_curs.sort_values("list_of_loads", inplace=True)
 
         rozklad_curs = rozklad_curs.reset_index(drop=True)
         rozklad_curs.index = rozklad_curs.index+1
 
         rozklad_curs.columns = ["time", 'metrów',
                                 'budowa', 'reszta', 'mat', 'p/d']
+        
 
+        today = datetime.today()
+        today = today.strftime('%d.%m.%Y')
+
+        if date_of_request == today:
+            with db_lock:
+                rozklad_curs.to_sql('actual', con=data_sql.engine, if_exists='replace', index=True)
+        
         html_table = rozklad_curs.to_html(
             index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
 
@@ -196,74 +220,7 @@ def rozklad_curs(df_orders=get_list_construction_place()):
         html_buffer.close()
 
 
-        # fig = px.line(graph_corect, x=graph_corect.index,
-        #               y=['intensywność m/g', 'nadal trzeba wysłać', 'name'],
-        #               labels={'list_of_loads': 'time'},
-        #               title='Intensywność pracy',
-        #               hover_data={'name': True},
-        #               markers=True
-        #               )
 
-        # fig.update_layout(
-        #     # Установить цвет фона графика в прозрачный
-        #     plot_bgcolor='rgba(255, 255, 255, 0)',
-        #     # Установить цвет фона области фигуры в прозрачный
-        #     paper_bgcolor='rgba(255, 255, 255, 0.5)',
-        #     yaxis_title='Metrów',
-        #     margin=dict(l=1, r=1, t=15, b=5),
-        #     legend_title='',
-        #     title=dict(
-        #         y=0.91,
-        #         x=0.09,  # Смещение заголовка вправо
-        #         xanchor='left',  # Определяет выравнивание заголовка
-        #         font=dict(
-        #                 family='Arial',
-        #                 size=12,
-        #                 color='black'
-        #         )  # Размер шрифта для заголовка
-
-        #     ),
-        #     xaxis=dict(
-        #         automargin=True,
-        #         title=dict(
-        #             standoff=5  # Установка отступа для названия оси X
-        #         )
-        #     ),
-        #     yaxis=dict(
-        #         automargin=True,
-        #         title=dict(
-        #             standoff=5  # Установка отступа для названия оси Y
-        #         )
-        #     ),
-
-        #     xaxis_title_font_size=10,
-        #     yaxis_title_font_size=10,
-        #     font=dict(size=10),
-        #     legend=dict(
-        #         orientation="v",         # Горизонтальная ориентация
-        #         yanchor="top",        # Выравнивание по нижнему краю
-        #         y=0.98,                  # Расположение немного выше границы графика
-        #         xanchor="right",        # Центрирование по горизонтали
-        #         x=1,                    # Горизонтальная позиция по центру
-        #         font=dict(
-        #             size=10         # Размер текста в легенде
-        #         )
-        #     )
-        # )
-        # fig.update_traces(
-        #     # Отображение только комментария
-        #     hovertemplate='<b>%{customdata[0]}</b><extra></extra>',
-        #     line=dict(width=2)
-        # )
-
-        # graph_html = fig.to_html(full_html=False, include_plotlyjs='cdn', config={
-        #     'displayModeBar': True,        # Отображение панели управления
-        #     'displaylogo': False,
-        #     'editable': False,
-        #     'responsive': True,
-        #     'staticPlot': True,
-        # }
-        # )
 
     except Exception as err:
         inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
@@ -273,5 +230,5 @@ def rozklad_curs(df_orders=get_list_construction_place()):
 
 
 if __name__ == "__main__":
-    df_orders = get_list_construction_place()
+    df_orders = get_list_construction_place('17.02.2025')
     # print(rozklad_curs()[0])

@@ -54,7 +54,7 @@ def get_dict():
     list_date_for_stat = [t[2] for t in find_day_request()]
     day_number = 1
     for date_for_stat in list_date_for_stat:
-        rozklad_curs_data = rozklad_curs(get_list_construction_place(date_for_stat))
+        rozklad_curs_data = rozklad_curs(date_for_stat)
         
         data[f"count_{day_number}"] = rozklad_curs_data[1]
         data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
