@@ -77,7 +77,7 @@ def get_list_construction_place(date_order):
     return df_bud
 
 
-def rozklad_curs(date_of_request="17.02.2025"):
+def rozklad_curs(date_of_request="18.02.2025"):
 
     df_orders = get_list_construction_place(date_of_request)
 
@@ -88,21 +88,21 @@ def rozklad_curs(date_of_request="17.02.2025"):
         # УБЕРАЕМ СУХОЙ БЕТОН
         bud_without_dry = bud[bud["it_is_zaprawa"] | bud["it_is_concret"]]
 
+        bud_without_dry["namber_cours"] = bud_without_dry["list_of_courses"].apply(lambda x: list(range(1, len(x) + 1)))
+
 
         # оставляем название курсы метров и курсы выселки
-        rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'it_is_zaprawa', 'pompa_dzwig']].explode(
-            ['list_of_loads', 'list_of_courses', 'reszta'])
-
-        graph = rozklad_curs.copy()
+        rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
+            ['list_of_loads', 'list_of_courses', 'reszta', 'namber_cours'])
 
         rozklad_curs["list_of_loads"] = rozklad_curs["list_of_loads"].dt.time
         rozklad_curs['list_of_loads'] = rozklad_curs['list_of_loads'].apply(
             lambda x: x.strftime('%H:%M'))
 
         rozklad_curs["it_is_zaprawa"] = rozklad_curs["it_is_zaprawa"].replace(
-            {True: 'zap', False: 'bet'})
+            {True: 'z', False: 'b'})
         rozklad_curs["pompa_dzwig"] = rozklad_curs["pompa_dzwig"].replace(
-            {True: 'pom', False: 'dz'})
+            {True: 'p', False: 'd'})
         
 
         # todo тут встовляем проверку есть ли изменения которые прислали с бота
@@ -112,12 +112,15 @@ def rozklad_curs(date_of_request="17.02.2025"):
         
         rozklad_curs.sort_values("list_of_loads", inplace=True)
 
+        graph = rozklad_curs
+
         rozklad_curs = rozklad_curs.reset_index(drop=True)
         rozklad_curs.index = rozklad_curs.index+1
 
-        rozklad_curs.columns = ["time", 'metrów',
-                                'budowa', 'reszta', 'mat', 'p/d']
         
+        rozklad_curs.columns = ['time', 'm3', 'budowa', 'res', 'mat', 'p/d', 'c']
+        rozklad_curs = rozklad_curs.reindex(['time', 'm3', 'c','budowa', 'res', 'mat', 'p/d' ], axis=1)
+
 
         today = datetime.today()
         today = today.strftime('%d.%m.%Y')
@@ -129,11 +132,10 @@ def rozklad_curs(date_of_request="17.02.2025"):
         html_table = rozklad_curs.to_html(
             index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
 
-        # html_table = re.sub(r'<tr style="text-align: right;">', '<tr>', html_table)
+        current_date = datetime.strptime(date_of_request, '%d.%m.%Y').date()
+        graph['list_of_loads'] =  pd.to_datetime(graph['list_of_loads'].apply(lambda x: f"{current_date} {x}"))
 
         graph.set_index('list_of_loads', inplace=True)
-
-
 
 
         # todo разкоментировать в случае применнения среднего взвешаного
@@ -197,7 +199,7 @@ def rozklad_curs(date_of_request="17.02.2025"):
         counts = graph['pompa_dzwig'].value_counts().reset_index()
 
         counts['percentage'] = counts['count'] / counts['count'].sum()
-        counts["pompa_dzwig"] = counts["pompa_dzwig"].replace({False: 'Dzwig', True: 'Pompa'})
+        counts["pompa_dzwig"] = counts["pompa_dzwig"].replace({'d': 'Dzwig', 'p': 'Pompa'})
 
         chart = alt.Chart(counts, background='rgba(255, 255, 255, 0.5)').mark_arc().encode(
                     theta=alt.Theta(field='percentage', type='quantitative'),
@@ -230,5 +232,6 @@ def rozklad_curs(date_of_request="17.02.2025"):
 
 
 if __name__ == "__main__":
-    df_orders = get_list_construction_place('17.02.2025')
+    date_of_request = '17.02.2025'
+    df_orders = get_list_construction_place(date_of_request)
     # print(rozklad_curs()[0])
