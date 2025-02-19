@@ -116,10 +116,32 @@ def rozklad_curs(date_of_request="18.02.2025"):
         rozklad_curs = rozklad_curs.reindex(
             ['id', 'time', 'm3', 'k', 'budowa', 'res', 'mat', 'p/d'], axis=1)
 
-        today = datetime.today()
-        today = today.strftime('%d.%m.%Y')
 
-        if date_of_request == today:
+        today = datetime.today()
+        today_string = today.strftime('%d.%m.%Y')
+
+        if date_of_request == today_string:
+
+            query = 'SELECT * FROM corrects;'
+            with db_lock:
+                df_corrects = pd.read_sql_query(query, con=data_sql.engine)
+
+            df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
+            df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
+            df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
+
+            df_corrects = df_corrects[df_corrects['time'].dt.date == today.date()]
+            with db_lock:
+                df_corrects[['index','id','time','m3','k','budowa','res','mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
+
+            for _, row in df_corrects.iterrows():
+                rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'time'] += row['delta']
+
+
+            rozklad_curs.sort_values("time", inplace=True)
+            rozklad_curs.reset_index(drop=True, inplace=True)
+            rozklad_curs.index=rozklad_curs.index+1
+
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual', con=data_sql.engine, if_exists='replace', index=True)
