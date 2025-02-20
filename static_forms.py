@@ -88,7 +88,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
         # УБЕРАЕМ СУХОЙ БЕТОН
         bud_without_dry = bud[bud["it_is_zaprawa"] | bud["it_is_concret"]]
 
-        bud_without_dry["namber_cours"] = bud_without_dry["list_of_courses"].apply(
+        bud_without_dry.loc[:,"namber_cours"] = bud_without_dry. loc[:,"list_of_courses"].apply(
             lambda x: list(range(1, len(x) + 1)))
 
         # оставляем название курсы метров и курсы выселки
@@ -131,6 +131,9 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 df_corrects = pd.read_sql_query(query, con=data_sql.engine)
 
             df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
+
+            df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['id','k','budowa','res']], on=['id','k','budowa','res'], how='inner')['time'].values  
+
             df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
             df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
 
