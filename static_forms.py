@@ -121,6 +121,10 @@ def rozklad_curs(date_of_request="18.02.2025"):
         today_string = today.strftime('%d.%m.%Y')
 
         if date_of_request == today_string:
+            
+            with db_lock:
+                rozklad_curs.to_sql(
+                    'actual', con=data_sql.engine, if_exists='replace', index=True)
 
             query = 'SELECT * FROM corrects;'
             with db_lock:
@@ -142,10 +146,6 @@ def rozklad_curs(date_of_request="18.02.2025"):
             rozklad_curs.reset_index(drop=True, inplace=True)
             rozklad_curs.index=rozklad_curs.index+1
 
-            with db_lock:
-                rozklad_curs.to_sql(
-                    'actual', con=data_sql.engine, if_exists='replace', index=True)
-        
         graph = rozklad_curs.copy()
 
         rozklad_curs['time'] = rozklad_curs['time'].dt.time
