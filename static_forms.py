@@ -12,6 +12,8 @@ import altair as alt
 import io
 import threading
 from datetime import datetime
+from sqlalchemy import inspect
+
 
 
 db_lock = threading.Lock()
@@ -88,8 +90,9 @@ def rozklad_curs(date_of_request="18.02.2025"):
         # УБЕРАЕМ СУХОЙ БЕТОН
         bud_without_dry = bud[bud["it_is_zaprawa"] | bud["it_is_concret"]]
 
-        bud_without_dry.loc[:,"namber_cours"] = bud_without_dry. loc[:,"list_of_courses"].apply(
-            lambda x: list(range(1, len(x) + 1)))
+        bud_without_dry = bud_without_dry.copy()
+        bud_without_dry.loc[:,"namber_cours"] = bud_without_dry.loc[:,"list_of_courses"].apply(
+            lambda x: list(range(1, len(x) + 1))).values
 
         # оставляем название курсы метров и курсы выселки
         rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
@@ -119,35 +122,37 @@ def rozklad_curs(date_of_request="18.02.2025"):
 
         today = datetime.today()
         today_string = today.strftime('%d.%m.%Y')
+        inspector = inspect(data_sql.engine)
 
         if date_of_request == today_string:
 
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual', con=data_sql.engine, if_exists='replace', index=True)
+            
+            if 'corrects' in inspector.get_table_names():
+                query = 'SELECT * FROM corrects;'
+                with db_lock:
+                    df_corrects = pd.read_sql_query(query, con=data_sql.engine)
 
-            query = 'SELECT * FROM corrects;'
-            with db_lock:
-                df_corrects = pd.read_sql_query(query, con=data_sql.engine)
+                df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
 
-            df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
+                df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['id','k','budowa','res']], on=['id','k','budowa','res'], how='inner')['time'].values  
 
-            df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['id','k','budowa','res']], on=['id','k','budowa','res'], how='inner')['time'].values  
+                df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
+                df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
 
-            df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
-            df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
+                df_corrects = df_corrects[df_corrects['time'].dt.date == today.date()]
+                with db_lock:
+                    df_corrects[['index','id','time','m3','k','budowa','res','mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
 
-            df_corrects = df_corrects[df_corrects['time'].dt.date == today.date()]
-            with db_lock:
-                df_corrects[['index','id','time','m3','k','budowa','res','mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
-
-            for _, row in df_corrects.iterrows():
-                rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'time'] += row['delta']
+                for _, row in df_corrects.iterrows():
+                    rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'time'] += row['delta']
 
 
-            rozklad_curs.sort_values("time", inplace=True)
-            rozklad_curs.reset_index(drop=True, inplace=True)
-            rozklad_curs.index=rozklad_curs.index+1
+                rozklad_curs.sort_values("time", inplace=True)
+                rozklad_curs.reset_index(drop=True, inplace=True)
+                rozklad_curs.index=rozklad_curs.index+1
 
             with db_lock:
                 rozklad_curs.to_sql(
