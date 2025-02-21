@@ -76,7 +76,7 @@ Session = sessionmaker(bind=engine)
 def record_beton(data):
     session = Session()
     get_list_beton_serialize = [(item[0], item[1].isoformat(), *item[2:]) for item in data["lista_beton"]]
-    serialized_list_beton = json.dumps(get_list_beton_serialize)
+    serialized_list_beton = json.dumps(get_list_beton_serialize, default=str)
     try:
         beton = Beton(
             id_event_time=time.time(),
@@ -103,7 +103,7 @@ def record_lista(data):
     session = Session()
 
     get_list_serialize = [(item[0].isoformat(), item[1]) for item in data["lista"]]
-    serialized_list = json.dumps(get_list_serialize)
+    serialized_list = json.dumps(get_list_serialize, default=str)
     try:
         lista = Lista(
             id_event_time=time.time(),
