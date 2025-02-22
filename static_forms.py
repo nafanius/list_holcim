@@ -134,15 +134,48 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 query = 'SELECT * FROM corrects;'
                 with db_lock:
                     df_corrects = pd.read_sql_query(query, con=data_sql.engine)
-
+        
+                                
+                df_corrects['new_time'] = pd.to_datetime(df_corrects['new_time'])
+                df_corrects = df_corrects[df_corrects['new_time'].dt.date == today.date()]
                 df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
+                df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
+                
+                
+                df_corrects['id'] = df_corrects['id'].astype(int)
+                df_corrects['k'] = df_corrects['k'].astype(int)
+                df_corrects['budowa'] = df_corrects['budowa'].astype(str)
+                df_corrects['res'] = df_corrects['res'].astype(float)
+                df_corrects['mat'] = df_corrects['mat'].astype(str)
+                df_corrects['p/d'] = df_corrects['p/d'].astype(str)
 
-                df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['id','k','budowa','res']], on=['id','k','budowa','res'], how='inner')['time'].values  
+                rozklad_curs['k'] = rozklad_curs['k'].astype(int)
+                rozklad_curs['budowa'] = rozklad_curs['budowa'].astype(str)
+                rozklad_curs['res'] = rozklad_curs['res'].astype(float)
+                rozklad_curs['mat'] = rozklad_curs['mat'].astype(str)
+                rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
+                
+                
+                
+                
+                inf("это мэрдж")
+                inf(rozklad_curs.merge(df_corrects[['id','k','budowa','res','mat','p/d']], on=['id', 'k','budowa','res','mat','p/d'], how='inner')['time'].values)
+                inf("это тьме колонка")
+                inf(df_corrects.loc[:,'time'])
+                
+                
+                inf(rozklad_curs)
+                inf(rozklad_curs.dtypes)
+                
+                inf(df_corrects)
+                inf(df_corrects.dtypes)
+                
+                df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['k','budowa','res','mat','p/d']], on=['k','budowa','res','mat','p/d'], how='inner')['time'].values  
 
                 df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
                 df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
 
-                df_corrects = df_corrects[df_corrects['time'].dt.date == today.date()]
+                
                 with db_lock:
                     df_corrects[['index','id','time','m3','k','budowa','res','mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
 
