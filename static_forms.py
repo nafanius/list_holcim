@@ -73,7 +73,6 @@ def get_list_construction_place(date_order):
             "pompa_dzwig": bud.pompa_dzwig,
             "reszta": bud.reszta,
             "date_order": bud.date_order,
-            "date_order": bud.date_order,
         })
 
     return df_bud
@@ -139,7 +138,6 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 df_corrects['new_time'] = pd.to_datetime(df_corrects['new_time'])
                 df_corrects = df_corrects[df_corrects['new_time'].dt.date == today.date()]
                 df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
-                df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
                 
                 
                 df_corrects['id'] = df_corrects['id'].astype(int)
@@ -181,8 +179,9 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 
                 inf("corrects after")
                 inf(df_corrects)
-                
-                df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
+
+                if not df_corrects.empty:
+                    df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
 
                 
                 with db_lock:
