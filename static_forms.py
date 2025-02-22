@@ -67,6 +67,7 @@ def get_list_construction_place(date_order):
             "start_time": bud.start_time,
             "finish_time": bud.finish_time,
             "list_of_loads": bud.list_of_loads,
+            "wenz": bud.wenz,
             "it_is_zaprawa": bud.it_is_zaprawa,
             "it_is_concret": bud.it_is_concret,
             "list_of_courses": bud.list_of_courses,
@@ -94,7 +95,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
             lambda x: list(range(1, len(x) + 1))).values
 
         # оставляем название курсы метров и курсы выселки
-        rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
+        rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'wenz', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
             ['list_of_loads', 'list_of_courses', 'reszta', 'namber_cours'])
 
         rozklad_curs["it_is_zaprawa"] = rozklad_curs["it_is_zaprawa"].replace(
@@ -114,9 +115,9 @@ def rozklad_curs(date_of_request="18.02.2025"):
         rozklad_curs.index = rozklad_curs.index+1
 
         rozklad_curs.columns = ['id', 'time', 'm3',
-                                'budowa', 'res', 'mat', 'p/d', 'k']
+                                'budowa', 'res', 'wenz', 'mat', 'p/d', 'k']
         rozklad_curs = rozklad_curs.reindex(
-            ['id', 'time', 'm3', 'k', 'budowa', 'res', 'mat', 'p/d'], axis=1)
+            ['id', 'time', 'm3', 'k', 'budowa', 'res', 'wenz' ,'mat', 'p/d'], axis=1)
 
 
         today = datetime.today()
@@ -198,7 +199,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual_after', con=data_sql.engine, if_exists='replace', index=True)
-
+        rozklad_curs.drop('wenz', axis=1, inplace=True)
         graph = rozklad_curs.copy()
 
         rozklad_curs['time'] = rozklad_curs['time'].dt.time
