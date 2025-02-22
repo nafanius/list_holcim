@@ -155,24 +155,33 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 rozklad_curs['mat'] = rozklad_curs['mat'].astype(str)
                 rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
                 
+    
+
                 
-                
-                
-                inf("это мэрдж")
-                inf(rozklad_curs.merge(df_corrects[['id','k','budowa','res','mat','p/d']], on=['id', 'k','budowa','res','mat','p/d'], how='inner')['time'].values)
-                inf("это тьме колонка")
-                inf(df_corrects.loc[:,'time'])
-                
-                
-                inf(rozklad_curs)
-                inf(rozklad_curs.dtypes)
-                
+                inf("corrects befor")
                 inf(df_corrects)
-                inf(df_corrects.dtypes)
                 
-                df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['k','budowa','res','mat','p/d']], on=['k','budowa','res','mat','p/d'], how='inner')['time'].values  
+                
+               
+                merged_df = df_corrects.merge(rozklad_curs[['k', 'budowa', 'res', 'mat', 'p/d', 'time']],
+                              on=['k', 'budowa', 'res', 'mat', 'p/d'],
+                              how='inner',
+                              suffixes=('', '_from_rosklad'))
+                              
+                inf("It's merge df")
+                inf(merged_df)
+                
+                df_corrects.update(merged_df[['time_from_rosklad']].rename(columns={'time_from_rosklad': 'time'}))
+                
+                
+                # df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['k','budowa','res','mat','p/d']], on=['k','budowa','res','mat','p/d'], how='inner')['time'].values  
 
                 df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
+                
+                
+                inf("corrects after")
+                inf(df_corrects)
+                
                 df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
 
                 
