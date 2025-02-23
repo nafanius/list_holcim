@@ -13,6 +13,7 @@ import io
 import threading
 from datetime import datetime
 from sqlalchemy import inspect
+from sqlalchemy import text as text_sql_request
 
 
 
@@ -123,6 +124,15 @@ def rozklad_curs(date_of_request="18.02.2025"):
         today = datetime.today()
         today_string = today.strftime('%d.%m.%Y')
         inspector = inspect(data_sql.engine)
+
+        if today.weekday() == 6:
+            delete_query = text_sql_request("DELETE FROM actual_after")
+
+            with db_lock:  
+                with data_sql.engine.connect() as connection:
+                    connection.execute(delete_query)
+                    connection.commit()  
+
 
         if date_of_request == today_string:
 
