@@ -186,7 +186,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
 
                 
                 with db_lock:
-                    df_corrects[['index','id','time','m3','k','budowa','res','mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
+                    df_corrects[['index','id','time','m3','k','budowa','res', 'wenz', 'mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
 
                 for _, row in df_corrects.iterrows():
                     rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'time'] += row['delta']
