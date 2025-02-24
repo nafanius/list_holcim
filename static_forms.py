@@ -158,6 +158,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 df_corrects['mat'] = df_corrects['mat'].astype(str)
                 df_corrects['p/d'] = df_corrects['p/d'].astype(str)
 
+                rozklad_curs['id'] = rozklad_curs['id'].astype(int)
                 rozklad_curs['k'] = rozklad_curs['k'].astype(int)
                 rozklad_curs['budowa'] = rozklad_curs['budowa'].astype(str)
                 rozklad_curs['res'] = rozklad_curs['res'].astype(float)
@@ -172,8 +173,8 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 
                 
                
-                merged_df = df_corrects.merge(rozklad_curs[['k', 'budowa', 'res', 'mat', 'p/d', 'time']],
-                              on=['k', 'budowa', 'res', 'mat', 'p/d'],
+                merged_df = df_corrects.merge(rozklad_curs[['id','k', 'budowa', 'res', 'mat', 'p/d', 'time']],
+                              on=['id', 'k', 'budowa', 'res', 'mat', 'p/d'],
                               how='inner',
                               suffixes=('', '_from_rosklad'))
                               
