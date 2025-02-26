@@ -155,6 +155,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 df_corrects['k'] = df_corrects['k'].astype(int)
                 df_corrects['budowa'] = df_corrects['budowa'].astype(str)
                 df_corrects['res'] = df_corrects['res'].astype(float)
+                df_corrects['wenz'] = df_corrects['wenz'].astype(str)
                 df_corrects['mat'] = df_corrects['mat'].astype(str)
                 df_corrects['p/d'] = df_corrects['p/d'].astype(str)
 
@@ -162,6 +163,7 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 rozklad_curs['k'] = rozklad_curs['k'].astype(int)
                 rozklad_curs['budowa'] = rozklad_curs['budowa'].astype(str)
                 rozklad_curs['res'] = rozklad_curs['res'].astype(float)
+                rozklad_curs['wenz'] = rozklad_curs['wenz'].astype(str)
                 rozklad_curs['mat'] = rozklad_curs['mat'].astype(str)
                 rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
                 
@@ -173,16 +175,22 @@ def rozklad_curs(date_of_request="18.02.2025"):
                 
                 
                
-                merged_df = df_corrects.merge(rozklad_curs[['id','k', 'budowa', 'res', 'mat', 'p/d', 'time']],
-                              on=['id', 'k', 'budowa', 'res', 'mat', 'p/d'],
+                merged_df = df_corrects.merge(rozklad_curs[['k', 'budowa', 'res', 'wenz', 'mat', 'p/d', 'time']],
+                              on=['k', 'budowa', 'res', 'wenz', 'mat', 'p/d'],
                               how='inner',
                               suffixes=('', '_from_rosklad'))
-                              
+                
+
+                merged_df.drop_duplicates(subset=['k', 'budowa', 'res', 'wenz', 'mat', 'p/d'], keep='last', inplace=True)
+
+
+                merged_df.reset_index(drop=True, inplace=True)              
                 inf("It's merge df")
                 inf(merged_df)
+
                 
+                df_corrects.reset_index(drop=True, inplace=True)
                 df_corrects.update(merged_df[['time_from_rosklad']].rename(columns={'time_from_rosklad': 'time'}))
-                
                 
                 # df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['k','budowa','res','mat','p/d']], on=['k','budowa','res','mat','p/d'], how='inner')['time'].values  
 
@@ -210,14 +218,15 @@ def rozklad_curs(date_of_request="18.02.2025"):
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual_after', con=data_sql.engine, if_exists='replace', index=True)
-        rozklad_curs.drop('wenz', axis=1, inplace=True)
         graph = rozklad_curs.copy()
 
         rozklad_curs['time'] = rozklad_curs['time'].dt.time
         rozklad_curs['time'] = rozklad_curs['time'].apply(
             lambda x: x.strftime('%H:%M'))
-
-        html_table = rozklad_curs[['time', 'm3', 'k', 'budowa', 'res', 'mat', 'p/d']
+        
+        
+        rozklad_curs.rename(columns ={'wenz':'w'}, inplace=True)
+        html_table = rozklad_curs[['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']
                                   ].to_html(index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
 
 
