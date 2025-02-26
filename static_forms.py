@@ -221,10 +221,9 @@ def rozklad_curs(date_of_request="18.02.2025"):
             # rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),['k','budowa','res', 'wenz', 'mat','p/d']] = rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),['k','budowa','res', 'wenz', 'mat','p/d']].astype(str).apply(lambda x: '<span style="color:rgb(204, 113, 1);">'+str(x)+'</span>', axis=1)
             # inf(rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),[]].apply(lambda x: '<span style="color:rgb(204, 113, 1);">'+str(x)+'</span>', axis=1))
 
+        # for marking targets dowload
         target_time = pd.Timestamp.now()
-        target_time = target_time - pd.Timedelta(hours=9)
-
-        # todo remove minutes in setting
+        # target_time = target_time - pd.Timedelta(hours=9) # для смещения времени
         end_time = target_time + pd.Timedelta(minutes=40)
         rozklad_curs['target'] = (rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time)
 
@@ -242,11 +241,20 @@ def rozklad_curs(date_of_request="18.02.2025"):
         
         rozklad_curs.rename(columns ={'wenz':'w'}, inplace=True)
         
-
-        rozklad_curs.loc[rozklad_curs['target'] == True,:] = rozklad_curs.loc[rozklad_curs['target'] == True,:].map(lambda x: '<span style="color:rgb(204, 113, 1);">'+str(x)+'</span>')
+        rozklad_curs[['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']] = rozklad_curs[
+            ['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']].astype(str)
+        
+        rozklad_curs.loc[rozklad_curs['target'] == True, ['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']] = (
+            rozklad_curs.loc[rozklad_curs['target'] == True,['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']]
+            .map(lambda x: f'<span style="font-weight: bold; color:rgb(226, 124, 0);">{str(x)}</span>'))
 
         html_table = rozklad_curs[['time', 'm3', 'k', 'budowa', 'res', 'w', 'p/d']
-                                  ].to_html(index=True, table_id="rozklad_curs", classes='rozklad_curs_tab', border=0, justify='center')
+                                  ].to_html(index=True,
+                                            table_id="rozklad_curs",
+                                            classes='rozklad_curs_tab',
+                                            border=0,
+                                            justify='center',
+                                            escape=False )
 
 
         graph.set_index('time', inplace=True)
