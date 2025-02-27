@@ -13,7 +13,13 @@ class Settings:
     time_of_end_upload_zaprawa = datetime.time(7, 30)
     travel_to_the_construction = 30
     unloading_time_for_pomp = 3 # 1 metr
-    unloading_time_for_crane = 8 # 1 metr   
+    unloading_time_for_crane = 8 # 1 metr 
+    wenzels = (
+        ("zawod",("zawodzie 2 ", "zawodzie 1 ")),
+        ("odola",("if will be 2 wenz", "odolany 519")),
+        ("zeran",("if will be 2 wenz", "żerań 502")),
+        ("gora",("if will be 2 wenz", "góra kalwaria 502")),
+    )
   
     def __init__(self):
         pass

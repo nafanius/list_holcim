@@ -458,9 +458,7 @@ def combination_of_some_days_list():
         "niedziela",
     ]
 
-    #  We save the latest Excel files from Google Drive.
-    save_google_sheet()
-
+   
     dict_list = {}
     dict_beton = {}
     list_of_day = find_day_request()

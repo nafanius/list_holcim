@@ -1,4 +1,4 @@
-from get_lista import combination_of_some_days_list, find_day_request
+from get_lista import combination_of_some_days_list, find_day_request, save_google_sheet
 from static_forms import rozklad_curs, get_list_construction_place
 from jinja2 import Template
 from get_html import html_template
@@ -26,6 +26,11 @@ logging.disable(logging.DEBUG)
 
 def get_dict():
     """creation and return of a dictionary with all data for HTML"""
+    
+
+
+    #  We save the latest Excel files from Google Drive.
+    # save_google_sheet()
 
     def parsing_args(dictinary):
         parser = argparse.ArgumentParser(
@@ -44,6 +49,9 @@ def get_dict():
         dictinary["war"] = args.war if args.war else ""
 
         return dictinary
+    list_of_dict_with_allwenz = []
+
+    # for 
 
     data = combination_of_some_days_list()
 
@@ -127,5 +135,6 @@ def upload_directory_to_s3(
 
 if __name__ == "__main__":
     # pprint(get_dict())
-    save_html(get_dict())
-    upload_directory_to_s3("./site", "list-holcim")
+    # save_html(get_dict())
+    # upload_directory_to_s3("./site", "list-holcim")
+    dict_zaw = get_dict()
