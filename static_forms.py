@@ -217,23 +217,19 @@ def rozklad_curs(date_of_request="18.02.2025"):
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual_after', con=data_sql.engine, if_exists='replace', index=True)
-                
-            # rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),['k','budowa','res', 'wenz', 'mat','p/d']] = rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),['k','budowa','res', 'wenz', 'mat','p/d']].astype(str).apply(lambda x: '<span style="color:rgb(204, 113, 1);">'+str(x)+'</span>', axis=1)
-            # inf(rozklad_curs.loc[(rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time),[]].apply(lambda x: '<span style="color:rgb(204, 113, 1);">'+str(x)+'</span>', axis=1))
-
+  
         # for marking targets dowload
         target_time = pd.Timestamp.now()
         # target_time = target_time - pd.Timedelta(hours=9) # для смещения времени
         end_time = target_time + pd.Timedelta(minutes=40)
-        rozklad_curs['target'] = (rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time)
 
+        graph = rozklad_curs.copy()
+
+        rozklad_curs['target'] = (rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time)
 
         rozklad_curs.sort_values("time", inplace=True)
         rozklad_curs.reset_index(drop=True, inplace=True)
         rozklad_curs.index=rozklad_curs.index+1
-
-        graph = rozklad_curs.copy()
-
         
         rozklad_curs['time'] = rozklad_curs['time'].apply(
             lambda x: x.strftime('%H:%M'))

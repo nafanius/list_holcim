@@ -478,6 +478,8 @@ html_template = """
         <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
+        <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;"><span style="font-weight: bold; color:rgb(226, 124, 0);">ładowanie
+        </span>w danym momencie.</p>
     </div>
 
     <div class="main_list">
