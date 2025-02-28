@@ -9,6 +9,7 @@ import os
 import argparse
 import logging
 from pprint import pprint
+from settings import Settings
 
 
 # region logging
@@ -49,32 +50,37 @@ def get_dict():
         dictinary["war"] = args.war if args.war else ""
 
         return dictinary
-    list_of_dict_with_allwenz = []
 
-    # for 
+    dict_all_wenzels = {}
+    for wenzel in Settings.wenzels:
 
-    data = combination_of_some_days_list()
+        data = combination_of_some_days_list(wenzel)
 
-    now = datetime.now()
-    data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
+        # now = datetime.now()
+        # data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
 
-    # добавляем статистику
-    list_date_for_stat = [t[2] for t in find_day_request()]
-    day_number = 1
-    for date_for_stat in list_date_for_stat:
-        rozklad_curs_data = rozklad_curs(date_for_stat)
+        # добавляем статистику
+        list_date_for_stat = [t[2] for t in find_day_request()]
+        day_number = 1
+        for date_for_stat in list_date_for_stat:
+            rozklad_curs_data = rozklad_curs(wenzel=wenzel, date_of_request=date_for_stat)
+            
+            data[f"count_{day_number}"] = rozklad_curs_data[1]
+            data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
+            data[f"rozklad_curs_{day_number}"] = rozklad_curs_data[0]
+            data[f"grap_intens_{day_number}"] = rozklad_curs_data[3]
+            data[f"grap_intens_pie_{day_number}"] = rozklad_curs_data[4]
+            
+            day_number += 1
         
-        data[f"count_{day_number}"] = rozklad_curs_data[1]
-        data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
-        data[f"rozklad_curs_{day_number}"] = rozklad_curs_data[0]
-        data[f"grap_intens_{day_number}"] = rozklad_curs_data[3]
-        data[f"grap_intens_pie_{day_number}"] = rozklad_curs_data[4]
+        dict_all_wenzels[wenzel[0]] = data
         
-        day_number += 1
 
-    parsing_args(data)
 
-    return data
+    # parsing_args(data)
+
+    # return data
+    return dict_all_wenzels
 
 
 def save_html(data):

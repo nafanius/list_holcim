@@ -71,9 +71,9 @@ def save_google_sheet(directory="excel_files"):
             inf(err)
             inf("ERRR")
             continue
+# endregion excel file
 
-
-def form_lista_beton(excel_file, day, date_of_day_text):
+def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     """We retrieve the shipping schedule from the excel_file and return lista_beton
 
     Args:
@@ -116,9 +116,9 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     for row_in_file in range(1, sheet.max_row):
         find_line = sheet.cell(row=row_in_file, column=3).value
-        if ("zawodzie 2 " in str(find_line).lower()) or ("zawodzie 1 " in str(find_line).lower()):
+        if (wenzel[1][0] in str(find_line).lower()) or (wenzel[1][1] in str(find_line).lower()):
             number_wenz = "1"
-            if "zawodzie 2 " in  str(find_line).lower():
+            if wenzel[1][0] in  str(find_line).lower():
                 number_wenz = "2"
 
             for row_in_beton in range(11, 42):
@@ -134,7 +134,7 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
    
     del_lista, add_lista = get_del_new_lists.check_del_add_lista(
-        date_of_day_text, lista_beton
+        date_of_day_text, lista_beton, wenzel
     )
 
 
@@ -143,13 +143,12 @@ def form_lista_beton(excel_file, day, date_of_day_text):
 
     # добавил сохранение в базе данных листы бетона
     with db_lock:
-        data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day})
+        data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day, "wenz":wenzel[0]})
     
     return lista_beton, del_lista, add_lista
 
-# endregion excel file
 
-def form_lista(excel_file, day, date_of_day_text):
+def form_lista(excel_file, day, date_of_day_text, wenzel):
     """_summary_
 
     Args:
@@ -179,7 +178,7 @@ def form_lista(excel_file, day, date_of_day_text):
 
     for row_in_file in range(1, sheet.max_row):
         c = sheet.cell(row=row_in_file, column=3).value
-        if "zawodzie 2 " in str(c).lower() or "zawodzie 1 " in str(c).lower():
+        if wenzel[1][0] in str(c).lower() or wenzel[1][1] in str(c).lower():
             for row_in_list_time in range(15):
                 fill_list(
                     sheet.cell(row=row_in_file + row_in_list_time, column=12).value,
@@ -196,12 +195,12 @@ def form_lista(excel_file, day, date_of_day_text):
 
     # добавил сохранение в базе данных lista
     with db_lock:
-        data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day})
+        data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day, "wenz":wenzel[0]})
     
     # удаляем записи старше 4 часов
     threshold = time.time() - Settings.time_of_compare * 3600
     with db_lock:
-        data_sql.delete_records_below_threshold(threshold, "lista")
+        data_sql.delete_records_below_threshold(threshold, "lista", wenzel[0])
 
     return lista
 
@@ -442,7 +441,7 @@ def find_day_request():
     return list_of_days
 
 
-def combination_of_some_days_list():
+def combination_of_some_days_list(wenzel):
     """Generates two dictionaries with three days of departure and shipment schedules
 
     Returns:
@@ -465,7 +464,7 @@ def combination_of_some_days_list():
     
     number_elements = 1
     for day, file, date_of_day in list_of_day:
-        split_text = lista_in_text(form_lista(file, day, date_of_day))
+        split_text = lista_in_text(form_lista(file, day, date_of_day, wenzel))
         if split_text == []:
             dict_list[f"element{number_elements}"] = [
                 f"{date_of_day} {day_of_week_list[day]}",
@@ -481,7 +480,7 @@ def combination_of_some_days_list():
         number_elements += 1
 
     for day, file, date_of_day in list_of_day:
-        list_of_lists_norm_del_add = form_lista_beton(file, day, date_of_day)
+        list_of_lists_norm_del_add = form_lista_beton(file, day, date_of_day, wenzel)
         list_ready_to_covert_text = get_list_from_three_norm_del_add(
             *list_of_lists_norm_del_add
         )
@@ -505,4 +504,4 @@ def combination_of_some_days_list():
 
 
 if __name__ == "__main__":
-    inf(combination_of_some_days_list())
+    inf(combination_of_some_days_list(Settings.wenzels[0]))

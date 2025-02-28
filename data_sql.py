@@ -37,8 +37,44 @@ Base = declarative_base()
 # Определение структуры таблицы через класс
 
 
-class Beton(Base):
-    __tablename__ = "beton"
+class Beton_zawod(Base):
+    __tablename__ = "beton_zawod"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
+    
+class Beton_odola(Base):
+    __tablename__ = "beton_odola"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
+    
+class Beton_zeran(Base):
+    __tablename__ = "beton_zeran"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
+    
+class Beton_gora(Base):
+    __tablename__ = "beton_gora"
 
     id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
@@ -50,8 +86,44 @@ class Beton(Base):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
 
 
-class Lista(Base):
-    __tablename__ = "lista"
+class Lista_zawod(Base):
+    __tablename__ = "lista_zawod"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
+    
+class Lista_odola(Base):
+    __tablename__ = "lista_odola"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
+    
+class Lista_zeran(Base):
+    __tablename__ = "lista_zeran"
+
+    id_event_time = Column(Float, primary_key=True)
+    date_text = Column(String)
+    list_data = Column(String)
+    day = Column(Integer)
+    status = Column(Integer)
+
+    def __repr__(self):
+        return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
+    
+class Lista_gora(Base):
+    __tablename__ = "lista_gora"
 
     id_event_time = Column(Float, primary_key=True)
     date_text = Column(String)
@@ -78,13 +150,38 @@ def record_beton(data):
     get_list_beton_serialize = [(item[0], item[1].isoformat(), *item[2:]) for item in data["lista_beton"]]
     serialized_list_beton = json.dumps(get_list_beton_serialize, default=str)
     try:
-        beton = Beton(
-            id_event_time=time.time(),
-            date_text=data["date_of_day_text"],
-            list_data=serialized_list_beton,
-            day=data["day"],
-            status=0,
-        )
+        if data["wenz"] == "zawod":
+            beton = Beton_zawod(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list_beton,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "odola":
+            beton = Beton_odola(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list_beton,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "zeran":
+            beton = Beton_zeran(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list_beton,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "gora":
+            beton = Beton_gora(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list_beton,
+                day=data["day"],
+                status=0,
+            )
 
         session.add(beton)
         session.commit()
@@ -105,13 +202,38 @@ def record_lista(data):
     get_list_serialize = [(item[0].isoformat(), item[1]) for item in data["lista"]]
     serialized_list = json.dumps(get_list_serialize, default=str)
     try:
-        lista = Lista(
-            id_event_time=time.time(),
-            date_text=data["date_of_day_text"],
-            list_data=serialized_list,
-            day=data["day"],
-            status=0,
-        )
+        if data["wenz"] == "zawod":
+            lista = Lista_zawod(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "odola":
+            lista = Lista_odola(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "zeran":
+            lista = Lista_zeran(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list,
+                day=data["day"],
+                status=0,
+            )
+        elif data["wenz"] == "gora":
+            lista = Lista_gora(
+                id_event_time=time.time(),
+                date_text=data["date_of_day_text"],
+                list_data=serialized_list,
+                day=data["day"],
+                status=0,
+            )
 
         session.add(lista)
         session.commit()
@@ -126,7 +248,7 @@ def record_lista(data):
         session.close()
 
 
-def delete_records_below_threshold(threshold, base):
+def delete_records_below_threshold(threshold, base, wenz):
     """"Deletes all records from [base name] with id_event_time less than [threshold]
 
     Args:
@@ -134,10 +256,22 @@ def delete_records_below_threshold(threshold, base):
         base_name (str): base name
     """    
 
-    if base == "beton":
-        base_name = Beton
-    elif base == "lista":
-        base_name = Lista
+    if base == "beton" and wenz == "zawod":
+        base_name = Beton_zawod
+    elif base == "beton" and wenz == "odola":
+        base_name = Beton_odola
+    elif base == "beton" and wenz == "zeran":
+        base_name = Beton_zeran
+    elif base == "beton" and wenz == "gora":
+        base_name = Beton_gora
+    elif base == "lista" and wenz ==  "zawod":
+        base_name = Lista_zawod
+    elif base == "lista" and wenz ==  "odola":
+        base_name = Lista_odola
+    elif base == "lista" and wenz ==  "zeran":
+        base_name = Lista_zeran
+    elif base == "lista" and wenz ==  "gora":
+        base_name = Lista_gora
 
     session = Session()
 
@@ -158,12 +292,24 @@ def delete_records_below_threshold(threshold, base):
         session.close()
 
 
-def get_oldest_list_beton_or_lista(base, date_of_lista):
+def get_oldest_list_beton_or_lista(base, date_of_lista, wenz):
     
-    if base == "beton":
-        base_name = Beton
-    elif base == "lista":
-        base_name = Lista
+    if base == "beton" and wenz == "zawod":
+        base_name = Beton_zawod
+    elif base == "beton" and wenz == "odola":
+        base_name = Beton_odola
+    elif base == "beton" and wenz == "zeran":
+        base_name = Beton_zeran
+    elif base == "beton" and wenz == "gora":
+        base_name = Beton_gora
+    elif base == "lista" and wenz ==  "zawod":
+        base_name = Lista_zawod
+    elif base == "lista" and wenz ==  "odola":
+        base_name = Lista_odola
+    elif base == "lista" and wenz ==  "zeran":
+        base_name = Lista_zeran
+    elif base == "lista" and wenz ==  "gora":
+        base_name = Lista_gora
 
     session = Session()
 
@@ -184,19 +330,32 @@ def get_oldest_list_beton_or_lista(base, date_of_lista):
     finally:
         session.close()
 
-def get_newest_list_beton_or_lista(base, date_of_lista):
+def get_newest_list_beton_or_lista(base, date_of_lista, wenz):
     
-    if base == "beton":
-        base_name = Beton
-    elif base == "lista":
-        base_name = Lista
+    if base == "beton" and wenz == "zawod":
+        base_name = Beton_zawod
+    elif base == "beton" and wenz == "odola":
+        base_name = Beton_odola
+    elif base == "beton" and wenz == "zeran":
+        base_name = Beton_zeran
+    elif base == "beton" and wenz == "gora":
+        base_name = Beton_gora
+    elif base == "lista" and wenz ==  "zawod":
+        base_name = Lista_zawod
+    elif base == "lista" and wenz ==  "odola":
+        base_name = Lista_odola
+    elif base == "lista" and wenz ==  "zeran":
+        base_name = Lista_zeran
+    elif base == "lista" and wenz ==  "gora":
+        base_name = Lista_gora
 
     session = Session()
 
     try:
         result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista).order_by(base_name.id_event_time.desc()).first()
-        
+        inf("REZULT_____________________________________________________")
         if result:
+            
             if base == "beton":
                 deserialized_list = json.loads(result[0])
                 result_list = [(item[0], time_from_datatime.fromisoformat(item[1]), *item[2:]) for item in deserialized_list]
@@ -212,4 +371,4 @@ def get_newest_list_beton_or_lista(base, date_of_lista):
     
     
 if __name__ == '__main__':
-    pprint(get_newest_list_beton_or_lista('beton', '03.02.2025'))
+    pprint(get_newest_list_beton_or_lista('beton', '03.02.2025', Settings.wenzels[0]))

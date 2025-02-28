@@ -14,6 +14,7 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
+from settings import Settings
 
 
 
@@ -43,7 +44,7 @@ exp = logging.exception
 count_graph = 1
 
 
-def get_list_construction_place(date_order):
+def get_list_construction_place(date_order, wenzel):
     """возвращает список словарей словарь заказов на основание класса order его 
     переменные которые достаёт из базы данных на дату
 
@@ -54,7 +55,7 @@ def get_list_construction_place(date_order):
     count = 1
     df_bud = []
 
-    for item in get_newest_list_beton_or_lista("beton", date_order):
+    for item in get_newest_list_beton_or_lista("beton", date_order, wenzel[0]):
         orders[f"{count}bud"] = Order(date_order, *item)
         count += 1
 
@@ -80,9 +81,9 @@ def get_list_construction_place(date_order):
     return df_bud
 
 
-def rozklad_curs(date_of_request="18.02.2025"):
+def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
-    df_orders = get_list_construction_place(date_of_request)
+    df_orders = get_list_construction_place(date_of_request, wenzel=wenzel)
 
     try:
         global count_graph
@@ -345,6 +346,6 @@ def rozklad_curs(date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '17.02.2025'
-    df_orders = get_list_construction_place(date_of_request)
+    date_of_request = '01.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[3])
     # print(rozklad_curs()[0])

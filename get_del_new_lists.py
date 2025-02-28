@@ -5,18 +5,18 @@ from settings import Settings
 
 db_lock = threading.Lock()
 
-def get_old_list_beton(date, hours = Settings.time_of_compare):
+def get_old_list_beton(date, wenzel, hours = Settings.time_of_compare):
 
     threshold = time.time() - hours * 3600
 
     with db_lock:
-        data_sql.delete_records_below_threshold(threshold, "beton")
+        data_sql.delete_records_below_threshold(threshold, "beton", wenzel[0])
 
-        return data_sql.get_oldest_list_beton_or_lista("beton", date)
+        return data_sql.get_oldest_list_beton_or_lista("beton", date, wenzel[0])
    
     return []
 
-def check_del_add_lista(date_of_lista, currant_list_beton):
+def check_del_add_lista(date_of_lista, currant_list_beton, wenzel):
     """It checks for any removed or new entries in the new dictionary
      compared to the old one and returns two dictionaries: one for
       removed entries and one for new entries
@@ -30,7 +30,7 @@ def check_del_add_lista(date_of_lista, currant_list_beton):
     """    
     del_lista = []
     add_lista = []
-    old_stan_lista_beton = get_old_list_beton(date = date_of_lista)
+    old_stan_lista_beton = get_old_list_beton(date = date_of_lista, wenzel=wenzel)
     for i in old_stan_lista_beton:
         if i not in currant_list_beton:
             del_lista.append(i)
