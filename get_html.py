@@ -270,7 +270,8 @@ html_template = """
            }
 
         #brend {
-            color: rgb(59, 59, 124)
+            color: rgb(59, 59, 124);
+            font-size: small;
         }
 
         #cong {
@@ -352,10 +353,10 @@ html_template = """
         <div class="title_div">
             <div class="title_text">
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
-                <p>{{ Zaktualizowano }}</p>
-                <p id="brend">{{ brend }}</p>
-                <p id="cong">{{ cong }}</p>
-                <p id="war">{{ war }}</p>
+                <p>{{ data['Zaktualizowano'] }}</p>
+                <p id="brend">{{ data['brend'] }}</p>
+                <p id="cong">{{ data['cong'] }}</p>
+                <p id="war">{{ data['zawod']['war'] }}</p>
             </div>
 
             <div class="title_image"><a style="text-decoration: none;" href="https://www.holcim.pl/" target="_blank">
@@ -472,9 +473,12 @@ html_template = """
                 </a>
             </div>
         </div>
+
         <div id="ww_7367f5689bf4c" v='1.3' loc='id' a='{"t":"ticker","lang":"pl","ids":["wl7640"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: 
-        <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a></div>
+            <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a>
+        </div>
         <script async src="https://app3.weatherwidget.org/js/?id=ww_7367f5689bf4c"></script>
+
         <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
@@ -483,7 +487,7 @@ html_template = """
     </div>
 
     <div class="main_list">
-        <p>{{ element1[0] }}</p>
+        <p>{{ data['zawod']['element1'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             
             <button id="button1" class="button-push" onclick="toggleVisibility('div1', 'button1')">ROZKŁAD</button>
@@ -491,8 +495,8 @@ html_template = """
                 <div class="list">
                     <ul>
                         <p class="libold">ROZKŁAD:</p>
-                        <p>{{ element1[1] }}</p>
-                        {% for item in element1[2:] %}
+                        <p>{{ data['zawod']['element1'][1] }}</p>
+                        {% for item in data['zawod']['element1'][2:] %}
                         <li class="lirozklad">{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -504,7 +508,7 @@ html_template = """
                 <div class="list">
                     <ul>
                         <li class="libold">ZAMÓWIENIA:</li>
-                        {% for item in element4[1:] %}
+                        {% for item in data['zawod']['element4'][1:] %}
                         <li>{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -514,20 +518,20 @@ html_template = """
             <button id="button3" class="button-push" onclick="toggleVisibility('div3', 'button3')">HARMONOGRAM ZAŁADUNKÓW</button>
             <div id="div3" class="content hidden">
                 <div class="list">
-                    <p class="libold">ilosć kursów {{ count_1 }}</p>
-                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_1 }}</p>
-                    {{ rozklad_curs_1 }}
+                    <p class="libold">ilosć kursów {{ data['zawod']['count_1'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zawod']['clean_metrs_1'] }}</p>
+                    {{ data['zawod']['rozklad_curs_1'] }}
                     <div class="full-width-graph">
-                        {{ grap_intens_1 }}
+                        {{ data['zawod']['grap_intens_1'] }}
                     </div>
                     <div class="full-width-graph">
-                        {{ grap_intens_pie_1 }}
+                        {{ data['zawod']['grap_intens_pie_1'] }}
                     </div>
                 </div>
             </div>
         </div>
 
-        <p>{{ element2[0] }}</p>
+        <p>{{ data['zawod']['element2'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
             
             <button id="button4" class="button-push" onclick="toggleVisibility('div4', 'button4')">ROZKŁAD</button>
@@ -535,8 +539,8 @@ html_template = """
                 <div class="list">
                     <ul>
                         <p class="libold ">ROZKŁAD:</p>
-                        <p>{{ element2[1] }}</p>
-                        {% for item in element2[2:] %}
+                        <p>{{ data['zawod']['element2'][1] }}</p>
+                        {% for item in data['zawod']['element2'][2:] %}
                         <li class="lirozklad">{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -548,7 +552,7 @@ html_template = """
                 <div class="list">
                     <ul>
                         <li class="libold">ZAMÓWIENIA:</li>
-                        {% for item in element5[1:] %}
+                        {% for item in data['zawod']['element5'][1:] %}
                         <li>{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -558,20 +562,20 @@ html_template = """
             <button id="button6" class="button-push" onclick="toggleVisibility('div6', 'button6')">HARMONOGRAM ZAŁADUNKÓW</button>
             <div id="div6" class="content hidden">
                 <div class="list">
-                    <p class="libold">ilosć kursów {{ count_2 }}</p>
-                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_2 }}</p>
-                    {{ rozklad_curs_2 }}
+                    <p class="libold">ilosć kursów {{ data['zawod']['count_2'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zawod']['clean_metrs_2'] }}</p>
+                    {{ data['zawod']['rozklad_curs_2'] }}
                     <div class="full-width-graph">
-                        {{ grap_intens_2 }}
+                        {{ data['zawod']['grap_intens_2'] }}
                     </div>
                     <div class="full-width-graph">
-                        {{ grap_intens_pie_2 }}
+                        {{ data['zawod']['grap_intens_pie_2'] }}
                     </div>
                 </div>
             </div>
         </div>
 
-        <p>{{ element3[0] }}</p>
+        <p>{{ data['zawod']['element3'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
             
             <button id="button7" class="button-push" onclick="toggleVisibility('div7', 'button7')">ROZKŁAD</button>
@@ -579,8 +583,8 @@ html_template = """
                 <div class="list">
                     <ul>
                         <p class="libold">ROZKŁAD:</p>
-                        <p>{{ element3[1] }}</p>
-                        {% for item in element3[2:] %}
+                        <p>{{ data['zawod']['element3'][1] }}</p>
+                        {% for item in data['zawod']['element3'][2:] %}
                         <li class="lirozklad">{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -592,7 +596,7 @@ html_template = """
                 <div class="list">
                     <ul>
                         <li class="libold">ZAMÓWIENIA:</li>
-                        {% for item in element6[1:] %}
+                        {% for item in data['zawod']['element6'][1:] %}
                         <li>{{ item }}</li>
                         {% endfor %}
                     </ul>
@@ -602,25 +606,23 @@ html_template = """
             <button id="button9" class="button-push" onclick="toggleVisibility('div9', 'button9')">HARMONOGRAM ZAŁADUNKÓW</button>
             <div id="div9" class="content hidden">
                 <div class="list">
-                    <p class="libold">ilosć kursów {{ count_3 }}</p>
-                    <p class="libold">metrów betonu bez wywrotek {{ clean_metrs_3 }}</p>
-                    {{ rozklad_curs_3 }}
+                    <p class="libold">ilosć kursów {{ data['zawod']['count_3'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zawod']['clean_metrs_3'] }}</p>
+                    {{ data['zawod']['rozklad_curs_3'] }}
                     <div class="full-width-graph">
-                        {{ grap_intens_3 }}
+                        {{ data['zawod']['grap_intens_3'] }}
                     </div>
                     <div class="full-width-graph">
-                        {{ grap_intens_pie_3 }}
+                        {{ data['zawod']['grap_intens_pie_3'] }}
                     </div>
                 </div>
             </div>
         </div>
-
-
-        <footer style="margin-top: 3px">
-            <p> ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
-        </footer>
-
     </div>
+
+    <footer style="margin-top: 3px; text-align: center; font-size: small;">
+            <p> ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
+    </footer>
 </body>
 
 </html>

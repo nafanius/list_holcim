@@ -31,7 +31,7 @@ def get_dict():
 
 
     #  We save the latest Excel files from Google Drive.
-    # save_google_sheet()
+    save_google_sheet()
 
     def parsing_args(dictinary):
         parser = argparse.ArgumentParser(
@@ -90,7 +90,7 @@ def save_html(data):
         data (dictionary): dictionary with data
     """
     template = Template(html_template)
-    rendered_html = template.render(data)
+    rendered_html = template.render(data = data)
     with open("./site/index.html", "w", encoding="utf-8") as f:
         f.write(rendered_html)
 
@@ -141,6 +141,6 @@ def upload_directory_to_s3(
 
 if __name__ == "__main__":
     # pprint(get_dict())
-    # save_html(get_dict())
-    # upload_directory_to_s3("./site", "list-holcim")
-    dict_zaw = get_dict()
+    save_html(get_dict())
+    upload_directory_to_s3("./site", "list-holcim")
+    # dict_zaw = get_dict()
