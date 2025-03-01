@@ -350,6 +350,13 @@ html_template = """
 
 <body>
     <div class="main">
+    
+    <div id="ww_7367f5689bf4c" v='1.3' loc='id' a='{"t":"ticker","lang":"pl","ids":["wl7640"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: 
+        <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a>
+    </div>
+
+    <script async src="https://app3.weatherwidget.org/js/?id=ww_7367f5689bf4c"></script>
+
         <div class="title_div">
             <div class="title_text">
                 <p><span style="font-size: large; font-weight: bold;">Lista Holcim</span></p>
@@ -474,15 +481,10 @@ html_template = """
             </div>
         </div>
 
-        <div id="ww_7367f5689bf4c" v='1.3' loc='id' a='{"t":"ticker","lang":"pl","ids":["wl7640"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: 
-            <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a>
-        </div>
-        <script async src="https://app3.weatherwidget.org/js/?id=ww_7367f5689bf4c"></script>
-
         <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
-        <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;"><span style="font-weight: bold; color:rgb(226, 124, 0);">ładowanie
+        <p style="padding-left: 5px; font-size: smaller;"><span style="font-weight: bold; color:rgb(226, 124, 0);">ładowanie
         </span>w danym momencie.</p>
     </div>
 
@@ -614,6 +616,410 @@ html_template = """
                     </div>
                     <div class="full-width-graph">
                         {{ data['zawod']['grap_intens_pie_3'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main_list">
+        <p>{{ data['odola']['element1'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
+            
+            <button id="button10" class="button-push" onclick="toggleVisibility('div10', 'button10')">ROZKŁAD</button>
+            <div id="div10" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['odola']['element1'][1] }}</p>
+                        {% for item in data['odola']['element1'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button11" class="button-push" onclick="toggleVisibility('div11', 'button11')">ZAMÓWIENIA</button>
+            <div id="div11" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['odola']['element4'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button12" class="button-push" onclick="toggleVisibility('div12', 'button12')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div12" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['odola']['count_1'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['odola']['clean_metrs_1'] }}</p>
+                    {{ data['odola']['rozklad_curs_1'] }}
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_1'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_pie_1'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['odola']['element2'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
+            
+            <button id="button13" class="button-push" onclick="toggleVisibility('div13', 'button13')">ROZKŁAD</button>
+            <div id="div13" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold ">ROZKŁAD:</p>
+                        <p>{{ data['odola']['element2'][1] }}</p>
+                        {% for item in data['odola']['element2'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button14" class="button-push" onclick="toggleVisibility('div14', 'button14')">ZAMÓWIENIA</button>
+            <div id="div14" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['odola']['element5'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button15" class="button-push" onclick="toggleVisibility('div15', 'button15')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div15" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['odola']['count_2'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['odola']['clean_metrs_2'] }}</p>
+                    {{ data['odola']['rozklad_curs_2'] }}
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_2'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_pie_2'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['odola']['element3'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
+            
+            <button id="button16" class="button-push" onclick="toggleVisibility('div16', 'button16')">ROZKŁAD</button>
+            <div id="div16" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['odola']['element3'][1] }}</p>
+                        {% for item in data['odola']['element3'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <button id="button17" class="button-push" onclick="toggleVisibility('div17', 'button17')">ZAMÓWIENIA</button>
+            <div id="div17" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['odola']['element6'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button18" class="button-push" onclick="toggleVisibility('div18', 'button18')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div18" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['odola']['count_3'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['odola']['clean_metrs_3'] }}</p>
+                    {{ data['odola']['rozklad_curs_3'] }}
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_3'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['odola']['grap_intens_pie_3'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main_list">
+        <p>{{ data['zeran']['element1'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
+            
+            <button id="button19" class="button-push" onclick="toggleVisibility('div19', 'button19')">ROZKŁAD</button>
+            <div id="div19" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['zeran']['element1'][1] }}</p>
+                        {% for item in data['zeran']['element1'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button20" class="button-push" onclick="toggleVisibility('div20', 'button20')">ZAMÓWIENIA</button>
+            <div id="div20" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['zeran']['element4'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button21" class="button-push" onclick="toggleVisibility('div21', 'button21')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div21" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['zeran']['count_1'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zeran']['clean_metrs_1'] }}</p>
+                    {{ data['zeran']['rozklad_curs_1'] }}
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_1'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_pie_1'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['zeran']['element2'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
+            
+            <button id="button22" class="button-push" onclick="toggleVisibility('div22', 'button22')">ROZKŁAD</button>
+            <div id="div22" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold ">ROZKŁAD:</p>
+                        <p>{{ data['zeran']['element2'][1] }}</p>
+                        {% for item in data['zeran']['element2'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button23" class="button-push" onclick="toggleVisibility('div23', 'button23')">ZAMÓWIENIA</button>
+            <div id="div23" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['zeran']['element5'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button24" class="button-push" onclick="toggleVisibility('div24', 'button24')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div24" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['zeran']['count_2'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zeran']['clean_metrs_2'] }}</p>
+                    {{ data['zeran']['rozklad_curs_2'] }}
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_2'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_pie_2'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['zeran']['element3'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
+            
+            <button id="button25" class="button-push" onclick="toggleVisibility('div25', 'button25')">ROZKŁAD</button>
+            <div id="div25" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['zeran']['element3'][1] }}</p>
+                        {% for item in data['zeran']['element3'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <button id="button26" class="button-push" onclick="toggleVisibility('div26', 'button26')">ZAMÓWIENIA</button>
+            <div id="div26" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['zeran']['element6'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button27" class="button-push" onclick="toggleVisibility('div27', 'button27')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div27" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['zeran']['count_3'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['zeran']['clean_metrs_3'] }}</p>
+                    {{ data['zeran']['rozklad_curs_3'] }}
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_3'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['zeran']['grap_intens_pie_3'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main_list">
+        <p>{{ data['gora']['element1'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
+            
+            <button id="button28" class="button-push" onclick="toggleVisibility('div28', 'button28')">ROZKŁAD</button>
+            <div id="div28" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['gora']['element1'][1] }}</p>
+                        {% for item in data['gora']['element1'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button29" class="button-push" onclick="toggleVisibility('div29', 'button29')">ZAMÓWIENIA</button>
+            <div id="div29" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['gora']['element4'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button30" class="button-push" onclick="toggleVisibility('div30', 'button30')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div30" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['gora']['count_1'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['gora']['clean_metrs_1'] }}</p>
+                    {{ data['gora']['rozklad_curs_1'] }}
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_1'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_pie_1'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['gora']['element2'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #fff194 0%, #ffffff 77%);">
+            
+            <button id="button31" class="button-push" onclick="toggleVisibility('div31', 'button31')">ROZKŁAD</button>
+            <div id="div31" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold ">ROZKŁAD:</p>
+                        <p>{{ data['gora']['element2'][1] }}</p>
+                        {% for item in data['gora']['element2'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button32" class="button-push" onclick="toggleVisibility('div32', 'button32')">ZAMÓWIENIA</button>
+            <div id="div32" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['gora']['element5'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button33" class="button-push" onclick="toggleVisibility('div33', 'button33')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div33" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['gora']['count_2'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['gora']['clean_metrs_2'] }}</p>
+                    {{ data['gora']['rozklad_curs_2'] }}
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_2'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_pie_2'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>{{ data['gora']['element3'][0] }}</p>
+        <div class="main_list" style="background: linear-gradient(93deg, #ff9f94 0%, #ffffff 77%);">
+            
+            <button id="button34" class="button-push" onclick="toggleVisibility('div34', 'button34')">ROZKŁAD</button>
+            <div id="div34" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <p class="libold">ROZKŁAD:</p>
+                        <p>{{ data['gora']['element3'][1] }}</p>
+                        {% for item in data['gora']['element3'][2:] %}
+                        <li class="lirozklad">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <button id="button35" class="button-push" onclick="toggleVisibility('div35', 'button35')">ZAMÓWIENIA</button>
+            <div id="div35" class="content hidden">
+                <div class="list">
+                    <ul>
+                        <li class="libold">ZAMÓWIENIA:</li>
+                        {% for item in data['gora']['element6'][1:] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <button id="button36" class="button-push" onclick="toggleVisibility('div36', 'button36')">HARMONOGRAM ZAŁADUNKÓW</button>
+            <div id="div36" class="content hidden">
+                <div class="list">
+                    <p class="libold">ilosć kursów {{ data['gora']['count_3'] }}</p>
+                    <p class="libold">metrów betonu bez wywrotek {{ data['gora']['clean_metrs_3'] }}</p>
+                    {{ data['gora']['rozklad_curs_3'] }}
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_3'] }}
+                    </div>
+                    <div class="full-width-graph">
+                        {{ data['gora']['grap_intens_pie_3'] }}
                     </div>
                 </div>
             </div>
