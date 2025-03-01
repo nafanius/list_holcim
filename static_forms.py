@@ -122,6 +122,12 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
             ['id', 'time', 'm3', 'k', 'budowa', 'res', 'wenz' ,'mat', 'p/d'], axis=1)
 
 
+        rozklad_curs['m3'] = rozklad_curs['m3'].astype(float).round(1)
+        rozklad_curs['res'] = rozklad_curs['res'].astype(float).round(1)
+        rozklad_curs.sort_values("time", inplace=True)
+        rozklad_curs.reset_index(drop=True, inplace=True)
+        rozklad_curs.index=rozklad_curs.index+1
+
         today = datetime.today()
         today_string = today.strftime('%d.%m.%Y')
         inspector = inspect(data_sql.engine)
@@ -135,7 +141,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                     connection.commit()  
 
 
-        if date_of_request == today_string:
+        if date_of_request == today_string and wenzel[0] == "zawod":
 
             with db_lock:
                 rozklad_curs.to_sql(
@@ -163,7 +169,6 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 rozklad_curs['id'] = rozklad_curs['id'].astype(int)
                 rozklad_curs['k'] = rozklad_curs['k'].astype(int)
                 rozklad_curs['budowa'] = rozklad_curs['budowa'].astype(str)
-                rozklad_curs['res'] = rozklad_curs['res'].astype(float)
                 rozklad_curs['wenz'] = rozklad_curs['wenz'].astype(str)
                 rozklad_curs['mat'] = rozklad_curs['mat'].astype(str)
                 rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
@@ -176,13 +181,13 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 
                 
                
-                merged_df = df_corrects.merge(rozklad_curs[['k', 'budowa', 'res', 'wenz', 'mat', 'p/d', 'time']],
-                              on=['k', 'budowa', 'res', 'wenz', 'mat', 'p/d'],
+                merged_df = df_corrects.merge(rozklad_curs[['m3','k', 'budowa', 'res', 'wenz', 'mat', 'p/d', 'time']],
+                              on=['m3', 'k', 'budowa', 'res', 'wenz', 'mat', 'p/d'],
                               how='inner',
                               suffixes=('', '_from_rosklad'))
                 
 
-                merged_df.drop_duplicates(subset=['k', 'budowa', 'res', 'wenz', 'mat', 'p/d'], keep='last', inplace=True)
+                merged_df.drop_duplicates(subset=['m3', 'k', 'budowa', 'res', 'wenz', 'mat', 'p/d'], keep='last', inplace=True)
 
 
                 merged_df.reset_index(drop=True, inplace=True)              
@@ -228,9 +233,6 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
         rozklad_curs['target'] = (rozklad_curs['time'] >= target_time) & (rozklad_curs['time'] <= end_time)
 
-        rozklad_curs.sort_values("time", inplace=True)
-        rozklad_curs.reset_index(drop=True, inplace=True)
-        rozklad_curs.index=rozklad_curs.index+1
         
         rozklad_curs['time'] = rozklad_curs['time'].apply(
             lambda x: x.strftime('%H:%M'))

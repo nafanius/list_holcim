@@ -56,8 +56,6 @@ def get_dict():
 
         data = combination_of_some_days_list(wenzel)
 
-        # now = datetime.now()
-        # data["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
 
         # добавляем статистику
         list_date_for_stat = [t[2] for t in find_day_request()]
@@ -74,12 +72,14 @@ def get_dict():
             day_number += 1
         
         dict_all_wenzels[wenzel[0]] = data
-        
 
 
-    # parsing_args(data)
+    
+    now = datetime.now()
+    dict_all_wenzels["Zaktualizowano"] = f'Zaktualizowano na: {now.strftime("%d.%m.%Y %H:%M")}'
 
-    # return data
+    parsing_args(dict_all_wenzels)
+
     return dict_all_wenzels
 
 
