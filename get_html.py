@@ -269,6 +269,11 @@ html_template = """
             text-align: center;
            }
 
+        .content-div {
+            display: none; /* Изначально скрываем все элементы */
+        }
+
+
         #brend {
             color: rgb(59, 59, 124);
             font-size: small;
@@ -305,6 +310,33 @@ html_template = """
         #bet {
             text-align: right;
             padding-right: 15px;
+        }
+
+        #dropdown {
+            border: none;
+            margin-left: 5px;
+            font-weight: normal;
+            font-size: large;
+            font-weight: bold;
+            color: #003e7c;
+            background: linear-gradient(90deg, #ffffff 0%, rgba(0, 128, 0, 0.397) 100%);
+            border-radius: 3px;
+            filter: drop-shadow(3px -3px 2px #a1a1a1);
+        }
+
+        #dropdown option {
+            font-weight: normal;
+            color: green;
+        }
+
+        #dropdown:focus {
+            border: none;
+        }
+
+        #dropdown option:checked,
+        #dropdown option[selected] {
+            font-weight: bold;
+            color: #003e7c;
         }
 
 
@@ -344,13 +376,32 @@ html_template = """
                     button.classList.add('button-like');
                 }
             }
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+                showDivs(); // Показываем первый элемент при загрузке страницы
+            });
+
+            function showDivs() {
+                const dropdown = document.getElementById('dropdown');
+                const selectedValue = dropdown.value;
+
+                // Скрываем все div'ы
+                const allDivs = document.querySelectorAll('.content-div');
+                allDivs.forEach(div => div.style.display = 'none');
+
+                // Показываем только выбранный div
+                const selectedDiv = document.getElementById(selectedValue);
+                if (selectedDiv) {
+                    selectedDiv.style.display = 'block';
+                }
+            }
         </script>
 
 </head>
 
 <body>
     <div class="main">
-    
+
     <div id="ww_7367f5689bf4c" v='1.3' loc='id' a='{"t":"ticker","lang":"pl","ids":["wl7640"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: 
         <a href="https://oneweather.org/warsaw/30_days/" id="ww_7367f5689bf4c_u" target="_blank">Weather forecast Warsaw 30 days</a>
     </div>
@@ -481,6 +532,13 @@ html_template = """
             </div>
         </div>
 
+        <select id="dropdown" onchange="showDivs()">
+        <option value="zawod">Zawodzie</option>
+        <option value="odola">Odolany</option>
+        <option value="zeran">Żerań</option>
+        <option value="gora">Góra kalwaria</option>
+        </select>
+
         <p style="padding-left: 5px; padding-top: 5px; font-size: smaller;">zostało <span
                 style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">usunięte</span> <span
                 style="color: rgb(0, 139, 7); font-weight: bold;"> nowe</span> - zmiany za ostatnie 4 godziny</p>
@@ -488,7 +546,7 @@ html_template = """
         </span>w danym momencie.</p>
     </div>
 
-    <div class="main_list">
+    <div id="zawod" class="main_list  content-div">
         <p>{{ data['zawod']['element1'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             
@@ -623,7 +681,7 @@ html_template = """
     </div>
 
 
-    <div class="main_list">
+    <div id="odola" class="main_list content-div" style="display: none;">
         <p>{{ data['odola']['element1'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             
@@ -758,7 +816,7 @@ html_template = """
     </div>
 
 
-    <div class="main_list">
+    <div id="zeran" class="main_list content-div" style="display: none;">
         <p>{{ data['zeran']['element1'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             
@@ -892,7 +950,7 @@ html_template = """
         </div>
     </div>
 
-    <div class="main_list">
+    <div id="gora" class="main_list content-div" style="display: none;">
         <p>{{ data['gora']['element1'][0] }}</p>
         <div class="main_list" style="background: linear-gradient(93deg, #94ffa6 0%, #ffffff 77%);">
             
