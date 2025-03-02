@@ -184,7 +184,7 @@ if __name__ == "__main__":
     orders = {}
     count = 1
     date_order = "07.02.2025"
-    for item in get_newest_list_beton_or_lista("beton", date_order):
+    for item in get_newest_list_beton_or_lista("beton", date_order, 'zawod'):
         orders[f"{count}bud"] = Order(date_order, *item)
         count += 1
 

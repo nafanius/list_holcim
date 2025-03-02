@@ -362,7 +362,9 @@ def get_newest_list_beton_or_lista(base, date_of_lista, wenz):
                 return result_list
             
             elif base == "lista":
-                pass
+                deserialized_list = json.loads(result[0])
+                result_list = [(time_from_datatime.fromisoformat(item[0]), item[1]) for item in deserialized_list]
+                return result_list
            
         return []
     
