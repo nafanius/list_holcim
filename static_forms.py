@@ -7,6 +7,7 @@ import logging
 from data_sql import get_newest_list_beton_or_lista
 import data_sql
 from order import Order
+from driver import Driver
 import re
 import altair as alt
 import io
@@ -79,6 +80,31 @@ def get_list_construction_place(date_order, wenzel):
         })
 
     return df_bud
+
+def get_list_construction_driver(date_order, wenzel):
+    """возвращает список словарей словарь заказов на основание класса order его 
+    переменные которые достаёт из базы данных на дату
+
+    Args:
+        date_order (str, optional): _description_. Defaults to "07.02.2025".
+    """
+    drivers = {}
+    count = 1
+    df_driver = []
+
+    for item in get_newest_list_beton_or_lista("lista", date_order, wenzel[0]):
+        drivers[f"{count}dri"] = Driver(date_order, *item)
+        count += 1
+
+    for key_bud in drivers.keys():
+        dri = drivers[key_bud]
+
+        df_driver.append({
+            "time": dri.time_in_list,
+            "person": dri.person,
+        })
+
+    return df_driver
 
 
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
@@ -348,6 +374,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '01.03.2025'
-    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[3])
+    date_of_request = '03.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
     # print(rozklad_curs()[0])

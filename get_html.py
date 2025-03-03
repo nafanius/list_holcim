@@ -414,7 +414,7 @@ html_template = """
                 <p>{{ data['Zaktualizowano'] }}</p>
                 <p id="brend">{{ data['brend'] }}</p>
                 <p id="cong">{{ data['cong'] }}</p>
-                <p id="war">{{ data['zawod']['war'] }}</p>
+                <p id="war">{{ data['war'] }}</p>
             </div>
 
             <div class="title_image"><a style="text-decoration: none;" href="https://www.holcim.pl/" target="_blank">
