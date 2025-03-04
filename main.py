@@ -1,5 +1,5 @@
 from get_lista import combination_of_some_days_list, find_day_request, save_google_sheet
-from static_forms import rozklad_curs, get_list_construction_place
+from static_forms import rozklad_curs, forecast_driver
 from jinja2 import Template
 from get_html import html_template
 from datetime import datetime
@@ -62,15 +62,19 @@ def get_dict():
         day_number = 1
         for date_for_stat in list_date_for_stat:
             rozklad_curs_data = rozklad_curs(wenzel=wenzel, date_of_request=date_for_stat)
+            forecast_drive_data = forecast_driver(wenzel=wenzel, date_of_request=date_for_stat)
+            
             
             data[f"count_{day_number}"] = rozklad_curs_data[1]
             data[f"clean_metrs_{day_number}"] = rozklad_curs_data[2]
             data[f"rozklad_curs_{day_number}"] = rozklad_curs_data[0]
             data[f"grap_intens_{day_number}"] = rozklad_curs_data[3]
             data[f"grap_intens_pie_{day_number}"] = rozklad_curs_data[4]
+
+            data[f"forecast_driver_tab_{day_number}"] = forecast_drive_data
             
+
             day_number += 1
-        
         dict_all_wenzels[wenzel[0]] = data
 
 

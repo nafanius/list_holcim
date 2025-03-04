@@ -92,7 +92,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         inf(f"{err}\nтакого файла нет " + excel_file)
         return []
 
-    sheet = wb[wb.sheetnames[day]]
+    sheet = wb[wb.sheetnames[day+1]]
 
     def fill_list_beton(times_download, row, column, wenz):
         time_pattern = r"\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b"
@@ -164,7 +164,7 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
     except:
         inf("такого файла нет " + excel_file)
         return []
-    sheet = wb[wb.sheetnames[day]]
+    sheet = wb[wb.sheetnames[day+1]]
 
     def fill_list(time_start, row, column):
         time_pattern = r"\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b"
