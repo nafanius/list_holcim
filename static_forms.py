@@ -461,6 +461,8 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                 if not free_executor.startswith('BRAK_KIEROWCA'):
                     if df[order].shift(1).loc[current_time] == 'z':
                         free_executors.insert(0, free_executor)
+                        while free_executor in used_executors:
+                            used_executors.remove(free_executor)
                     else:
                         free_executors.append(free_executor)
                 else:
@@ -576,8 +578,6 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center')
 
         
-
-        pass
     except Exception as err:
         inf(f"Ошибка при формировании forecast_driver>>>>>>>>>>>>{err} ")
         return "<p>Brak</p>"

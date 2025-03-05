@@ -10,7 +10,7 @@ class Settings:
 
     amount_of_zaprawa = 3.5
     names_dry_concret = r'\b(OW|Ow|ow|oW)\b'
-    time_of_end_upload_zaprawa = datetime.time(7, 30)
+    time_of_end_upload_zaprawa = datetime.time(8, 15)
     travel_to_the_construction = 30
     unloading_time_for_pomp = 3 # 1 metr
     unloading_time_for_crane = 8 # 1 metr 
