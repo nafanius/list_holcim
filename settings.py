@@ -15,10 +15,10 @@ class Settings:
     unloading_time_for_pomp = 3 # 1 metr
     unloading_time_for_crane = 8 # 1 metr 
     wenzels = (
-        ("zawod",("zawodzie 2 ", "zawodzie 1 ")),
-        ("odola",("if will be 2 wenz", "odolany 519")),
-        ("zeran",("if will be 2 wenz", "żerań 502")),
-        ("gora",("if will be 2 wenz", "góra kalwaria 502")),
+        ("zawod",("zawodzie 2 ", "zawodzie 1 "), 26),
+        ("odola",("if will be 2 wenz", "odolany 519"), 17),
+        ("zeran",("if will be 2 wenz", "żerań 502"), 15),
+        ("gora",("if will be 2 wenz", "góra kalwaria 502"), 6),
     )
   
     def __init__(self):

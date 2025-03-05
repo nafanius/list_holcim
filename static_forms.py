@@ -378,7 +378,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df_for_driver = df_for_driver_glob[["time","m3","mat","p/d"]]
 
 
-        df_for_driver.copy()
+        df_for_driver = df_for_driver.copy()
         df_for_driver['m3'] = df_for_driver['m3'].astype(float)
 
         def get_end_time(row):
@@ -406,10 +406,17 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df_full_day = df_full_day.fillna(0)
 
         df_driver_list = DataFrame(get_list_construction_driver(date_of_request, wenzel=wenzel))
-        date_as_datetime = pd.to_datetime(date_of_request, format='%d.%m.%Y')
-        df_driver_list['time'] = df_driver_list['time'].apply(lambda t: datetime.combine(date_as_datetime.date(), t))
 
-        driver_dict = df_driver_list.set_index('person')['time'].to_dict()
+        if df_driver_list.empty:
+            driver_dict = {}
+            free_exict_list =  [f'Kierowca_{i}' for i in range(1, wenzel[2])]
+        else:
+            date_as_datetime = pd.to_datetime(date_of_request, format='%d.%m.%Y')
+            df_driver_list.loc[:,'time'] = df_driver_list.loc[:,'time'].apply(lambda t: datetime.combine(date_as_datetime.date(), t))
+            driver_dict = df_driver_list.set_index('person')['time'].to_dict()
+            free_exict_list = []
+
+
 
         df=df_full_day.copy()
 
@@ -422,7 +429,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df['Missing Executors'] = None
 
         # Отслеживание свободных исполнителей
-        free_executors = []
+        free_executors = free_exict_list
         # free_executors = list(df_driver_list['person'])
 
         # Текущие назначения исполнителей к заказам в виде словаря {order: (executor, order)}
@@ -439,18 +446,19 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         # Для каждого временного шага
         for current_time in df.index:
+            start_executers = []
             # Обновляем список доступных исполнителей, учитывая начальное время готовности
             for executor, available_time in executor_availability.items():
                 if available_time <= current_time and executor not in free_executors:
                     if all(executor != assigned_exec for assigned_exec, _ in current_assignments.values()):
-                            free_executors.insert(0, executor)
-                            # free_executors.append(executor)
+                            start_executers.append(executor)
+
                 
             # Сначала освобождаем исполнителей от завершенных заданий
             completed_orders = [order for order, (executor, _) in current_assignments.items() if df[order].loc[current_time] == 0]
             for order in completed_orders:
                 free_executor, _ = current_assignments.pop(order)
-                if not free_executor.startswith('BRAK_KEROWCA'):
+                if not free_executor.startswith('BRAK_KIEROWCA'):
                     if df[order].shift(1).loc[current_time] == 'z':
                         free_executors.insert(0, free_executor)
                     else:
@@ -458,12 +466,24 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                 else:
                     # Заканчиваем интервал работы текущего BRAK исполнителя
                     brak_intervals[free_executor]['end'] = current_time
+
+            # сортировка исполнителей 
+            if free_executors:
+                for i, execu in enumerate(free_executors):
+                    if execu in used_executors:
+                        free_executors = free_executors[:i]+ start_executers + free_executors[i:]
+                        break
+                    if i == len(free_executors)-1:
+                        free_executors = free_executors + start_executers
+            else:             
+                free_executors = start_executers + free_executors        
             
             # Обрабатываем существующие заказы с исполнителями BRAKx
             for order, (executor, assigned_order) in current_assignments.items():
-                if executor.startswith('BRAK_KEROWCA') and free_executors:
+                if executor.startswith('BRAK_KIEROWCA') and free_executors:
                     new_executor = free_executors.pop(0)
                     current_assignments[order] = (new_executor, assigned_order)
+                    df.at[current_time, 'First'] = new_executor + f"::{str(df.at[current_time, 'First'])}"
                     # Заканчиваем интервал работы текущего BRAK исполнителя
                     brak_intervals[executor]['end'] = current_time
             
@@ -475,7 +495,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                         current_executor = free_executors.pop(0)
                     else:
                         # Если нет свободных исполнителей, создаем нового с именем BRAKx
-                        current_executor = f'BRAK_KEROWCA{brak_counter}'
+                        current_executor = f'BRAK_KIEROWCA{brak_counter}'
                         brak_counter += 1
                         missing_executors.append((current_executor, order))
                         # Начинаем интервал работы нового BRAK_KEROWCA исполнителя
@@ -490,7 +510,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             # Обновляем недостающих исполнителей в столбце Missing Executors
             missing_executors = [
                 (executor, order) for order, (executor, _) in current_assignments.items()
-                if executor.startswith('BRAK_KEROWCA')
+                if executor.startswith('BRAK_KIEROWCA')
             ]
             
             # Запись исполнителей и выполняемых заказов в формате (Executor, Order)
@@ -545,10 +565,15 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         expanded_df_rezult = expanded_df.groupby('person')['N% kursów'].apply(list).reset_index()
 
         result_df_end = pd.merge(list_starts, expanded_df_rezult, on='person', how='left')
+        result_df_end = result_df_end.drop_duplicates(subset='person')
+        result_df_end['N% kursów_first'] = result_df_end["N% kursów"].apply(lambda x: x[0])
+        result_df_end.sort_values(by=["time", "N% kursów_first"], inplace=True)
+        result_df_end.drop(columns='N% kursów_first', inplace=True)
+        result_df_end.reset_index(drop=True, inplace=True)
         result_df_end.index=result_df_end.index+1
         result_df_end['time'] = result_df_end['time'].apply(lambda x: x.strftime('%H:%M'))
-        result_df_end.rename({'person':'Kerowca','N% kursów':'kursy'}, axis=1, inplace=True)
-        html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kerowca",classes='rozklad_kerowca_tab', border=0, justify='center')
+        result_df_end.rename({'person':'Kierowca','N% kursów':'kursy'}, axis=1, inplace=True)
+        html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center')
 
         
 
@@ -562,10 +587,10 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '05.03.2025'
-    # df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
-    # df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
+    date_of_request = '06.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
     # print(rozklad_curs()[0])
-    print(rozklad_curs(Settings.wenzels[0], date_of_request))
-    print("*"*10)
-    print(forecast_driver(Settings.wenzels[0], date_of_request))
+    # print(rozklad_curs(Settings.wenzels[0], date_of_request))
+    # print("*"*10)
+    # print(forecast_driver(Settings.wenzels[0], date_of_request))
