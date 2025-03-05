@@ -585,6 +585,9 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         result_df_end.index=result_df_end.index+1
         result_df_end['time'] = result_df_end['time'].apply(lambda x: x.strftime('%H:%M'))
         result_df_end.rename({'person':'Kierowca','N% kursów':'kursy'}, axis=1, inplace=True)
+
+        result_df_end['Kerowca'] = result_df_end['Kerowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
+
         html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center')
 
         
@@ -597,10 +600,11 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '06.03.2025'
-    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
-    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
+    date_of_request = '05.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
     # print(rozklad_curs()[0])
     # print(rozklad_curs(Settings.wenzels[0], date_of_request))
     # print("*"*10)
     # print(forecast_driver(Settings.wenzels[0], date_of_request))
+
