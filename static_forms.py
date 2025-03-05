@@ -586,7 +586,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         result_df_end['time'] = result_df_end['time'].apply(lambda x: x.strftime('%H:%M'))
         result_df_end.rename({'person':'Kierowca','N% kursów':'kursy'}, axis=1, inplace=True)
 
-        result_df_end['Kerowca'] = result_df_end['Kerowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
+        result_df_end['Kierowca'] = result_df_end['Kierowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
 
         html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center')
 
