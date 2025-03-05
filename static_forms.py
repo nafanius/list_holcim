@@ -234,20 +234,20 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
                 if not df_corrects.empty:
                     df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
-                    # df_corrects['delate'] = df_corrects['new_time'].dt.time == pd.to_datetime('00:00:00').time()
+                    df_corrects['delate'] = df_corrects['new_time'].dt.time == pd.to_datetime('00:00:00').time()
 
 
                 with db_lock:
                     df_corrects[['index','id','time','m3','k','budowa','res', 'wenz', 'mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
 
-                # rozklad_curs["delate"] = False
+                rozklad_curs["delate"] = False
 
                 for _, row in df_corrects.iterrows():
                     rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'time'] += row['delta']
-                #     rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'delate'] = row['delate']
+                    rozklad_curs.loc[(rozklad_curs['id'] == row['id'])&(rozklad_curs['budowa'] == row['budowa']), 'delate'] = row['delate']
 
-                # rozklad_curs = rozklad_curs[rozklad_curs['delate'] == False].reset_index(drop=True)
-                # rozklad_curs.drop(columns='delate')
+                rozklad_curs = rozklad_curs[rozklad_curs['delate'] == False].reset_index(drop=True)
+                rozklad_curs.drop(columns='delate')
 
                 rozklad_curs.sort_values("time", inplace=True)
                 rozklad_curs.reset_index(drop=True, inplace=True)
