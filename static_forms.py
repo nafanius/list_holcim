@@ -498,6 +498,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                     df.at[current_time, 'First'] = new_executor + f"::{str(df.at[current_time, 'First'])}"
                     # Заканчиваем интервал работы текущего BRAK исполнителя
                     brak_intervals[executor]['end'] = current_time
+                    brak_intervals[executor]['new driver'] = new_executor
             
             # Назначение исполнителей на начинающиеся заказы
             missing_executors = []
@@ -512,6 +513,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                         missing_executors.append((current_executor, order))
                         # Начинаем интервал работы нового BRAK_KEROWCA исполнителя
                         brak_intervals[current_executor] = {'start': current_time, 'end': None}
+                        brak_intervals[current_executor]['order'] = order
 
                     if current_executor not in used_executors:
                         df.at[current_time, 'First'] = current_executor + f"::{str(df.at[current_time, 'First'])}"
@@ -543,12 +545,6 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         for brak_key, interval in brak_intervals.items():
             if interval['end'] is None:
                 brak_intervals[brak_key]['end'] = df.index[-1]
-
-
-        # todo Просмотр результата вывестиинформацию отдельным DF интервалы недостающих водителей
-        # print("Intervалы недостающих исполнителей:")
-        # for brak, interval in brak_intervals.items():
-        #     print(f"{brak}: {interval['start']} - {interval['end']}")
 
 
         df.replace('[]',np.nan, inplace=True)
@@ -588,21 +584,47 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         result_df_end['Kierowca'] = result_df_end['Kierowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
 
-        html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center')
+        html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center', escape=False)
 
+        # brack kierowców
+        html_table_brak = ''
+        if brak_intervals:
+            df_brak = DataFrame(brak_intervals)
+            df_brak = df_brak.T
+            df_brak["oczekiwanie"] = df_brak["end"] - df_brak["start"]
+            df_brak.rename({'new driver':'dostępny kierowca','order':'kurs'}, axis=1, inplace=True)
+            df_brak['start'] = pd.to_datetime(df_brak['start'])
+            df_brak['end'] = pd.to_datetime(df_brak['end'])
+            df_brak[['start','end']] = df_brak[['start','end']].apply(lambda x: x.dt.strftime('%H:%M'))
+            
+            def format_timedelta(td):
+                """formater time_delta to str"""
+                td = pd.to_timedelta(td)
+                total_seconds = int(td.total_seconds())
+                hours, remainder = divmod(total_seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                return f'{hours:02}:{minutes:02}'
+            
+            df_brak.loc[:,'oczekiwanie'] = df_brak.loc[:,'oczekiwanie'].apply(format_timedelta)
+            df_brak = df_brak[['kurs', 'start', 'end', 'oczekiwanie', 'dostępny kierowca']]
+            new_index  = [f'BRAK KIER_{i}' for i in range(1, len(df_brak) + 1)]
+            df_brak.index = pd.Index(new_index)
+
+            html_table_brak = df_brak.to_html(index=True,table_id="brak_kerowca",classes='rozklad_kerowca_brak', border=0, justify='center', escape=False)
+        
         
     except Exception as err:
         inf(f"Ошибка при формировании forecast_driver>>>>>>>>>>>>{err} ")
-        return "<p>Brak</p>"
+        return "<p>Brak</p>", "<p>Brak</p>"
     
                     
-    return  html_table_kerowca
+    return  html_table_kerowca, html_table_brak
 
 
 if __name__ == "__main__":
-    date_of_request = '05.03.2025'
-    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
-    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
+    date_of_request = '07.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
     # print(rozklad_curs()[0])
     # print(rozklad_curs(Settings.wenzels[0], date_of_request))
     # print("*"*10)

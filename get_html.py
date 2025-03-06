@@ -234,6 +234,12 @@ html_template = """
             text-align: center;
         }
 
+        .rozklad_kerowca_brak {
+            font-size: 0.7em;
+            justify-content: center;
+            text-align: center;
+        }
+
         .hidden {
             display: none;
         }
@@ -569,6 +575,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_1'] }}
+                    {{ data['zawod']['forecast_driver_brak_1'] }}
 
                 </div>
             </div>
@@ -616,6 +623,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_2'] }}
+                    {{ data['zawod']['forecast_driver_brak_2'] }}
 
                 </div>
             </div>
@@ -663,6 +671,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_3'] }}
+                    {{ data['zawod']['forecast_driver_brak_3'] }}
 
                 </div>
             </div>
@@ -713,6 +722,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_1'] }}
+                    {{ data['odola']['forecast_driver_brak_1'] }}
                 </div>
             </div>
 
@@ -759,6 +769,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_2'] }}
+                    {{ data['odola']['forecast_driver_brak_2'] }}
                 </div>
             </div>
 
@@ -805,6 +816,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_3'] }}
+                    {{ data['odola']['forecast_driver_brak_3'] }}
                 </div>
             </div>
             
@@ -854,6 +866,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_1'] }}
+                    {{ data['zeran']['forecast_driver_brak_1'] }}
                 </div>
             </div>
 
@@ -900,6 +913,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_2'] }}
+                    {{ data['zeran']['forecast_driver_brak_2'] }}
                 </div>
             </div>
 
@@ -946,6 +960,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_3'] }}
+                    {{ data['zeran']['forecast_driver_brak_3'] }}
                 </div>
             </div>
             
@@ -994,6 +1009,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_1'] }}
+                    {{ data['gora']['forecast_driver_brak_1'] }}
                 </div>
             </div>
 
@@ -1040,6 +1056,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_2'] }}
+                    {{ data['gora']['forecast_driver_brak_2'] }}
                 </div>
             </div>
 
@@ -1086,6 +1103,7 @@ html_template = """
                     </ul>
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_3'] }}
+                    {{ data['gora']['forecast_driver_brak_3'] }}
                 </div>
             </div>
             

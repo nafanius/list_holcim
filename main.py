@@ -71,7 +71,8 @@ def get_dict():
             data[f"grap_intens_{day_number}"] = rozklad_curs_data[3]
             data[f"grap_intens_pie_{day_number}"] = rozklad_curs_data[4]
 
-            data[f"forecast_driver_tab_{day_number}"] = forecast_drive_data
+            data[f"forecast_driver_tab_{day_number}"] = forecast_drive_data[0]
+            data[f"forecast_driver_brak_{day_number}"] = forecast_drive_data[1]
             
 
             day_number += 1
