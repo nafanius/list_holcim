@@ -578,7 +578,8 @@ html_template = """
                     {{ data['zawod']['forecast_driver_tab_1'] }}
                     {{ data['zawod']['forecast_driver_brak_1'] }}
                     {{ data['zawod']['grap_driver_1'] }}
-
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zawod']['forcast_logist_1'] }}
                 </div>
             </div>
 
@@ -627,7 +628,8 @@ html_template = """
                     {{ data['zawod']['forecast_driver_tab_2'] }}
                     {{ data['zawod']['forecast_driver_brak_2'] }}
                     {{ data['zawod']['grap_driver_2'] }}
-
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zawod']['forcast_logist_2'] }}
                 </div>
             </div>
 
@@ -676,6 +678,8 @@ html_template = """
                     {{ data['zawod']['forecast_driver_tab_3'] }}
                     {{ data['zawod']['forecast_driver_brak_3'] }}
                     {{ data['zawod']['grap_driver_3'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zawod']['forcast_logist_3'] }}
 
                 </div>
             </div>
@@ -728,6 +732,8 @@ html_template = """
                     {{ data['odola']['forecast_driver_tab_1'] }}
                     {{ data['odola']['forecast_driver_brak_1'] }}
                     {{ data['odola']['grap_driver_1'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['odola']['forcast_logist_1'] }}
                 </div>
             </div>
 
@@ -776,6 +782,8 @@ html_template = """
                     {{ data['odola']['forecast_driver_tab_2'] }}
                     {{ data['odola']['forecast_driver_brak_2'] }}
                     {{ data['odola']['grap_driver_2'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['odola']['forcast_logist_2'] }}
                 </div>
             </div>
 
@@ -824,6 +832,8 @@ html_template = """
                     {{ data['odola']['forecast_driver_tab_3'] }}
                     {{ data['odola']['forecast_driver_brak_3'] }}
                     {{ data['odola']['grap_driver_3'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['odola']['forcast_logist_3'] }}
                 </div>
             </div>
             
@@ -875,6 +885,8 @@ html_template = """
                     {{ data['zeran']['forecast_driver_tab_1'] }}
                     {{ data['zeran']['forecast_driver_brak_1'] }}
                     {{ data['zeran']['grap_driver_1'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zeran']['forcast_logist_1'] }}
                 </div>
             </div>
 
@@ -923,6 +935,8 @@ html_template = """
                     {{ data['zeran']['forecast_driver_tab_2'] }}
                     {{ data['zeran']['forecast_driver_brak_2'] }}
                     {{ data['zeran']['grap_driver_2'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zeran']['forcast_logist_2'] }}
                 </div>
             </div>
 
@@ -971,6 +985,8 @@ html_template = """
                     {{ data['zeran']['forecast_driver_tab_3'] }}
                     {{ data['zeran']['forecast_driver_brak_3'] }}
                     {{ data['zeran']['grap_driver_3'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['zeran']['forcast_logist_3'] }}
                 </div>
             </div>
             
@@ -1021,6 +1037,8 @@ html_template = """
                     {{ data['gora']['forecast_driver_tab_1'] }}
                     {{ data['gora']['forecast_driver_brak_1'] }}
                     {{ data['gora']['grap_driver_1'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['gora']['forcast_logist_1'] }}
                 </div>
             </div>
 
@@ -1069,6 +1087,8 @@ html_template = """
                     {{ data['gora']['forecast_driver_tab_2'] }}
                     {{ data['gora']['forecast_driver_brak_2'] }}
                     {{ data['gora']['grap_driver_2'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['gora']['forcast_logist_2'] }}
                 </div>
             </div>
 
@@ -1117,6 +1137,8 @@ html_template = """
                     {{ data['gora']['forecast_driver_tab_3'] }}
                     {{ data['gora']['forecast_driver_brak_3'] }}
                     {{ data['gora']['grap_driver_3'] }}
+                    <p class="libold">Optymalna liczba kierowców i czas pierwszego załadunku do wykonania pracy(w pomoc logistyka) :)</p>
+                    {{ data['gora']['forcast_logist_3'] }}
                 </div>
             </div>
             

@@ -533,7 +533,6 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             ]
             
             # Запись исполнителей и выполняемых заказов в формате (Executor, Order)
-            # executor_assignments = ', '.join(f"({executor}, {assigned_order})" for assigned_order, (executor, order) in current_assignments.items())
             str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, order) in current_assignments.items()])
             df.at[current_time, 'Executors'] = str_current_assignment
 
@@ -542,7 +541,6 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             df.at[current_time, 'Free Executors'] = str_free_executors
             
             # Запись списка недостающих исполнителей в новый столбец
-            # missing_assignments = ', '.join(f"({executor}, {assigned_order})" for executor, assigned_order in missing_executors)
             missing_executors = str(missing_executors)
             df.at[current_time, 'Missing Executors'] = missing_executors
 
@@ -552,40 +550,47 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                 brak_intervals[brak_key]['end'] = df.index[-1]
 
         df_graph_rozklad = df.copy()
-        df.replace('[]',np.nan, inplace=True)
-        df.replace('',np.nan, inplace=True)
 
-        # формируем df старт работы для водителей
-        list_starts = df["First"][df["First"].notna()]
-        list_starts = list_starts.str.split("::")
-        list_starts = list_starts.explode()
-        list_starts.replace('',np.nan, inplace=True)
-        list_starts = list_starts.dropna()
-        list_starts= list_starts.reset_index()
-        list_starts.rename(columns={'index':'time', 'First':'person'}, inplace=True)
+        def convert_df(df):
+            df.replace('[]',np.nan, inplace=True)
+            df.replace('',np.nan, inplace=True)
+
+            # формируем df старт работы для водителей
+            list_starts = df["First"][df["First"].notna()]
+            list_starts = list_starts.astype(str)
+            list_starts = list_starts.str.split("::")
+            list_starts = list_starts.explode()
+            list_starts.replace('',np.nan, inplace=True)
+            list_starts = list_starts.dropna()
+            list_starts= list_starts.reset_index()
+            list_starts.rename(columns={'index':'time', 'First':'person'}, inplace=True)
 
 
-        # формируем список курсов у водителя
-        def str_to_list(s):
-            return eval(s)
+            # формируем список курсов у водителя
+            def str_to_list(s):
+                return eval(s)
+            
+            df_executors =  df['Executors'].dropna()
+
+            df_executors  = df_executors.apply(str_to_list)
+            expanded_rows = df_executors.explode()
+            expanded_rows = expanded_rows.drop_duplicates()
+            expanded_df = pd.DataFrame(expanded_rows.tolist(), columns=['person', 'N% kursów'])
+            expanded_df_rezult = expanded_df.groupby('person')['N% kursów'].apply(list).reset_index()
+
+            result_df_end = pd.merge(list_starts, expanded_df_rezult, on='person', how='left')
+            result_df_end = result_df_end.drop_duplicates(subset='person')
+            result_df_end['N% kursów_first'] = result_df_end["N% kursów"].apply(lambda x: x[0])
+            result_df_end.sort_values(by=["time", "N% kursów_first"], inplace=True)
+            result_df_end.drop(columns='N% kursów_first', inplace=True)
+            result_df_end.reset_index(drop=True, inplace=True)
+            result_df_end.index=result_df_end.index+1
+            result_df_end['time'] = result_df_end['time'].apply(lambda x: x.strftime('%H:%M'))
+            result_df_end.rename({'person':'Kierowca','N% kursów':'kursy'}, axis=1, inplace=True)
+
+            return result_df_end
         
-        df_executors =  df['Executors'].dropna()
-
-        df_executors  = df_executors.apply(str_to_list)
-        expanded_rows = df_executors.explode()
-        expanded_rows = expanded_rows.drop_duplicates()
-        expanded_df = pd.DataFrame(expanded_rows.tolist(), columns=['person', 'N% kursów'])
-        expanded_df_rezult = expanded_df.groupby('person')['N% kursów'].apply(list).reset_index()
-
-        result_df_end = pd.merge(list_starts, expanded_df_rezult, on='person', how='left')
-        result_df_end = result_df_end.drop_duplicates(subset='person')
-        result_df_end['N% kursów_first'] = result_df_end["N% kursów"].apply(lambda x: x[0])
-        result_df_end.sort_values(by=["time", "N% kursów_first"], inplace=True)
-        result_df_end.drop(columns='N% kursów_first', inplace=True)
-        result_df_end.reset_index(drop=True, inplace=True)
-        result_df_end.index=result_df_end.index+1
-        result_df_end['time'] = result_df_end['time'].apply(lambda x: x.strftime('%H:%M'))
-        result_df_end.rename({'person':'Kierowca','N% kursów':'kursy'}, axis=1, inplace=True)
+        result_df_end = convert_df(df)
 
         result_df_end['Kierowca'] = result_df_end['Kierowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
 
@@ -661,13 +666,71 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         count_graph += 1
         graph_html_kierow = html_buffer.getvalue()
         html_buffer.close()
+
+
+        # pomoc logistyki
+        df = df_full_day.copy()
+        df['Executors'] = None
+        df['Free Executors'] = None
+        driver_dict = {}
+        free_executors = []
+        current_assignments = {}
+        used_executors=[]
+        brak_counter = 1
+        df['First'] = ''
+
+        # Для каждого временного шага
+        for current_time in df.index:
+            # Сначала освобождаем исполнителей от завершенных заданий
+            completed_orders = [order for order, (executor, _) in current_assignments.items() if df[order].loc[current_time] == 0]
+            for order in completed_orders:
+                free_executor, _ = current_assignments.pop(order)
+                if df[order].shift(1).loc[current_time] == 'z':
+                    free_executors.insert(0, free_executor)
+                    while free_executor in used_executors:
+                        used_executors.remove(free_executor)
+                else:
+                    free_executors.append(free_executor)
+        
+            # Назначение исполнителей на начинающиеся заказы
+            missing_executors = []
+            for order in df.columns[:-3]:  # исключаем столбцы 'Executors', 'Free Executors' и 'Missing Executors'
+                if df[order].loc[current_time] != 0 and order not in current_assignments:
+                    if free_executors:
+                        current_executor = free_executors.pop(0)
+                    else:
+                        # Если нет свободных исполнителей, создаем нового с именем BRAKx
+                        current_executor = f'Kierowca_{brak_counter}'
+                        brak_counter += 1
+                        missing_executors.append((current_executor, order))
+                        # Начинаем интервал работы нового BRAK исполнителя
+
+                    if current_executor not in used_executors:
+                        df.at[current_time, 'First'] = current_executor + f"::{str(df.at[current_time, 'First'])}"
+                    used_executors.append(current_executor)
+                    
+                    current_assignments[order] = (current_executor, order)
+
+            # Запись исполнителей и выполняемых заказов в формате (Executor, Order)
+            str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, order) in current_assignments.items()])
+            df.at[current_time, 'Executors'] = str_current_assignment
+
+            # Запись списка свободных исполнителей
+            str_free_executors = str(free_executors)
+            df.at[current_time, 'Free Executors'] = str_free_executors
+        
+
+        result_df_end = convert_df(df)
+
+        html_table_kerowca_for_logist = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center', escape=False)
+
         
     except Exception as err:
         inf(f"Ошибка при формировании forecast_driver>>>>>>>>>>>>{err} ")
-        return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
+        return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
     
                     
-    return  html_table_kerowca, html_table_brak, graph_html_kierow
+    return  html_table_kerowca, html_table_brak, graph_html_kierow, html_table_kerowca_for_logist
 
 
 if __name__ == "__main__":
