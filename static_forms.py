@@ -16,6 +16,7 @@ from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
 from settings import Settings
+import ast
 
 
 
@@ -344,6 +345,9 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         graph_html = html_buffer.getvalue()
         html_buffer.close()
 
+
+
+        # graph p/d
         counts = graph['p/d'].value_counts().reset_index()
 
         counts['percentage'] = counts['count'] / counts['count'].sum()
@@ -380,6 +384,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
 
 def forecast_driver(wenzel, date_of_request="18.02.2025"):
+    global count_graph
     try:
         global df_for_driver_glob
         df_for_driver = df_for_driver_glob[["time","m3","mat","p/d"]]
@@ -546,7 +551,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             if interval['end'] is None:
                 brak_intervals[brak_key]['end'] = df.index[-1]
 
-
+        df_graph_rozklad = df.copy()
         df.replace('[]',np.nan, inplace=True)
         df.replace('',np.nan, inplace=True)
 
@@ -611,20 +616,64 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             df_brak.index = pd.Index(new_index)
 
             html_table_brak = df_brak.to_html(index=True,table_id="brak_kerowca",classes='rozklad_kerowca_brak', border=0, justify='center', escape=False)
-        
+
+        # Harmonogram dostępnych kierowców
+        def convert_to_list(value):
+            return ast.literal_eval(value)
+        df_graph_rozklad['Executors'] = df_graph_rozklad['Executors'].apply(convert_to_list)
+        df_graph_rozklad['Free Executors'] = df_graph_rozklad['Free Executors'].apply(convert_to_list)
+        df_graph_rozklad['Missing Executors'] = df_graph_rozklad['Missing Executors'].apply(convert_to_list)
+
+        df_graph_rozklad = df_graph_rozklad.loc[df_graph_rozklad['Executors'].apply(lambda x: x != [])]
+        df_graph_rozklad = df_graph_rozklad.copy()
+        df_graph_rozklad["dostępnych kierowców"] = df_graph_rozklad['Free Executors'].apply(len)  - df_graph_rozklad['Missing Executors'].apply(len)
+        df_graph_rozklad = df_graph_rozklad["dostępnych kierowców"]
+        df_graph_rozklad.rename_axis('time',inplace=True)
+        df_graph_rozklad = df_graph_rozklad.reset_index()
+        df_graph_rozklad.columns = ['time', 'dostępnych kierowców na określony czas']
+        df_graph_rozklad = df_graph_rozklad.melt(id_vars='time', var_name='series', value_name='dostępnych kierowców')
+
+        # form graph Harmonogram dostępnych kierowców
+        above_zero = alt.Chart(df_graph_rozklad[df_graph_rozklad['dostępnych kierowców'] >= 0]).mark_bar(size=0.5).encode(
+            x= alt.X('time:T',axis=alt.Axis(title='time', format='%H:%M')),
+            y= alt.Y('dostępnych kierowców:Q', axis=alt.Axis(title='dostępnych kierowców')),
+        )
+        below_zero = alt.Chart(df_graph_rozklad[df_graph_rozklad['dostępnych kierowców'] < 0]).mark_bar(color='red',  size=0.5).encode(
+            x= alt.X('time:T',axis=alt.Axis(title='time', format='%H:%M')),
+            y= alt.Y('dostępnych kierowców:Q', axis=alt.Axis(title='dostępnych kierowców')),
+        )
+
+        zero_line = alt.Chart(pd.DataFrame({'y': [0]})).mark_rule(color='black', strokeDash=[4, 4]).encode(y='y')
+
+        combined_chart = alt.layer(above_zero, below_zero, zero_line).properties(
+            title='Harmonogram dostępnych kierowców',
+            width='container',
+            height=200,
+            background='rgba(255, 255, 255, 0.5)'
+        ).configure_view(
+            strokeWidth=0,
+        )
+
+        html_buffer = io.StringIO()
+
+        combined_chart.save(html_buffer, format='html', embed_options={
+                   'actions': False}, fullhtml=False,  output_div=f'chart{count_graph}')
+        count_graph += 1
+        graph_html_kierow = html_buffer.getvalue()
+        html_buffer.close()
         
     except Exception as err:
         inf(f"Ошибка при формировании forecast_driver>>>>>>>>>>>>{err} ")
-        return "<p>Brak</p>", "<p>Brak</p>"
+        return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
     
                     
-    return  html_table_kerowca, html_table_brak
+    return  html_table_kerowca, html_table_brak, graph_html_kierow
 
 
 if __name__ == "__main__":
-    date_of_request = '07.03.2025'
-    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
-    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
+    date_of_request = '10.03.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
     # print(rozklad_curs()[0])
     # print(rozklad_curs(Settings.wenzels[0], date_of_request))
     # print("*"*10)

@@ -73,6 +73,7 @@ def get_dict():
 
             data[f"forecast_driver_tab_{day_number}"] = forecast_drive_data[0]
             data[f"forecast_driver_brak_{day_number}"] = forecast_drive_data[1]
+            data[f"grap_driver_{day_number}"] = forecast_drive_data[2]
             
 
             day_number += 1

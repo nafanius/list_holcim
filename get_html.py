@@ -376,6 +376,7 @@ html_template = """
                 // Переключаем видимость элемента
                 if (div.classList.contains('hidden')) {
                     div.classList.remove('hidden');
+                    window.dispatchEvent(new Event('resize'));
                 } else {
                     div.classList.add('hidden');
                 };
@@ -576,6 +577,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_1'] }}
                     {{ data['zawod']['forecast_driver_brak_1'] }}
+                    {{ data['zawod']['grap_driver_1'] }}
 
                 </div>
             </div>
@@ -624,6 +626,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_2'] }}
                     {{ data['zawod']['forecast_driver_brak_2'] }}
+                    {{ data['zawod']['grap_driver_2'] }}
 
                 </div>
             </div>
@@ -672,6 +675,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zawod']['forecast_driver_tab_3'] }}
                     {{ data['zawod']['forecast_driver_brak_3'] }}
+                    {{ data['zawod']['grap_driver_3'] }}
 
                 </div>
             </div>
@@ -723,6 +727,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_1'] }}
                     {{ data['odola']['forecast_driver_brak_1'] }}
+                    {{ data['odola']['grap_driver_1'] }}
                 </div>
             </div>
 
@@ -770,6 +775,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_2'] }}
                     {{ data['odola']['forecast_driver_brak_2'] }}
+                    {{ data['odola']['grap_driver_2'] }}
                 </div>
             </div>
 
@@ -817,6 +823,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['odola']['forecast_driver_tab_3'] }}
                     {{ data['odola']['forecast_driver_brak_3'] }}
+                    {{ data['odola']['grap_driver_3'] }}
                 </div>
             </div>
             
@@ -867,6 +874,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_1'] }}
                     {{ data['zeran']['forecast_driver_brak_1'] }}
+                    {{ data['zeran']['grap_driver_1'] }}
                 </div>
             </div>
 
@@ -914,6 +922,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_2'] }}
                     {{ data['zeran']['forecast_driver_brak_2'] }}
+                    {{ data['zeran']['grap_driver_2'] }}
                 </div>
             </div>
 
@@ -961,6 +970,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['zeran']['forecast_driver_tab_3'] }}
                     {{ data['zeran']['forecast_driver_brak_3'] }}
+                    {{ data['zeran']['grap_driver_3'] }}
                 </div>
             </div>
             
@@ -1010,6 +1020,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_1'] }}
                     {{ data['gora']['forecast_driver_brak_1'] }}
+                    {{ data['gora']['grap_driver_1'] }}
                 </div>
             </div>
 
@@ -1057,6 +1068,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_2'] }}
                     {{ data['gora']['forecast_driver_brak_2'] }}
+                    {{ data['gora']['grap_driver_2'] }}
                 </div>
             </div>
 
@@ -1104,6 +1116,7 @@ html_template = """
                     <p class="libold">Prognoza czasu pierwszego załadunku i liczby kursów:</p>
                     {{ data['gora']['forecast_driver_tab_3'] }}
                     {{ data['gora']['forecast_driver_brak_3'] }}
+                    {{ data['gora']['grap_driver_3'] }}
                 </div>
             </div>
             
