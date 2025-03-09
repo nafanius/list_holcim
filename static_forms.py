@@ -294,10 +294,10 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         graph.set_index('time', inplace=True)
 
         nadal_reszta = pd.to_numeric(graph['res']).resample(
-            '30min').quantile(0.90).rolling(window=2).mean()
+            '30min').quantile(0.90).rolling(window=2, min_periods=1).mean()
 
         graph_corect = graph.resample('30min').sum()
-        graph_corect['m3'] = pd.to_numeric(graph_corect['m3']).rolling(window=2).mean()
+        graph_corect['m3'] = pd.to_numeric(graph_corect['m3']).rolling(window=2, min_periods=1).mean()
         graph_corect.loc[:, 'm3'] = graph_corect.loc[:,'m3'].fillna(0.0)
 
         graph_corect = graph_corect[['m3', 'res', 'budowa']]
@@ -734,7 +734,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '10.03.2025'
+    date_of_request = '12.03.2025'
     df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
     df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
     # print(rozklad_curs()[0])
