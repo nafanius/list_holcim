@@ -1,7 +1,7 @@
-from get_lista import combination_of_some_days_list, find_day_request, save_google_sheet
-from static_forms import rozklad_curs, forecast_driver
+from src.get_lista import combination_of_some_days_list, find_day_request, save_google_sheet
+from statistic.static_forms import rozklad_curs, forecast_driver
 from jinja2 import Template
-from get_html import html_template
+from html_driver.get_html import html_template
 from datetime import datetime
 import boto3
 from botocore.exceptions import NoCredentialsError
