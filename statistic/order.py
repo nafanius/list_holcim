@@ -2,7 +2,7 @@ from pprint import pprint
 from data_drive.data_sql import get_newest_list_beton_or_lista
 import re
 import datetime
-from settings import Settings
+from src.settings import Settings
 
 
 class Order:

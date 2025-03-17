@@ -9,7 +9,7 @@ import os
 import argparse
 import logging
 from pprint import pprint
-from settings import Settings
+from src.settings import Settings
 
 
 # region logging

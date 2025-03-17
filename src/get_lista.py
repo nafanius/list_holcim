@@ -1,7 +1,7 @@
 import threading
 import ezsheets
 import time as time
-from settings import Settings
+from src.settings import Settings
 import src.get_del_new_lists as get_del_new_lists
 
 from data_drive import data_sql

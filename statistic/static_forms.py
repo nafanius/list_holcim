@@ -15,7 +15,7 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
-from settings import Settings
+from src.settings import Settings
 import ast
 
 

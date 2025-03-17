@@ -1,7 +1,7 @@
 import threading
 import time
 from data_drive import data_sql
-from settings import Settings
+from src.settings import Settings
 
 db_lock = threading.Lock()
 
