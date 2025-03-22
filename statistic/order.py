@@ -137,7 +137,7 @@ class Order:
             if data == '501':
                 return False
             return True
-        elif not pompa_dgwig and metres > 24:
+        elif not pompa_dgwig and metres > 50:
             return True
         
         return False

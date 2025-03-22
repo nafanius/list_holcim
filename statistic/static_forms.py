@@ -107,7 +107,76 @@ def get_list_construction_driver(date_order, wenzel):
 
     return df_driver
 
+# Функция для обработки строк с одинаковым временем
+def adjust_times(df):
+    max_iterations = 10  # максимальное количество итераций
+    iteration = 0
+    
+    while iteration < max_iterations:
+        # Группировка по времени
+        time_groups = df.groupby(['list_of_loads', 'wenz'])
+        
+        any_changes = False  # флаг, чтобы отслеживать изменения
+        
+        # Обработка каждой группы
+        result = []
+        for _ , group in time_groups:
+            if len(group) == 2:
+                # Добавить 10 минут ко второму вхождению
+                group.iloc[0, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=10 + iteration*2)
+                any_changes = True
+            elif len(group) == 3:
+                # Уменьшить на 10 минут первое вхождение
+                group.iloc[0, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=10 + iteration*2)
+                # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
+                group.iloc[2, :group.columns.get_loc('list_of_loads')] += pd.Timedelta(minutes=10 + iteration*2)
+                any_changes = True
+            elif len(group) == 4:
+                # Уменьшить на 10 минут первое вхождение
+                group.iloc[0, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=17 + iteration*2)
+                group.iloc[1, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=9 + iteration*2)
+                # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
+                group.iloc[3, :group.columns.get_loc('list_of_loads')] += pd.Timedelta(minutes=10 + iteration*2)
+                any_changes = True
+            elif len(group) >= 5:
+                # Уменьшить на 10 минут первое вхождение
+                group.iloc[0, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=17 + iteration*2)
+                group.iloc[1, :group.columns.get_loc('list_of_loads')] -= pd.Timedelta(minutes=9 + iteration*2)
+                # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
+                group.iloc[3, :group.columns.get_loc('list_of_loads')] += pd.Timedelta(minutes=9 + iteration*2)
+                group.iloc[4, :group.columns.get_loc('list_of_loads')] += pd.Timedelta(minutes=17 + iteration*2) 
+                any_changes = True  
+            result.append(group)
 
+        df = pd.concat(result)
+        
+        if not any_changes:
+            break  # если изменений не было, выйти из цикла
+        
+        iteration += 1
+        
+    return df
+
+
+min_interval = pd.Timedelta(minutes=7)
+
+# Функция для корректировки времени в рамках каждой группы
+def adjust_times2(df):
+    min_interval = pd.Timedelta(minutes=Settings.min_interval)
+
+    df = df.sort_values(by='list_of_loads').reset_index(drop=True)
+    for i in range(1, len(df)):
+        prev_time = df.loc[i - 1, 'list_of_loads']
+        curr_time = df.loc[i, 'list_of_loads']
+
+        # Вычисляем разницу
+        interval = curr_time - prev_time
+
+        if interval < min_interval:
+            # Если интервал меньше 10 минут, корректируем время
+            df.loc[i, 'list_of_loads'] = prev_time + min_interval
+    return df
+    
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
     df_orders = get_list_construction_place(date_of_request, wenzel=wenzel)
@@ -127,19 +196,20 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         # оставляем название курсы метров и курсы выселки
         rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'wenz', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
             ['list_of_loads', 'list_of_courses', 'reszta', 'namber_cours'])
+        
+        #разносим высылки по 10 мин если в одно и тоже время
+        rozklad_curs = adjust_times(rozklad_curs)
+        rozklad_curs.sort_values("list_of_loads", inplace=True)
+
+        # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
+        rozklad_curs = rozklad_curs.groupby('wenz')[rozklad_curs.columns].apply(adjust_times2).reset_index(drop=True)
+
 
         rozklad_curs["it_is_zaprawa"] = rozklad_curs["it_is_zaprawa"].replace(
             {True: 'z', False: 'b'})
         rozklad_curs["pompa_dzwig"] = rozklad_curs["pompa_dzwig"].replace(
             {True: 'p', False: 'd'})
 
-        # todo тут встовляем проверку есть ли изменения которые прислали с бота
-        # with db_lock:
-        #     df_changes = pd.read_sql_table('changes', con=data_sql.engine)
-
-        # graph = rozklad_curs
-
-        rozklad_curs.sort_values("list_of_loads", inplace=True)
 
         rozklad_curs = rozklad_curs.reset_index()
         rozklad_curs.index = rozklad_curs.index+1
@@ -380,8 +450,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
         return "<p>Brak</p>", 0, 0, "<p>Brak</p>", "<p>Brak</p>"
 
-    return html_table, rozklad_curs.shape[0], bud_without_dry["meter"].sum(), graph_html, graph_html_pie
-
+    return html_table, rozklad_curs.shape[0], round(bud_without_dry["meter"].sum(), 1), graph_html, graph_html_pie
 
 def forecast_driver(wenzel, date_of_request="18.02.2025"):
     global count_graph
@@ -734,7 +803,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '12.03.2025'
+    date_of_request = '24.03.2025'
     df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
     df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
     # print(rozklad_curs()[0])
