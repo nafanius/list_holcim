@@ -30,14 +30,20 @@ exp = logging.exception
 # logging_end
 # endregion
 
-# Создание базового класса
+# creating database
 Base = declarative_base()
 
 
-# Определение структуры таблицы через класс
-
 
 class Beton_zawod(Base):
+    """base template for beton_zawod
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """    
     __tablename__ = "beton_zawod"
 
     id_event_time = Column(Float, primary_key=True)
@@ -50,6 +56,14 @@ class Beton_zawod(Base):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
 class Beton_odola(Base):
+    """base template for beton_odola
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """   
     __tablename__ = "beton_odola"
 
     id_event_time = Column(Float, primary_key=True)
@@ -62,6 +76,14 @@ class Beton_odola(Base):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
 class Beton_zeran(Base):
+    """base template for beton_zeran
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "beton_zeran"
 
     id_event_time = Column(Float, primary_key=True)
@@ -74,6 +96,14 @@ class Beton_zeran(Base):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
 class Beton_gora(Base):
+    """base template for beton_gora
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "beton_gora"
 
     id_event_time = Column(Float, primary_key=True)
@@ -85,8 +115,15 @@ class Beton_gora(Base):
     def __repr__(self):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
 
-
 class Lista_zawod(Base):
+    """base template for lista_zawod
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "lista_zawod"
 
     id_event_time = Column(Float, primary_key=True)
@@ -99,6 +136,14 @@ class Lista_zawod(Base):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
 class Lista_odola(Base):
+    """base template for lista_odola
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "lista_odola"
 
     id_event_time = Column(Float, primary_key=True)
@@ -111,6 +156,14 @@ class Lista_odola(Base):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
 class Lista_zeran(Base):
+    """base template for lista_zeran
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "lista_zeran"
 
     id_event_time = Column(Float, primary_key=True)
@@ -123,6 +176,14 @@ class Lista_zeran(Base):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
 class Lista_gora(Base):
+    """base template for lista_gora
+
+    Args:
+        Base (class): base class from  sqlalchemy
+
+    Returns:
+        str: description of this class
+    """
     __tablename__ = "lista_gora"
 
     id_event_time = Column(Float, primary_key=True)
@@ -135,17 +196,22 @@ class Lista_gora(Base):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
 
 
-# Создание базы данных SQLite в файле
+# creating an SQLlite database in a file
 engine = create_engine(Settings.data_base)
 
-# Создание всех таблиц, которые еще не существуют
+# creating all tables that do not yet exist
 Base.metadata.create_all(engine)
 
-# Создание сессии для взаимодействия с базой данных
+# Сcreating session for interective with database
 Session = sessionmaker(bind=engine)
 
 
 def record_beton(data):
+    """Inserting data into the concrete orders information table
+
+    Args:
+        data (dictionary): dictionary with elements wenz, day, lista_beton, date_of_day_text
+    """    
     session = Session()
     get_list_beton_serialize = [(item[0], item[1].isoformat(), *item[2:]) for item in data["lista_beton"]]
     serialized_list_beton = json.dumps(get_list_beton_serialize, default=str)
@@ -197,6 +263,11 @@ def record_beton(data):
 
 
 def record_lista(data):
+    """ Inserting data into the list information table
+
+    Args:
+        data (dictionary): dictionary with elements wenz, day, lista, date_of_day_text
+    """    
     session = Session()
 
     get_list_serialize = [(item[0].isoformat(), item[1]) for item in data["lista"]]
@@ -238,11 +309,11 @@ def record_lista(data):
         session.add(lista)
         session.commit()
     except IntegrityError as e:
-        inf("Ошибка целостности данных: возможно, дубликат ключа")
-        session.rollback()  # Отмена всех изменений в текущей транзакции
+        inf("Data integration error:possible duplicate key")
+        session.rollback()  # rollback all changes in the current transaction
 
     except Exception as e:
-        inf("Ошибка при добавлении данных:", e)
+        inf("Error adding data", e)
         session.rollback()
     finally:
         session.close()
@@ -276,14 +347,14 @@ def delete_records_below_threshold(threshold, base, wenz):
     session = Session()
 
     try:
-        # Отберите записи с большим или меньшим значением первичного ключа
+        # select records with greaters primary key value
         records_to_delete = session.query(base_name).filter(base_name.id_event_time < threshold).order_by(base_name.id_event_time).all()
 
-        # Удалите выбранные записи
+        # delete selected records
         for record in records_to_delete:
             session.delete(record)
         
-        # Подтвердите изменения
+        # confirm changes
         session.commit()
     except Exception as e:
         session.rollback()
@@ -292,7 +363,17 @@ def delete_records_below_threshold(threshold, base, wenz):
         session.close()
 
 
-def get_oldest_list_beton_or_lista(base, date_of_lista, wenz):
+def get_oldest_list_beton_or_lista(base, date_of_lista_text, wenz):
+    """retriving the oldest list of concrete or schedule
+
+    Args:
+        base (str): name base - beton or lista
+        date_of_lista (str): date of request '10.02.2020'
+        wenz (str): name of concretes plent 
+
+    Returns:
+        list: list of concrete oeders or schedule
+    """    
     
     if base == "beton" and wenz == "zawod":
         base_name = Beton_zawod
@@ -314,7 +395,7 @@ def get_oldest_list_beton_or_lista(base, date_of_lista, wenz):
     session = Session()
 
     try:
-        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista).order_by(base_name.id_event_time.asc()).first()
+        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista_text).order_by(base_name.id_event_time.asc()).first()
         
         if result:
             if base == "beton":
@@ -330,7 +411,18 @@ def get_oldest_list_beton_or_lista(base, date_of_lista, wenz):
     finally:
         session.close()
 
-def get_newest_list_beton_or_lista(base, date_of_lista, wenz):
+
+def get_newest_list_beton_or_lista(base, date_of_lista_text, wenz):
+    """retriving the nevest list of concrete or schedule
+
+    Args:
+        base (str): name base - beton or lista
+        date_of_lista (str): date of request '10.02.2020'
+        wenz (str): name of concretes plent 
+
+    Returns:
+        list: list of concrete orders or schedule
+    """  
     
     if base == "beton" and wenz == "zawod":
         base_name = Beton_zawod
@@ -352,8 +444,7 @@ def get_newest_list_beton_or_lista(base, date_of_lista, wenz):
     session = Session()
 
     try:
-        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista).order_by(base_name.id_event_time.desc()).first()
-        inf("REZULT_____________________________________________________")
+        result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista_text).order_by(base_name.id_event_time.desc()).first()
         if result:
             
             if base == "beton":

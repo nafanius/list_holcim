@@ -29,17 +29,24 @@ def get_dict():
     """creation and return of a dictionary with all data for HTML"""
     
 
-
     #  We save the latest Excel files from Google Drive.
     save_google_sheet()
 
     def parsing_args(dictinary):
+        """ addes to the  dictionary warrnings, for whom the page is made/ and congratulations  
+
+        Args:
+            dictinary (dictionary): recives the dictionary an adds elements to it from variables when the programis launched
+
+        Returns:
+            dicnionary: dictionary with added elements
+        """ 
         parser = argparse.ArgumentParser(
-            description="Добавляем теги с приветствием и прочим"
+            description="Add tegs with congratulation? warrnings and other things"
         )
-        parser.add_argument("--by_who", type=str, help="Кто это сделал")
-        parser.add_argument("--cong", type=str, help="поздравление праздники")
-        parser.add_argument("--war", type=str, help="предупреждене")
+        parser.add_argument("--by_who", type=str, help="for whom it's maded")
+        parser.add_argument("--cong", type=str, help="holiday greeting")
+        parser.add_argument("--war", type=str, help="warrning")
 
         args = parser.parse_args()
 
@@ -57,7 +64,7 @@ def get_dict():
         data = combination_of_some_days_list(wenzel)
 
 
-        # добавляем статистику
+        # adding statistics
         list_date_for_stat = [t[2] for t in find_day_request()]
         day_number = 1
         for date_for_stat in list_date_for_stat:
