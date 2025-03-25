@@ -7,7 +7,7 @@ class Settings:
     time_of_compare = 4
     data_base = 'sqlite:////home/user/.database_lista/web_lista.db'
 
-    min_interval = 7
+    min_interval = 9
     amount_of_zaprawa = 3.5
     names_dry_concret = r'\b(OW|Ow|ow|oW)\b'
     time_of_end_upload_zaprawa = datetime.time(8, 15)
