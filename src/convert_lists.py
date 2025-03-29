@@ -52,7 +52,7 @@ def compare_lists_by_tuples(del_lista, add_lista):
     
     for index1, tuple1 in enumerate(del_lista):
         for index2, tuple2 in enumerate(add_lista):
-            if tuple1[:3] == tuple2[:3] and tuple1[6] == tuple2[6]:
+            if tuple1[:3] == tuple2[:3]:
                 matching_indices.append((index1, index2))
                 
     del_lista, add_lista = make_list_with_teg(del_lista, add_lista, matching_indices)
@@ -80,8 +80,10 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
     for index in del_elem_from_add_lista:
         if 0 <= index < len(add_lista_without_change):
             del add_lista_without_change[index]
-    
-    pprint(f"это дел листа  виз тег {del_lista_with_teg}")
+
+    print('this is del_lista with teg')
+    pprint(del_lista_with_teg)
+    print('this is add lista without change')
     pprint(f"это дел листа  виз тег {add_lista_without_change}")
 
     return del_lista_with_teg, add_lista_without_change

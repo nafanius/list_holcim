@@ -137,8 +137,9 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         date_of_day_text, lista_beton, wenzel
     )
 
-
+    print("raw del lista")
     pprint(del_lista)
+    print("raw add lista")
     pprint(add_lista)
 
     # добавил сохранение в базе данных листы бетона
