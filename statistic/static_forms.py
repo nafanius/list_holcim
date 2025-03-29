@@ -379,7 +379,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         graph_corect.loc[:, 'm3'] = graph_corect.loc[:,'m3'].fillna(0.0)
 
         graph_corect = graph_corect[['m3', 'res', 'budowa']]
-        graph_corect.columns = ['intensywność m/g',
+        graph_corect.columns = ['intensywność m3/g',
                                 'nadal trzeba wysłać', 'budowa']
 
         graph_corect['nadal trzeba wysłać'] = pd.to_numeric(
@@ -490,6 +490,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         for i in range(1,len(df_for_driver)+1):
             mask = (df_full_day.index >= df_for_driver.loc[i, 'time']) & (df_full_day.index <= df_for_driver.loc[i, 'end_time'])
+            df_full_day = df_full_day.copy()
             df_full_day.loc[mask, i] = df_for_driver.loc[i, 'mat']
         
         df_full_day = df_full_day.fillna(0)

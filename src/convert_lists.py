@@ -1,4 +1,5 @@
 import re
+from pprint import pprint
 
 def converter(list_for_convert):
     def convert_to_string(data):
@@ -80,6 +81,8 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
         if 0 <= index < len(add_lista_without_change):
             del add_lista_without_change[index]
     
+    pprint(f"это дел листа  виз тег {del_lista_with_teg}")
+    pprint(f"это дел листа  виз тег {add_lista_without_change}")
 
     return del_lista_with_teg, add_lista_without_change
 

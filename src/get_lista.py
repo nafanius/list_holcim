@@ -3,6 +3,7 @@ import ezsheets
 import time as time
 from src.settings import Settings
 import src.get_del_new_lists as get_del_new_lists
+from pprint import pprint
 
 from data_drive import data_sql
 import openpyxl
@@ -137,8 +138,8 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     )
 
 
-    inf(del_lista)
-    inf(add_lista)
+    pprint(del_lista)
+    pprint(add_lista)
 
     # добавил сохранение в базе данных листы бетона
     with db_lock:
