@@ -1,8 +1,39 @@
+""" Convert lists to a string and format it
+    The module takes a list of values and converts them to a string format.
+    And then compare two lists of tuples and find matching indices based on the first three elements of each tuple.
+    And then create a new lists with teg for the first list and remove the elements from the second list us
+    and make list_norm_del_add
+
+Returns:
+    list: list_norm_del_add of tuple with three sort - add, del, norm ready to create html
+    """
+
 import re
 from pprint import pprint
 
 def converter(list_for_convert):
+    """Convert the list to a string and format it.
+    The function takes a list of values and converts them to a string format.
+
+    Args:
+        list_for_convert (list): list of values to be converted to a string
+
+    Returns:
+        list: list of strings
+    """    
     def convert_to_string(data):
+        """Convert the data to a string and format it.
+        The function takes a value and converts it to a string format. 
+        It removes leading and trailing whitespace, replaces multiple spaces with a single space,
+        and removes the word 'None' if it appears in the string.
+        If the input is None or an empty string, it returns an empty string.
+
+        Args:
+            data (str): value to be converted to a string
+
+        Returns:
+            list: list of strings
+        """        
         if not data:
             return ""
         try:
@@ -15,6 +46,14 @@ def converter(list_for_convert):
             return ""
         
     def convert_to_true_false(data):
+        """Convert the data to a boolean value.
+
+        Args:
+            data (str): value to be converted to a boolean
+
+        Returns:
+            boolen: True if the data is not empty and not equal to '501', False otherwise
+        """        
         if not data:
             return False
         if data == '501':
@@ -48,6 +87,17 @@ def converter(list_for_convert):
 
 
 def compare_lists_by_tuples(del_lista, add_lista):
+    """Compare two lists of tuples and find matching indices based on the first three elements of each tuple.
+    And then create a new lists with teg for the first list and remove the elements from the second list us
+    and make_list_with_teg
+
+    Args:
+        del_lista (list): del_lista from get_lista
+        add_lista (list): add_lista from get_lista
+
+    Returns:
+        tuple: del_lista with teg and add_lista without elements that are in del_lista
+    """    
     matching_indices = []
     
     for index1, tuple1 in enumerate(del_lista):
@@ -59,6 +109,18 @@ def compare_lists_by_tuples(del_lista, add_lista):
     return del_lista, add_lista
 
 def make_list_with_teg(del_lista, add_lista, matching_indices):
+    """Create a new list with HTML tags for the del_lista list and remove the elements from the add_lista.
+    The function takes two lists and a list of matching indices. It creates a new list with HTML tags for the del_lista
+    and removes the elements from the add_lista that are in the del_lista.
+
+    Args:
+        del_lista (list): del_lista from get_lista
+        add_lista (list): add_lista from get_lista
+        matching_indices (list of tuple): list of tuples with indices of matching elements in del_lista and add_lista
+
+    Returns:
+        tuple: del_liata_with_teg HTML tags and add_lista_without_change 
+    """     
     del_lista_with_teg = del_lista
     add_lista_without_change = add_lista
     del_elem_from_add_lista = [tup[1] for tup in matching_indices]
@@ -97,10 +159,10 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     Args:
         lista_norm (list): The list has not changed since the last time
         lista_del (list): The list with removed items
-        lista_add (list): The list with new items, sort items by time> metrs> firm
+        lista_add (list): The list with new items, sorted items by time> metrs> firm
 
     Returns:
-        list: list of cartege with three sort - add del norm
+        list: list of tuple with three sort - add, del, norm
     """
 
     # Add the index of the list to which the element belongs at the end of the element
@@ -119,14 +181,11 @@ def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     replacement_dict = {tuple(tup[:8]): tup for tup in lista_add}
     lista_norm_add = [replacement_dict.get(tuple(tup[:8]), tup) for tup in lista_norm]
 
-    # добавляем всё что lista_del и всё что lista_norm_add кроме того что есть в  lista_del
+    # add elements from lista_norm_add to lista_norm_del_add if they are not already in lista_del
     lista_norm_del_add = lista_del.copy() 
-        
     for sublist2 in lista_norm_add:
         if not any(l1[:3] == sublist2[:3] for l1 in lista_del):  
             lista_norm_del_add.append(sublist2)
-
-
 
 
     # sorted by time, meters, name of firm

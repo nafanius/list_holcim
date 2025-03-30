@@ -1,4 +1,10 @@
-"""настройки и управление web lista"""
+"""Settings for the application.
+This module contains the configuration settings for the application,
+including database connection details, time intervals, and other parameters.
+It is designed to be easily modifiable to suit different environments
+and requirements.
+"""
+
 import datetime
 
 
