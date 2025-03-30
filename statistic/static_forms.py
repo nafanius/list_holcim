@@ -17,6 +17,7 @@ from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
 from src.settings import Settings
 import ast
+import traceback
 
 
 
@@ -455,7 +456,22 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         html_buffer.close()
 
     except Exception as err:
-        inf(f"Ошибка при формировании rozklad_cours>>>>>>>>>>>>{err} ")
+        err_type = type(err).__name__
+        tb_str = traceback.format_exc()
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_frame = traceback.extract_tb(err.__traceback__)[-1]
+        function_name = current_frame.name
+
+        inf(f"""
+        Ошибка при формировании rozklad_cours
+        Время: {timestamp}
+        Тип ошибки: {err_type}
+        Сообщение: {err}
+        Функция: {function_name}
+        Трассировка:
+        {tb_str}
+        """)
+        
         return "<p>Brak</p>", 0, 0, "<p>Brak</p>", "<p>Brak</p>"
 
     return html_table, rozklad_curs.shape[0], round(bud_without_dry["meter"].sum(), 1), graph_html, graph_html_pie
@@ -804,7 +820,22 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         
     except Exception as err:
-        inf(f"Ошибка при формировании forecast_driver>>>>>>>>>>>>{err} ")
+        err_type = type(err).__name__
+        tb_str = traceback.format_exc()
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_frame = traceback.extract_tb(err.__traceback__)[-1]
+        function_name = current_frame.name
+        
+        inf(f"""
+        Ошибка при формировании forecast_driver
+        Время: {timestamp}
+        Тип ошибки: {err_type}
+        Сообщение: {err}
+        Функция: {function_name}
+        Трассировка:
+        {tb_str}
+        """)
+
         return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
     
                     
