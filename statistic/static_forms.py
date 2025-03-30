@@ -1,5 +1,4 @@
 from pandas import Series, DataFrame
-import plotly.express as px
 import pandas as pd
 import numpy as np
 from pprint import pprint
@@ -8,7 +7,6 @@ from data_drive.data_sql import get_newest_list_beton_or_lista
 from data_drive import data_sql
 from statistic.order import Order
 from statistic.driver import Driver
-import re
 import altair as alt
 import io
 import threading
@@ -109,7 +107,7 @@ def get_list_construction_driver(date_order, wenzel):
     return df_driver
 
 # Функция для обработки строк с одинаковым временем
-def adjust_times(df):
+def adjust_time1(df):
     max_iterations = 10  # максимальное количество итераций
     iteration = 0
     
@@ -178,6 +176,20 @@ def adjust_times2(df):
         if interval < min_interval:
             # Если интервал меньше 10 минут, корректируем время
             df.loc[i, 'time'] = curr_time + (min_interval - interval)
+    return df
+
+#разносим высылки по 10 мин если в одно и тоже время
+def adjust_times(df):
+    #разносим высылки по 10 мин если в одно и тоже время
+    df = adjust_time1(df)
+    df.sort_values("time", inplace=True) # type: ignore
+
+    # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
+    df = df.groupby('wenz')[df.columns].apply(adjust_times2).reset_index(drop=True)
+    df.sort_values("time", inplace=True) # type: ignore
+    df.reset_index(drop=True, inplace=True)
+    df.index=df.index+1
+
     return df
     
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
@@ -319,25 +331,14 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
               
             #разносим высылки по 10 мин если в одно и тоже время
             rozklad_curs = adjust_times(rozklad_curs)
-            rozklad_curs.sort_values("time", inplace=True) # type: ignore
-
-            # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
-            rozklad_curs = rozklad_curs.groupby('wenz')[rozklad_curs.columns].apply(adjust_times2).reset_index(drop=True)
-            rozklad_curs.reset_index(drop=True, inplace=True)
-            rozklad_curs.index=rozklad_curs.index+1    
 
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual_after', con=data_sql.engine, if_exists='replace', index=True)
         else:
-            # разносим высылки по 10 мин если в одно и тоже время
+            #разносим высылки по 10 мин если в одно и тоже время
             rozklad_curs = adjust_times(rozklad_curs)
-            rozklad_curs.sort_values("time", inplace=True) # type: ignore
-
-            # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
-            rozklad_curs = rozklad_curs.groupby('wenz')[rozklad_curs.columns].apply(adjust_times2).reset_index(drop=True)
-            rozklad_curs.reset_index(drop=True, inplace=True)
-            rozklad_curs.index=rozklad_curs.index+1  
+           
   
         # for marking targets dowload
         target_time = pd.Timestamp.now()
