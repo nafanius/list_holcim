@@ -169,10 +169,7 @@ def adjust_time2(df):
         curr_time = df.loc[i, 'time']
 
         if curr_time < prev_time:
-            prev_time = curr_time
-
-            # Вычисляем разницу
-            interval = curr_time - prev_time
+            curr_time = prev_time
 
             df.loc[i, 'time'] = curr_time + min_interval
 
@@ -181,13 +178,8 @@ def adjust_time2(df):
             interval = curr_time - prev_time
 
             if interval < min_interval:
-                print(f"Index: {i}")
-                print(f"Prev Time: {prev_time}")
-                print(f"Curr Time: {curr_time}")
-                print(f"Interval: {interval}")
-                print(f"Min Interval: {min_interval}")
                 # Если интервал меньше 10 минут, корректируем время
-                df.loc[i, 'time'] = prev_time + (min_interval - interval)
+                df.loc[i, 'time'] = curr_time + (min_interval - interval)
     return df
 
 #разносим высылки по 10 мин если в одно и тоже время
@@ -858,7 +850,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '01.04.2025'
+    date_of_request = '31.03.2025'
     df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
     df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
     # print(rozklad_curs()[0])
