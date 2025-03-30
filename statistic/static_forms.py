@@ -132,19 +132,19 @@ def adjust_times(df):
                 group.iat[2, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
                 any_changes = True
             elif len(group) == 4:
-                # Уменьшить на 10 минут первое вхождение
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=17 + iteration*2)
-                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=9 + iteration*2)
+                # Уменьшить на 10, 20  минут два первых вхождение
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
+                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
                 # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
                 group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
                 any_changes = True
             elif len(group) >= 5:
                 # Уменьшить на 10 минут первое вхождение
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=17 + iteration*2)
-                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=9 + iteration*2)
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
+                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
                 # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
-                group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=9 + iteration*2)
-                group.iat[4, group.columns.get_loc('time')] += pd.Timedelta(minutes=17 + iteration*2) 
+                group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[4, group.columns.get_loc('time')] += pd.Timedelta(minutes=20 + iteration*2) 
                 any_changes = True  
             result.append(group)
 
@@ -174,7 +174,7 @@ def adjust_times2(df):
 
         if interval < min_interval:
             # Если интервал меньше 10 минут, корректируем время
-            df.loc[i, 'time'] = prev_time + min_interval
+            df.loc[i, 'time'] = prev_time + (min_interval - interval)
     return df
     
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
@@ -406,7 +406,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                             ))
         ).transform_filter(
             alt.FieldOneOfPredicate(field='series', oneOf=[
-                'intensywność m/g', 'nadal trzeba wysłać'])
+                'intensywność m3/g', 'nadal trzeba wysłać'])
         ).properties(
             width='container',
             height=150
