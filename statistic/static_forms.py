@@ -160,22 +160,34 @@ def adjust_time1(df):
 min_interval = pd.Timedelta(minutes=7)
 
 # Функция для корректировки времени в рамках каждой группы
-def adjust_times2(df):
+def adjust_time2(df):
     min_interval = pd.Timedelta(minutes=Settings.min_interval)
 
     df = df.sort_values(by='time').reset_index(drop=True)
     for i in range(1, len(df)):
         prev_time = df.loc[i - 1, 'time']
         curr_time = df.loc[i, 'time']
+
         if curr_time < prev_time:
             prev_time = curr_time
 
-        # Вычисляем разницу
-        interval = curr_time - prev_time
+            # Вычисляем разницу
+            interval = curr_time - prev_time
 
-        if interval < min_interval:
-            # Если интервал меньше 10 минут, корректируем время
-            df.loc[i, 'time'] = curr_time + (min_interval - interval)
+            df.loc[i, 'time'] = curr_time + min_interval
+
+        else:
+            # Вычисляем разницу
+            interval = curr_time - prev_time
+
+            if interval < min_interval:
+                print(f"Index: {i}")
+                print(f"Prev Time: {prev_time}")
+                print(f"Curr Time: {curr_time}")
+                print(f"Interval: {interval}")
+                print(f"Min Interval: {min_interval}")
+                # Если интервал меньше 10 минут, корректируем время
+                df.loc[i, 'time'] = prev_time + (min_interval - interval)
     return df
 
 #разносим высылки по 10 мин если в одно и тоже время
@@ -185,7 +197,7 @@ def adjust_times(df):
     df.sort_values("time", inplace=True) # type: ignore
 
     # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
-    df = df.groupby('wenz')[df.columns].apply(adjust_times2).reset_index(drop=True)
+    df = df.groupby('wenz')[df.columns].apply(adjust_time2).reset_index(drop=True)
     df.sort_values("time", inplace=True) # type: ignore
     df.reset_index(drop=True, inplace=True)
     df.index=df.index+1
