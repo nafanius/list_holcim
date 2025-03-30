@@ -84,7 +84,7 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
     print('this is del_lista with teg')
     pprint(del_lista_with_teg)
     print('this is add lista without change')
-    pprint(f"это дел листа  виз тег {add_lista_without_change}")
+    pprint(add_lista_without_change)
 
     return del_lista_with_teg, add_lista_without_change
 

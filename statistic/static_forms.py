@@ -169,13 +169,15 @@ def adjust_times2(df):
     for i in range(1, len(df)):
         prev_time = df.loc[i - 1, 'time']
         curr_time = df.loc[i, 'time']
+        if curr_time < prev_time:
+            prev_time = curr_time
 
         # Вычисляем разницу
         interval = curr_time - prev_time
 
         if interval < min_interval:
             # Если интервал меньше 10 минут, корректируем время
-            df.loc[i, 'time'] = prev_time + (min_interval - interval)
+            df.loc[i, 'time'] = curr_time + (min_interval - interval)
     return df
     
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
@@ -317,10 +319,10 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
               
             #разносим высылки по 10 мин если в одно и тоже время
             rozklad_curs = adjust_times(rozklad_curs)
+            rozklad_curs.sort_values("time", inplace=True) # type: ignore
 
             # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
             rozklad_curs = rozklad_curs.groupby('wenz')[rozklad_curs.columns].apply(adjust_times2).reset_index(drop=True)
-            rozklad_curs.sort_values("time", inplace=True) # type: ignore
             rozklad_curs.reset_index(drop=True, inplace=True)
             rozklad_curs.index=rozklad_curs.index+1    
 
@@ -330,10 +332,10 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         else:
             # разносим высылки по 10 мин если в одно и тоже время
             rozklad_curs = adjust_times(rozklad_curs)
+            rozklad_curs.sort_values("time", inplace=True) # type: ignore
 
             # разносим высылки чтоб интервал между ними небыл меньше Settings.min_interval
             rozklad_curs = rozklad_curs.groupby('wenz')[rozklad_curs.columns].apply(adjust_times2).reset_index(drop=True)
-            rozklad_curs.sort_values("time", inplace=True) # type: ignore
             rozklad_curs.reset_index(drop=True, inplace=True)
             rozklad_curs.index=rozklad_curs.index+1  
   
@@ -825,7 +827,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         current_frame = traceback.extract_tb(err.__traceback__)[-1]
         function_name = current_frame.name
-        
+
         inf(f"""
         Ошибка при формировании forecast_driver
         Время: {timestamp}
@@ -843,9 +845,9 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '25.03.2025'
-    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[1])
-    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[1])
+    date_of_request = '01.04.2025'
+    df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
+    df_driver  = get_list_construction_driver(date_of_request, Settings.wenzels[0])
     # print(rozklad_curs()[0])
     # print(rozklad_curs(Settings.wenzels[0], date_of_request))
     # print("*"*10)
