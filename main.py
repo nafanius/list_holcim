@@ -1,4 +1,5 @@
-from src.get_lista import combination_of_some_days_list, find_day_request, save_google_sheet
+from src.get_lista import combination_of_some_days_list, find_day_request
+from src.download_excel import save_google_sheet
 from statistic.static_forms import rozklad_curs, forecast_driver
 from jinja2 import Template
 from html_driver.get_html import html_template
