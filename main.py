@@ -1,6 +1,8 @@
 from src.get_lista import combination_of_some_days_list, find_day_request
 from src.download_excel import save_google_sheet
 from statistic.static_forms import rozklad_curs, forecast_driver
+from src.reboot_system import main
+
 from jinja2 import Template
 from html_driver.get_html import html_template
 from datetime import datetime
@@ -156,6 +158,7 @@ def upload_directory_to_s3(
 
 if __name__ == "__main__":
     # pprint(get_dict())
+    main()
     save_html(get_dict())
     upload_directory_to_s3("./site", "list-holcim")
     # dict_zaw = get_dict()
