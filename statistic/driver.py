@@ -1,7 +1,13 @@
+""" This module contains the Driver class.
+It is used to create a driver object with the following attributes:
+- date_order: the date of the order
+- time_in_list: the time in the loading schedule
+- person: the person who created the order
+- count_driver: the number of drivers created       
+"""
+
 from pprint import pprint
 from data_drive.data_sql import get_newest_list_beton_or_lista
-import re
-import datetime
 
 
 

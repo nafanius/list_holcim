@@ -17,7 +17,7 @@ def check_internet(host="8.8.8.8", timeout=3):
     return os.system(" ".join(command)) == 0
 
 def reboot_device():
-    """Reboots the Raspberry Pi device.
+    """Reboots the Raspberry Pi device. for example 
     """    
     os.system("sudo reboot")
 

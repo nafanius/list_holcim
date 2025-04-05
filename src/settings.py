@@ -10,16 +10,16 @@ import datetime
 
 class Settings:
 
-    time_of_compare = 4
-    data_base = 'sqlite:////home/user/.database_lista/web_lista.db'
+    time_of_compare = 4 # time of compare in hours betwen the last and current state of the database
+    data_base = 'sqlite:////home/user/.database_lista/web_lista.db' # path to the database
 
-    min_interval = 9
-    amount_of_zaprawa = 5
-    names_dry_concret = r'\b(OW|Ow|ow|oW)\b'
-    time_of_end_upload_zaprawa = datetime.time(8, 15)
-    travel_to_the_construction = 30
-    unloading_time_for_pomp = 2 # 1 metr
-    unloading_time_for_crane = 6.2 # 1 metr 
+    min_interval = 9 # minimum interval for the departure
+    amount_of_zaprawa = 6 # amount of zaprawa m3
+    names_dry_concret = r'\b(OW|Ow|ow|oW)\b' # regex for dry concret
+    time_of_end_upload_zaprawa = datetime.time(8, 15) # time of end upload zaprawa
+    travel_to_the_construction = 30 # time of travel to the construction and back
+    unloading_time_for_pomp = 2 # time of unloading for pomp
+    unloading_time_for_crane = 5.2 # 1 time of unloading for crane
     wenzels = (
         ("zawod",("zawodzie 2 ", "zawodzie 1 "), 24),
         ("odola",("if will be 2 wenz", "odolany 519"), 17),

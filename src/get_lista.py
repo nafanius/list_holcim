@@ -35,6 +35,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         excel_file (str): name of excel file
         day (int): number of the day  of the week
         date_of_day_text (str): date of day request - '12.03.2024'
+        wenzel (tuple): tuple with wenzel name and number from settings
 
     Returns:
         list: lista_beton, del_lista, add_lista: 3 list of cartage with old add del
@@ -92,12 +93,14 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         date_of_day_text, lista_beton, wenzel
     )
 
+    # region test raw data
     print("raw del lista")
     pprint(del_lista)
     print("raw add lista")
     pprint(add_lista)
+    # endregion
 
-    # добавил сохранение в базе данных листы бетона
+    # added to the database beton
     with db_lock:
         data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day, "wenz":wenzel[0]})
     
@@ -105,21 +108,25 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
 
 
 def form_lista(excel_file, day, date_of_day_text, wenzel):
-    """_summary_
+    """We retrieve the schedule drivers from the excel_file and return lista
 
     Args:
-        excel_file (str): name of excel file
-        day (int): the number of the day of the week
+        excel_file (str): file name
+        day (int): number of the day of the week
+        date_of_day_text (str): date format - '12.03.2024'
+        wenzel (tuple): tuple with wenzel name and number from settings
 
     Returns:
-        list: Departure schedule list
+        list: lista: list of tuples with time and name 
     """
     lista = []
     try:
         wb = openpyxl.load_workbook(excel_file)
-    except:
-        inf("такого файла нет " + excel_file)
+    except Exception as err:
+        inf("Such file does not exi" + excel_file) # such file does not exist
+        inf(err)
         return []
+    
     sheet = wb[wb.sheetnames[day]]
 
     def fill_list(time_start, row, column):
@@ -149,11 +156,11 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
 
     lista = sorted(lista, key=lambda event: event[0])
 
-    # добавил сохранение в базе данных lista
+    # add lista to the database
     with db_lock:
         data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day, "wenz":wenzel[0]})
     
-    # удаляем записи старше 4 часов
+    # delete old records
     threshold = time.time() - Settings.time_of_compare * 3600
     with db_lock:
         data_sql.delete_records_below_threshold(threshold, "lista", wenzel[0])
@@ -181,22 +188,31 @@ def lista_in_text(lista):
 
 
 def lista_in_text_beton(lista_beton):
-    """Generates a list in text form from the list of shipment data
+    """Generates a tuple of orders beton in text form the list_norm_del_add of shipment data 
 
     Args:
-        lista_beton (list): List of date depurture shipment list
+        lista_beton (list): List of lists of shipment beton data
 
     Returns:
-        list: The generated list for populating the shipment list in HTML
+        tuple: list of lists with text + HTML tegs ready for display, and sum metres
     """
 
     def sum_of_metres(data, sort):
+        """calculates the sum of the meters in the list
+
+        Args:
+            data (str): data from the list
+            sort (int): number of the list - 0 - normal, 1 - delete, 2 - add
+
+        Returns:
+            float: sum of the meters
+        """        
         sum_m = 0
         try:
             if sort in (0, 2):
                 sum_m += float(data)
         except (ValueError, TypeError):
-            # Игнорируем элементы, которые не являются числами
+            # if the data is not a number, we skip it
             pass
         return sum_m
 
@@ -259,7 +275,7 @@ def find_day_request():
     list_of_days = []
 
     now = datetime.now()
-    # Извлекаем номер недели с помощью isocalendar
+    # get number of the week and day of the week
     current_week_number = now.isocalendar()[1]
     day_of_week = now.weekday()
     current_year = now.year
@@ -400,8 +416,15 @@ def find_day_request():
 def combination_of_some_days_list(wenzel):
     """Generates two dictionaries with three days of departure and shipment schedules
 
+    Args:
+        wenzel (tuple): tuple with wenzel name and number from settings
+            wenzel[0] - name of wenzel
+            wenzel[1] - number of wenzel
+            wenzel[1][0] - first number of wenzel
+            wenzel[1][1] - second number of wenzel
+            Wenzel[2] - quantity of drivers
     Returns:
-        two dict:  two dictionaries with three days of departure and shipment schedules
+        dict:  two dictionaries with three days of departure and shipment schedules
     """    
     day_of_week_list = [
         "poniedziałek",

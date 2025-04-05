@@ -23,10 +23,6 @@ db_lock = threading.Lock()
 
 rng = np.random.default_rng(123545)
 
-
-# %config Completer.use_jedi = False
-
-
 # region logging
 
 logging.basicConfig(level=logging.DEBUG,
@@ -46,12 +42,17 @@ count_graph = 1
 df_for_driver_glob = DataFrame()
 
 def get_list_construction_place(date_order, wenzel):
-    """возвращает список словарей словарь заказов на основание класса order его 
-    переменные которые достаёт из базы данных на дату
+    """form a list of dictionaries of orders based from the order class
+    its variables that it gets from the database on the date
+
 
     Args:
-        date_order (str, optional): _description_. Defaults to "07.02.2025".
-    """
+        date_order (str): string date in the format "dd.mm.yyyy"
+        wenzel (str): the name of the wenzel from the settings
+
+    Returns:
+        list: list of dictionaries of orders
+    """    
     orders = {}
     count = 1
     df_bud = []
@@ -82,12 +83,17 @@ def get_list_construction_place(date_order, wenzel):
     return df_bud
 
 def get_list_construction_driver(date_order, wenzel):
-    """возвращает список словарей словарь заказов на основание класса order его 
-    переменные которые достаёт из базы данных на дату
+    """form a list of dictionaries of orders based from the driver class
+    its variables that it gets from the database on the date
 
     Args:
-        date_order (str, optional): _description_. Defaults to "07.02.2025".
-    """
+        date_order (str): string date in the format "dd.mm.yyyy"
+        wenzel (str): the name of the wenzel from the settings
+
+    Returns:
+        list: list of dictionaries of drivers
+    """    
+  
     drivers = {}
     count = 1
     df_driver = []
@@ -106,42 +112,47 @@ def get_list_construction_driver(date_order, wenzel):
 
     return df_driver
 
-# Функция для обработки строк с одинаковым временем
+
 def adjust_time1(df):
-    max_iterations = 10  # максимальное количество итераций
+    """ adjust time in the dataframe if there are more than 2 orders in the same time
+    if two orders adds 10 minutes to the second order
+    if three orders removes 10 minutes from the first order and adds 10 minutes to the third order
+    if four orders removes 20 minutes from the first order and 10 minutes from the second order
+    and adds 10 minutes to the fourth order
+    ...
+    Args:
+        df (DataFrame pandas): dataframe with the orders
+
+    Returns:
+        DataFrame: dataframe with the adjusted time
+    """    
+    max_iterations = 10  # max number of iterations to avoid infinite loop
     iteration = 0
     
     while iteration < max_iterations:
-        # Группировка по времени
+        # group by time and wenz
         time_groups = df.groupby(['time', 'wenz'])
         
-        any_changes = False  # флаг, чтобы отслеживать изменения
+        any_changes = False
         
-        # Обработка каждой группы
         result = []
         for _ , group in time_groups:
             if len(group) == 2:
-                # Добавить 10 минут ко второму вхождению
                 group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
                 any_changes = True
             elif len(group) == 3:
-                # Уменьшить на 10 минут первое вхождение
                 group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
                 # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
                 group.iat[2, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
                 any_changes = True
             elif len(group) == 4:
-                # Уменьшить на 10, 20  минут два первых вхождение
                 group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
                 group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
-                # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
                 group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
                 any_changes = True
             elif len(group) >= 5:
-                # Уменьшить на 10 минут первое вхождение
                 group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
                 group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
-                # Оставить второе вхождение без изменений и добавить 10 минут к третьему вхождению
                 group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
                 group.iat[4, group.columns.get_loc('time')] += pd.Timedelta(minutes=20 + iteration*2) 
                 any_changes = True  
@@ -150,7 +161,7 @@ def adjust_time1(df):
         df = pd.concat(result)
         
         if not any_changes:
-            break  # если изменений не было, выйти из цикла
+            break  # if no changes were made, exit the loop
         
         iteration += 1
         
@@ -159,8 +170,16 @@ def adjust_time1(df):
 
 min_interval = pd.Timedelta(minutes=7)
 
-# Функция для корректировки времени в рамках каждой группы
 def adjust_time2(df):
+    """adjust time in the dataframe if interval between the orders is less tha settings.min_interval
+    if the interval is less than settings.min_interval set it equal to settings.min_interval
+
+    Args:
+        df (DataFrame): dataframe with the orders
+
+    Returns:
+        DataFrame: dataframe with the adjusted time
+    """    
     min_interval = pd.Timedelta(minutes=Settings.min_interval)
 
     df = df.sort_values(by='time').reset_index(drop=True)
@@ -174,16 +193,23 @@ def adjust_time2(df):
             df.loc[i, 'time'] = curr_time + min_interval
 
         else:
-            # Вычисляем разницу
             interval = curr_time - prev_time
 
             if interval < min_interval:
-                # Если интервал меньше 10 минут, корректируем время
                 df.loc[i, 'time'] = curr_time + (min_interval - interval)
     return df
 
-#разносим высылки по 10 мин если в одно и тоже время
 def adjust_times(df):
+    """combination of adjust_time1 and adjust_time2 and sort the dataframe by time,
+    reset the index and add 1 to the index
+
+    Args:
+        df (DataFrame): dataframe with the orders
+
+    Returns:
+        DataFrame: dataframe with the adjusted time and sorted by time, with index reset and 1 added to the index
+    """    
+
     #разносим высылки по 10 мин если в одно и тоже время
     df = adjust_time1(df)
     df.sort_values("time", inplace=True) # type: ignore
@@ -197,6 +223,34 @@ def adjust_times(df):
     return df
     
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
+    """ Calculates the rozklad_curs and returns the html table, number of orders, sum of meters, graph and pie chart
+    The rozklad_curs is a table with the following columns:
+    - time: the time of the order 
+    - m3: the number of meters
+    - k: the number of courses
+    - budowa: the name of the construction
+    - res: the remaining meters
+    - w: number of wenzels
+    - p/d: the type of pump or crane
+
+    The function also calculates the number of orders
+    
+    The sum of meters
+
+    The function also creates a graph
+    - the graph shows the intensity of the work and the remaining meters to be sent
+
+    The pie chart shows the ratio of the number of pumps and cranes
+    
+    Args:
+        wenzel (tuple): tuple from settings with the name of the wenzel, the name of the name of wenzel and the number of drivers
+            wenzel[0] (str): the name of the wenzel
+
+        date_of_request (str, optional): the date of the request in the format "dd.mm.yyyy". Defaults to "18.02.2025".
+
+    Returns:
+        tuple: table with the rozklad_curs HTML, number of orders, sum of meters, graph - intensity of work, pie chart - ratio of pumps and cranes
+    """    
 
     df_orders = get_list_construction_place(date_of_request, wenzel=wenzel)
 
@@ -205,17 +259,18 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         global df_for_driver_glob
         bud = DataFrame(df_orders)
 
-        # УБЕРАЕМ СУХОЙ БЕТОН
+        # remove dry concrete
         bud_without_dry = bud[bud["it_is_zaprawa"] | bud["it_is_concret"]]
 
         bud_without_dry = bud_without_dry.copy()
         bud_without_dry.loc[:,"namber_cours"] = bud_without_dry.loc[:,"list_of_courses"].apply(
             lambda x: list(range(1, len(x) + 1))).values
 
-        # оставляем название курсы метров и курсы выселки
+        # we leave only the columns we need
         rozklad_curs = bud_without_dry[['list_of_loads', 'list_of_courses', 'name', 'reszta', 'wenz', 'it_is_zaprawa', 'pompa_dzwig', 'namber_cours']].explode(
             ['list_of_loads', 'list_of_courses', 'reszta', 'namber_cours'])
         
+        # rename the columns
         rozklad_curs["it_is_zaprawa"] = rozklad_curs["it_is_zaprawa"].replace(
             {True: 'z', False: 'b'})
         rozklad_curs["pompa_dzwig"] = rozklad_curs["pompa_dzwig"].replace(
@@ -249,9 +304,10 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                     connection.execute(delete_query)
                     connection.commit()  
 
-
+        # if day of request is today and the wenzel is zawod, corect the rozklad_curs used message from drivers from chat bot
         if date_of_request == today_string and wenzel[0] == "zawod":
 
+            # todo delete with but its not work and don't need 
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual', con=data_sql.engine, if_exists='replace', index=True)
@@ -284,9 +340,10 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 rozklad_curs['mat'] = rozklad_curs['mat'].astype(str)
                 rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
                 
-                
+                # region control corrects
                 inf("corrects befor")
                 inf(df_corrects)
+                # endregion
                 
                
                 merged_df = df_corrects.merge(rozklad_curs[['m3', 'k', 'budowa', 'res', 'wenz', 'mat', 'p/d', 'time', 'id']],
@@ -296,24 +353,23 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 
 
                 merged_df.drop_duplicates(subset=['m3', 'k', 'budowa', 'res', 'wenz', 'mat', 'p/d'], keep='last', inplace=True)
+                merged_df.reset_index(drop=True, inplace=True)   
 
-
-                merged_df.reset_index(drop=True, inplace=True)              
+                # region control merge
                 inf("It's merge df")
                 inf(merged_df)
-
+                # endregion
                 
                 df_corrects.reset_index(drop=True, inplace=True)
                 df_corrects.update(merged_df[['time_from_rosklad']].rename(columns={'time_from_rosklad': 'time'}))
                 df_corrects['id'] = merged_df['id_from_rosklad']
                 
-                # df_corrects.loc[:,'time'] = rozklad_curs.merge(df_corrects[['k','budowa','res','mat','p/d']], on=['k','budowa','res','mat','p/d'], how='inner')['time'].values  
-
                 df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
                 
-                
+                # region control corrects after merge                
                 inf("corrects after")
                 inf(df_corrects)
+                # endregion
 
                 if not df_corrects.empty:
                     df_corrects['delta'] = df_corrects['new_time'] - df_corrects['time']
@@ -333,22 +389,25 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 rozklad_curs.drop(columns='delete', inplace=True)
 
               
-            #разносим высылки по 10 мин если в одно и тоже время
+            # apply the function to adjust time
             rozklad_curs = adjust_times(rozklad_curs)
 
+
+            # save the rozklad_curs as actual_after for today and zawod
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual_after', con=data_sql.engine, if_exists='replace', index=True)
         else:
-            #разносим высылки по 10 мин если в одно и тоже время
+            # apply the function to adjust time for all except zawod and today
             rozklad_curs = adjust_times(rozklad_curs)
            
   
         # for marking targets dowload
         target_time = pd.Timestamp.now()
-        # target_time = target_time - pd.Timedelta(hours=9) # для смещения времени
         end_time = target_time + pd.Timedelta(minutes=40)
 
+
+        # copy rozklad_curs for graph and df_for_driver fo that not to do it twice
         graph = rozklad_curs.copy()
         df_for_driver_glob = rozklad_curs.copy()
 
@@ -377,6 +436,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                                             escape=False )
 
 
+        # start formation of the graph
         graph.set_index('time', inplace=True)
 
         nadal_reszta = pd.to_numeric(graph['res']).resample(
@@ -406,11 +466,11 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
             y=alt.Y('Metry:Q', axis=alt.Axis(title='metrs')),
             color=alt.Color('series:N',
                             legend=alt.Legend(
-                                title="INTENSYWNOŚĆ PRACY",                # Название легенды
-                                titleFontSize=14,             # Размер шрифта заголовка
-                                labelFontSize=12,             # Размер шрифта меток
-                                orient='top',               # Положение легенды
-                                padding=1                   # Внутренний отступ
+                                title="INTENSYWNOŚĆ PRACY",                # name legendy
+                                titleFontSize=14,             # font size of the legend
+                                labelFontSize=12,             # font size of the legend labels
+                                orient='top',               # position of the legend
+                                padding=1                   # padding of the legend
                             ))
         ).transform_filter(
             alt.FieldOneOfPredicate(field='series', oneOf=[
@@ -433,7 +493,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
 
 
-        # graph p/d
+        # start formation of the pie chart
         counts = graph['p/d'].value_counts().reset_index()
 
         counts['percentage'] = counts['count'] / counts['count'].sum()
@@ -447,7 +507,6 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                             legend=alt.Legend(title=''))
 
         ).encode(
-            # Задаем метку с названием категории и процентом
             text=alt.Text('label:N')
         ).properties(
             width='container',
@@ -484,6 +543,23 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
     return html_table, rozklad_curs.shape[0], round(bud_without_dry["meter"].sum(), 1), graph_html, graph_html_pie
 
 def forecast_driver(wenzel, date_of_request="18.02.2025"):
+    """ Forecast the driver schedule and create a graph of the lack of drivers
+    The function creates tables and graphs for the driver schedule
+    
+    The html_table_kerowca  - for the driver schedule
+    The html_table_brak - a table with the lack of drivers
+    The graph_html_kierow  - available drivers
+    The html_table_kerowca_for_logist - a table with the driver schedule for the logistician, optimal schedule
+    
+    The table 
+    Args:
+        wenzel (tuple): tuple from settings with the name of the wenzel, the name of the name of wenzel and the number of drivers
+        date_of_request (str, optional): the date of the request in the format "dd.mm.yyyy". Defaults to "18.02.2025".
+
+    Returns:
+        tuple: html_table_kerowca, html_table_brak, graph_html_kierow, html_table_kerowca_for_logist
+    """
+    # continuous numbering for graphs    
     global count_graph
     try:
         global df_for_driver_glob
@@ -494,12 +570,22 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df_for_driver['m3'] = df_for_driver['m3'].astype(float)
 
         def get_end_time(row):
-            additional_hour = pd.Timedelta(hours=1)
+            """ get end time for the dilivery(cours)
+            The end time is calculated as the start time + unloading time + travel time to the construction site
+
+            Args:
+                row (string_of_df): row of the dataframe
+     
+
+            Returns:(
+                pd.Timedelta: end time for the delivery(cours)
+            """            
+            travel_to_costr = pd.Timedelta(minutes=Settings.travel_to_the_construction*2)
             if row['p/d'] == 'p':
-                time_in_minutes = pd.to_timedelta(row['m3']*3, unit='m')
+                time_for_unload = pd.to_timedelta(row['m3']*Settings.unloading_time_for_pomp, unit='m')
             else:
-                time_in_minutes = pd.to_timedelta(row['m3']*8, unit='m')
-            return row['time'] + time_in_minutes + additional_hour
+                time_for_unload = pd.to_timedelta(row['m3']*Settings.unloading_time_for_crane, unit='m')
+            return row['time'] + time_for_unload + travel_to_costr
         
         df_for_driver.loc[:,'end_time'] = df_for_driver.apply(get_end_time, axis=1)
 
@@ -533,42 +619,40 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         df=df_full_day.copy()
 
-        # executor_availability = {executor str: timestep d.Timedelta, ...}
         executor_availability = driver_dict
-        # executor_availability = {}
-        # Добавление столбцов для исполнителей
+
+        # add columns for the number of free drivers and missing drivers
         df['Executors'] = None
         df['Free Executors'] = None
         df['Missing Executors'] = None
 
-        # Отслеживание свободных исполнителей
+        # Trecking available drivers
         free_executors = free_exict_list
-        # free_executors = list(df_driver_list['person'])
 
-        # Текущие назначения исполнителей к заказам в виде словаря {order: (executor, order)}
+        #  {order: (executor, order)} currently assignment drivers like a dictionary
         current_assignments = {}
 
-        # Словарь для отслеживания периодов работы BRAK исполнителей
+        # Dictionary for tracking work periods of BRAK performersС
         brak_intervals = {}
 
-        # Счетчик для недостатка исполнителей
+        # Counter for a shortage of performers
         brak_counter = 1
 
         used_executors=[]
         df['First'] = ''
 
-        # Для каждого временного шага
+        # For each time step
         for current_time in df.index:
             start_executers = []
-            # Обновляем список доступных исполнителей, учитывая начальное время готовности
+            # update the list of available executors, taking into account the initial readiness time
             for executor, available_time in executor_availability.items():
                 if available_time <= current_time and executor not in free_executors:
                     if all(executor != assigned_exec for assigned_exec, _ in current_assignments.values()):
                             start_executers.append(executor)
 
                 
-            # Сначала освобождаем исполнителей от завершенных заданий
-            completed_orders = [order for order, (executor, _) in current_assignments.items() if df[order].loc[current_time] == 0]
+            # first, we release from comleted tasks
+            completed_orders = [order for order, *_ in current_assignments.items() if df[order].loc[current_time] == 0]
             for order in completed_orders:
                 free_executor, _ = current_assignments.pop(order)
                 if not free_executor.startswith('BRAK_KIEROWCA'):
@@ -579,10 +663,10 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                     else:
                         free_executors.append(free_executor)
                 else:
-                    # Заканчиваем интервал работы текущего BRAK исполнителя
+                    # Completing the interval of the current BRAK executor's work.
                     brak_intervals[free_executor]['end'] = current_time
 
-            # сортировка исполнителей 
+            # sorting the list of free executors
             inserted = False
 
             if free_executors:
@@ -596,28 +680,28 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             else:             
                 free_executors = start_executers + free_executors        
             
-            # Обрабатываем существующие заказы с исполнителями BRAKx
+            # Processing existing orders with BRAK_KIEROWCAx executors
             for order, (executor, assigned_order) in current_assignments.items():
                 if executor.startswith('BRAK_KIEROWCA') and free_executors:
                     new_executor = free_executors.pop(0)
                     current_assignments[order] = (new_executor, assigned_order)
                     df.at[current_time, 'First'] = new_executor + f"::{str(df.at[current_time, 'First'])}"
-                    # Заканчиваем интервал работы текущего BRAK исполнителя
+                    # finishing the current executer's BRAK work interval
                     brak_intervals[executor]['end'] = current_time
                     brak_intervals[executor]['new driver'] = new_executor
             
-            # Назначение исполнителей на начинающиеся заказы
+            # Assigning executer to starting cours
             missing_executors = []
-            for order in df.columns[:-4]:  # исключаем столбцы 'Executors', 'Free Executors' и 'Missing Executors'
+            for order in df.columns[:-4]:  # except  'Executors', 'Free Executors', 'Missing Executors'
                 if df[order].loc[current_time] != 0 and order not in current_assignments:
                     if free_executors:
                         current_executor = free_executors.pop(0)
                     else:
-                        # Если нет свободных исполнителей, создаем нового с именем BRAKx
+                        # If there are no available performers, we create a new one named BRAK_KIEROWCAx
                         current_executor = f'BRAK_KIEROWCA{brak_counter}'
                         brak_counter += 1
                         missing_executors.append((current_executor, order))
-                        # Начинаем интервал работы нового BRAK_KEROWCA исполнителя
+                        # starting the work interval for the new performer BRAK_KEROWCA
                         brak_intervals[current_executor] = {'start': current_time, 'end': None}
                         brak_intervals[current_executor]['order'] = order
 
@@ -627,25 +711,25 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                     
                     current_assignments[order] = (current_executor, order)
 
-            # Обновляем недостающих исполнителей в столбце Missing Executors
+            # Updating the missing performers in the "Missing Executors" column
             missing_executors = [
                 (executor, order) for order, (executor, _) in current_assignments.items()
                 if executor.startswith('BRAK_KIEROWCA')
             ]
             
-            # Запись исполнителей и выполняемых заказов в формате (Executor, Order)
-            str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, order) in current_assignments.items()])
+            # Recording performers and orders in the format - [(Executor, Order),(..., ...),...]
+            str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, _) in current_assignments.items()])
             df.at[current_time, 'Executors'] = str_current_assignment
 
-            # Запись списка свободных исполнителей
+            # recording the list of available executors
             str_free_executors = str(free_executors)
             df.at[current_time, 'Free Executors'] = str_free_executors
             
-            # Запись списка недостающих исполнителей в новый столбец
+            # recording the list of missing executors
             missing_executors = str(missing_executors)
             df.at[current_time, 'Missing Executors'] = missing_executors
 
-        # Завершаем все интервалы, где end остался None
+        # finishing the work intervals for the remaining BRAK executors, there interval end is None
         for brak_key, interval in brak_intervals.items():
             if interval['end'] is None:
                 brak_intervals[brak_key]['end'] = df.index[-1]
@@ -653,22 +737,32 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df_graph_rozklad = df.copy()
 
         def convert_df(df):
+            """ convert the dataframe to the format for the forecast driver schedule
+
+            Args:
+                df (dataframe): dataframe with the courses
+
+            Returns:
+                dataframe: dataframe with the courses in the format for the forecast driver schedule
+            """            
+            # todo do it correct - it's cause of future warning The issue lies in changing the column value format
             df.replace('[]',np.nan, inplace=True)
             df.replace('',np.nan, inplace=True)
 
-            # формируем df старт работы для водителей
+            # creating a start work dataframe for drivers
             list_starts = df["First"][df["First"].notna()]
             list_starts = list_starts.astype(str)
             list_starts = list_starts.str.split("::")
             list_starts = list_starts.explode()
             list_starts.replace('',np.nan, inplace=True)
             list_starts = list_starts.dropna()
-            list_starts= list_starts.reset_index()
+            list_starts = list_starts.reset_index()
             list_starts.rename(columns={'index':'time', 'First':'person'}, inplace=True)
 
 
-            # формируем список курсов у водителя
+            # creating list of courses for drivers
             def str_to_list(s):
+                """convert string to list"""
                 return eval(s)
             
             df_executors =  df['Executors'].dropna()
@@ -693,11 +787,12 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         
         result_df_end = convert_df(df)
 
+        # Adding HTML formating to the missing drivers
         result_df_end['Kierowca'] = result_df_end['Kierowca'].apply(lambda x: f'<span style="font-weight: bold; color:rgb(255, 0, 0);">{str(x)}</span>' if x.startswith('BRAK_KIEROWCA') else x)
 
         html_table_kerowca = result_df_end.to_html(index=True,table_id="rozklad_kierowca",classes='rozklad_kierowca_tab', border=0, justify='center', escape=False)
 
-        # brack kierowców
+        # formation of the table for the missing drivers
         html_table_brak = ''
         if brak_intervals:
             df_brak = DataFrame(brak_intervals)
@@ -723,7 +818,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
             html_table_brak = df_brak.to_html(index=True,table_id="brak_kerowca",classes='rozklad_kerowca_brak', border=0, justify='center', escape=False)
 
-        # Harmonogram dostępnych kierowców
+        # formation of graph for the available drivers and missing drivers
         def convert_to_list(value):
             return ast.literal_eval(value)
         df_graph_rozklad['Executors'] = df_graph_rozklad['Executors'].apply(convert_to_list)
@@ -739,7 +834,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         df_graph_rozklad.columns = ['time', 'dostępnych kierowców na określony czas']
         df_graph_rozklad = df_graph_rozklad.melt(id_vars='time', var_name='series', value_name='dostępnych kierowców')
 
-        # form graph Harmonogram dostępnych kierowców
+        # creating a graph for the available drivers
         above_zero = alt.Chart(df_graph_rozklad[df_graph_rozklad['dostępnych kierowców'] >= 0]).mark_bar(size=0.5).encode(
             x= alt.X('time:T',axis=alt.Axis(title='time', format='%H:%M')),
             y= alt.Y('dostępnych kierowców:Q', axis=alt.Axis(title='dostępnych kierowców')),
@@ -769,7 +864,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         html_buffer.close()
 
 
-        # pomoc logistyki
+        # formation of the table for the logistician
         df = df_full_day.copy()
         df['Executors'] = None
         df['Free Executors'] = None
@@ -780,10 +875,10 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         brak_counter = 1
         df['First'] = ''
 
-        # Для каждого временного шага
+        # For each time step
         for current_time in df.index:
-            # Сначала освобождаем исполнителей от завершенных заданий
-            completed_orders = [order for order, (executor, _) in current_assignments.items() if df[order].loc[current_time] == 0]
+            # first, we release from comleted tasks
+            completed_orders = [order for order, *_ in current_assignments.items() if df[order].loc[current_time] == 0]
             for order in completed_orders:
                 free_executor, _ = current_assignments.pop(order)
                 if df[order].shift(1).loc[current_time] == 'z':
@@ -793,7 +888,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                 else:
                     free_executors.append(free_executor)
         
-            # Назначение исполнителей на начинающиеся заказы
+            # Assigning executer to starting cours
             missing_executors = []
             for order in df.columns[:-3]:  # исключаем столбцы 'Executors', 'Free Executors' и 'Missing Executors'
                 if df[order].loc[current_time] != 0 and order not in current_assignments:
@@ -812,11 +907,11 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                     
                     current_assignments[order] = (current_executor, order)
 
-            # Запись исполнителей и выполняемых заказов в формате (Executor, Order)
-            str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, order) in current_assignments.items()])
+            # Recording performers and orders in the format - [(Executor, Order),(..., ...),...]
+            str_current_assignment = str([(executor, assigned_order) for assigned_order, (executor, _) in current_assignments.items()])
             df.at[current_time, 'Executors'] = str_current_assignment
 
-            # Запись списка свободных исполнителей
+            # recording the list of available executors
             str_free_executors = str(free_executors)
             df.at[current_time, 'Free Executors'] = str_free_executors
         

@@ -1,3 +1,9 @@
+"""Order class for managing and processing orders.
+This class provides methods to handle order data, including
+calculating start and finish times, checking for specific conditions,
+and converting data types. It also maintains a count of the total
+number of orders created.
+"""
 from pprint import pprint
 from data_drive.data_sql import get_newest_list_beton_or_lista
 import re
@@ -35,6 +41,13 @@ class Order:
         Order.count_ordres += 1
 
     def tel_to_string(self, data):
+        """converts the phone number to a string and removes any unwanted characters.
+
+        Args:
+            data (any): the phone number from cell tel to be converted
+        Returns:
+            str: the converted phone number 
+        """        
         if data:
             if isinstance(data, float):
                 return str(int(data)).strip()
@@ -46,6 +59,17 @@ class Order:
     
 
     def convert_to_float(self, data):
+        """converts the data to a float.
+        If the data is None, it returns 0. If the data is a string, it tries to convert it to a float.
+        If the data is a float or int, it returns the data as a float.
+        If the data is a string that cannot be converted to a float, it returns 0.
+
+        Args:
+            data (any): raw data to be converted
+
+        Returns:
+            int or float: the converted data
+        """        
         if data:
             if isinstance(data, float):
                 return data
@@ -59,6 +83,16 @@ class Order:
 
 
     def convert_to_string(self, data):
+        """converts the data to a string.
+        If the data is None, it returns an empty string.
+        If the data is a string, it strips any unwanted characters.
+
+        Args:
+            data (any): dta from cell to be converted
+
+        Returns:
+            str: the converted data
+        """        
         if not data:
             return ""
         try:
@@ -70,6 +104,12 @@ class Order:
             return ""
 
     def get_list_courses(self):
+        """forms a list of courses based on the number of metres.
+        The list is formed by dividing the number of metres by 8.
+
+        Returns:
+            list: list of courses
+        """        
 
         if self.metres == 0:
             return [0,]
@@ -108,6 +148,12 @@ class Order:
         return result
 
     def get_start_time(self):
+        """calculates the start time of the order.
+        The start time is calculated by subtracting 30 minutes from the order time.
+
+        Returns:
+            datetime: the start time of the order
+        """        
         date_order = datetime.datetime.strptime(
             self.date_order, "%d.%m.%Y").date()
         data_time_order = datetime.datetime.combine(date_order, self.times)
@@ -115,6 +161,13 @@ class Order:
         return data_time_order - datetime.timedelta(minutes=30)
 
     def get_finish_time_and_form_list_of_loads(self):
+        """calculates the finish time of the order.
+        The finish time is calculated by adding the shipping duration to the start time.
+        The shipping duration is calculated based on the number of courses and the type of pump or crane.
+
+        Returns:
+            datetime: the finish time of the order
+        """        
         shipping_duration = 0
         self.list_of_loads += [self.start_time,]
         for cours in self.list_of_courses[:-1]:
@@ -131,6 +184,17 @@ class Order:
 
    
     def check_pompa_dzwig(self, pompa_dgwig, metres):
+        """ checks if the order is for a pump or crane.
+        If the order is for a pump, it returns True.
+        If the order is for a crane, it returns False.
+
+        Args:
+            pompa_dgwig (bool): boolean value indicating if the order is for a pump or crane
+            metres (float): the number of metres in the order
+
+        Returns:
+            bool: True if the order is for a pump, False if it's for a crane
+        """        
         if pompa_dgwig:  # if it's pompa
             data = str(pompa_dgwig)
             data = data.strip()
@@ -143,6 +207,12 @@ class Order:
         return False
 
     def check_zaprawa(self):
+        """checks if the order is for zaprawa.
+        If the order is for zaprawa, it returns True.
+
+        Returns:
+            bool: True if the order is for zaprawa, False otherwise
+        """        
         if (
             self.list_of_courses[0] < Settings.amount_of_zaprawa
             and self.times < Settings.time_of_end_upload_zaprawa
@@ -152,6 +222,12 @@ class Order:
         return False
 
     def check_concret(self):
+        """checks if the order is for concret.
+        If the order is for concret, it returns True, not dry concret
+
+        Returns:
+            bool: True if the order is for concret, False otherwise
+        """        
 
         if re.search(Settings.names_dry_concret, self.name):
             return False
