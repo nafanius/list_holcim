@@ -1,7 +1,7 @@
 import ezsheets
 from datetime import datetime, timedelta
 import os
-from src.settings import lg, formating_error_message
+from src.settings import inf, formating_error_message
 
 # dyspozytor.warszawa@holcim.com
 
@@ -45,6 +45,6 @@ def save_google_sheet(directory="excel_files"):
             ss.downloadAsExcel(file_path)
         except Exception as err:
 
-            lg(formating_error_message(err, "save_google_sheet"))
+            inf(formating_error_message(err, "save_google_sheet"))
             
             continue

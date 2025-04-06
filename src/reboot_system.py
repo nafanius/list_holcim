@@ -1,7 +1,7 @@
 """ module to check internet connection and reboot the system if not connected
 """
 import os
-from src.settings import lg
+from src.settings import inf
 
 def check_internet(host="8.8.8.8", timeout=3):
     """checks if the internet is available by pinging a host.
@@ -24,10 +24,10 @@ def reboot_device():
 
 def main():
     if not check_internet():
-        lg("Reboot Raspberry Pi...")
+        inf("Reboot Raspberry Pi...")
         reboot_device()
     else:
-        lg("Internet is available. No need to reboot.")
+        inf("Internet is available. No need to reboot.")
 
 
 if __name__ == "__main__":

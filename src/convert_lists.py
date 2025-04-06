@@ -9,7 +9,7 @@ Returns:
     """
 
 import re
-from src.settings import inf
+from src.settings import lg
 
 
 
@@ -145,10 +145,10 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
         if 0 <= index < len(add_lista_without_change):
             del add_lista_without_change[index]
 
-    inf(f'this is del_lista with teg in {__name__}')
-    inf(del_lista_with_teg)
-    inf(f'this is add lista without change in {__name__}')
-    inf(add_lista_without_change)
+    lg(f'this is del_lista with teg in {__name__}')
+    lg(del_lista_with_teg)
+    lg(f'this is add lista without change in {__name__}')
+    lg(add_lista_without_change)
 
     return del_lista_with_teg, add_lista_without_change
 

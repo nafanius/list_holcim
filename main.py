@@ -10,7 +10,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import os
 import argparse
-from src.settings import Settings, lg, cr, formating_error_message
+from src.settings import Settings, inf, cr, formating_error_message
 
 
 def get_dict():
@@ -133,7 +133,7 @@ def upload_directory_to_s3(
                 s3_client.put_object_acl(
                     ACL="public-read", Bucket=bucket_name, Key=s3_path
                 )
-                lg(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
+                inf(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
 
             except FileNotFoundError as err:
                 cr(formating_error_message(err, f"upload_directory_to_s3 file {s3_path} was not found"))

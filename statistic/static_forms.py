@@ -11,9 +11,8 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
-from src.settings import Settings, inf, cr, formating_error_message
+from src.settings import Settings, lg, cr, formating_error_message
 import ast
-import traceback
 from statistic.adjust_time import adjust_times
 
 pd.set_option('future.no_silent_downcasting', True)
@@ -180,7 +179,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         # if day of request is today and the wenzel is zawod, corect the rozklad_curs used message from drivers from chat bot
         if date_of_request == today_string and wenzel[0] == "zawod":
 
-            # todo delete with but its not work and don't need 
+            # todo delete with but its not work and don't need if its need for the bot. check it!
             with db_lock:
                 rozklad_curs.to_sql(
                     'actual', con=data_sql.engine, if_exists='replace', index=True)
@@ -214,8 +213,8 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 rozklad_curs['p/d'] = rozklad_curs['p/d'].astype(str)
                 
                 # region control corrects
-                inf("corrects befor")
-                inf(df_corrects)
+                lg("corrects befor")
+                lg(df_corrects)
                 # endregion
                 
                
@@ -229,8 +228,8 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 merged_df.reset_index(drop=True, inplace=True)   
 
                 # region control merge
-                inf("It's merge df")
-                inf(merged_df)
+                lg("It's merge df")
+                lg(merged_df)
                 # endregion
                 
                 df_corrects.reset_index(drop=True, inplace=True)
@@ -240,8 +239,8 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
                 
                 # region control corrects after merge                
-                inf("corrects after")
-                inf(df_corrects)
+                lg("corrects after")
+                lg(df_corrects)
                 # endregion
 
                 if not df_corrects.empty:
@@ -794,8 +793,8 @@ if __name__ == "__main__":
     date_of_request = '31.03.2025'
     df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
     df_driver  = get_list_driver(date_of_request, Settings.wenzels[0])
-    # print(rozklad_curs()[0])
-    # print(rozklad_curs(Settings.wenzels[0], date_of_request))
-    # print("*"*10)
-    # print(forecast_driver(Settings.wenzels[0], date_of_request))
+    # lg(rozklad_curs()[0])
+    # lg(rozklad_curs(Settings.wenzels[0], date_of_request))
+    # lg("*"*10)
+    # lg(forecast_driver(Settings.wenzels[0], date_of_request))
 

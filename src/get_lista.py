@@ -30,7 +30,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         wb = openpyxl.load_workbook(excel_file)
     except Exception as err:
 
-        lg(f"{err}\nтакого файла нет " + excel_file)
+        inf(f"{err}\nтакого файла нет " + excel_file)
         return []
 
     sheet = wb[wb.sheetnames[day]]
@@ -79,10 +79,10 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     )
 
     # region test raw data
-    inf(f"raw del lista {wenzel[0]} {date_of_day_text}in {__name__}")
-    inf(del_lista)
-    inf(f"raw add lista {wenzel[0]} {date_of_day_text} in {__name__}")
-    inf(add_lista)
+    lg(f"raw del lista {wenzel[0]} {date_of_day_text}in {__name__}")
+    lg(del_lista)
+    lg(f"raw add lista {wenzel[0]} {date_of_day_text} in {__name__}")
+    lg(add_lista)
     # endregion
 
     # added to the database beton
@@ -108,8 +108,8 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
     try:
         wb = openpyxl.load_workbook(excel_file)
     except Exception as err:
-        lg("Such file does not exi" + excel_file) # such file does not exist
-        lg(err)
+        inf("Such file does not exist" + excel_file) # such file does not exist
+        inf(err)
         return []
     
     sheet = wb[wb.sheetnames[day]]
@@ -468,5 +468,5 @@ def combination_of_some_days_list(wenzel):
 
 
 if __name__ == "__main__":
-    # lg(combination_of_some_days_list(Settings.wenzels[0]))
-    print(Settings.time_of_compare)
+    # inf(combination_of_some_days_list(Settings.wenzels[0]))
+    inf(Settings.time_of_compare)
