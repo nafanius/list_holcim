@@ -28,22 +28,22 @@ def adjust_time1(df):
         result = []
         for _ , group in time_groups:
             if len(group) == 2:
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=5 + iteration*2)
                 any_changes = True
             elif len(group) == 3:
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
-                group.iat[2, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=5 + iteration*2)
+                group.iat[2, group.columns.get_loc('time')] += pd.Timedelta(minutes=5 + iteration*2)
                 any_changes = True
             elif len(group) == 4:
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
-                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
-                group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=5 + iteration*2)
+                group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=5 + iteration*2)
                 any_changes = True
             elif len(group) >= 5:
-                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=20 + iteration*2)
-                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
-                group.iat[3, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2)
-                group.iat[4, group.columns.get_loc('time')] += pd.Timedelta(minutes=20 + iteration*2) 
+                group.iat[0, group.columns.get_loc('time')] -= pd.Timedelta(minutes=10 + iteration*2)
+                group.iat[1, group.columns.get_loc('time')] -= pd.Timedelta(minutes=5 + iteration*2)
+                group.iat[-2, group.columns.get_loc('time')] += pd.Timedelta(minutes=5 + iteration*2)
+                group.iat[-1, group.columns.get_loc('time')] += pd.Timedelta(minutes=10 + iteration*2) 
                 any_changes = True  
             result.append(group)
 

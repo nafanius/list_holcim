@@ -74,17 +74,17 @@ def formating_error_message(error, name):
     current_frame = traceback.extract_tb(error.__traceback__)[-1]
     function_name = current_frame.name
 
-    explan_mistake = f"""
+    explain_mistake = f"""
         Mistake mame: {name}
         Time: {timestamp}
-        Type of error: {err_type} type of
+        Type of error: {err_type}
         Message: {error}
         Function name: {function_name}
         Traceback:
         {tb_str}
         """
 
-    return explan_mistake
+    return explain_mistake
 
 def timer(func):
     """
@@ -116,6 +116,6 @@ def timer(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        lg(f"Function {func.__name__} executed for {end_time - start_time} seconds") 
+        inf(f"Function {func.__name__} executed for {end_time - start_time} seconds") 
         return result
     return wrapper
