@@ -11,7 +11,7 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
-from src.settings import Settings, lg, cr, formating_error_message
+from src.settings import Settings, lg, cr, formating_error_message, timer
 import ast
 from statistic.adjust_time import adjust_times
 
@@ -93,7 +93,7 @@ def get_list_driver(date_order, wenzel):
 
     return df_driver
 
-    
+@timer   
 def rozklad_curs(wenzel, date_of_request="18.02.2025"):
     """ Calculates the rozklad_curs and returns the html table, number of orders, sum of meters, graph and pie chart
     The rozklad_curs is a table with the following columns:
@@ -401,6 +401,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
     return html_table, rozklad_curs.shape[0], round(bud_without_dry["meter"].sum(), 1), graph_html, graph_html_pie
 
+@timer
 def forecast_driver(wenzel, date_of_request="18.02.2025"):
     """ Forecast the driver schedule and create a graph of the lack of drivers
     The function creates tables and graphs for the driver schedule

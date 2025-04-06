@@ -1,7 +1,7 @@
 import ezsheets
 from datetime import datetime, timedelta
 import os
-from src.settings import inf, formating_error_message
+from src.settings import inf, formating_error_message, timer
 
 # dyspozytor.warszawa@holcim.com
 
@@ -28,7 +28,7 @@ def generate_name_of_file_google():
 
     return list_of_download_files
 
-
+@timer
 def save_google_sheet(directory="excel_files"):
     """save googlsheet file like a Excel in directory
 

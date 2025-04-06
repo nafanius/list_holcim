@@ -1,6 +1,6 @@
 import threading
 import time as time
-from src.settings import Settings, inf, lg
+from src.settings import Settings, inf, lg, timer
 import src.get_del_new_lists as get_del_new_lists
 from data_drive import data_sql
 import openpyxl
@@ -247,7 +247,7 @@ def lista_in_text_beton(lista_beton):
         f'<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - {round(sum_metres, 1)}</p>',
     )
 
-
+@timer
 def find_day_request():
     """Generates a list of requests for three days depending on the current date
     and day of the week
@@ -397,7 +397,7 @@ def find_day_request():
 
     return list_of_days
 
-
+@timer
 def combination_of_some_days_list(wenzel):
     """Generates two dictionaries with three days of departure and shipment schedules
 
