@@ -1,7 +1,7 @@
 import ezsheets
 from datetime import datetime, timedelta
 import os
-from src.settings import lg
+from src.settings import lg, formating_error_message
 
 # dyspozytor.warszawa@holcim.com
 
@@ -44,6 +44,7 @@ def save_google_sheet(directory="excel_files"):
             file_path = os.path.join(directory, f"{ss_name}.xlsx")
             ss.downloadAsExcel(file_path)
         except Exception as err:
-            lg(err)
-            lg("ERROR: File not found")
+
+            lg(formating_error_message(err, "save_google_sheet"))
+            
             continue

@@ -6,9 +6,9 @@ and requirements.
 """
 
 import datetime
-from pprint import pprint, pformat
+from pprint import pformat
 import logging
-
+import traceback
 
 class Settings:
 
@@ -57,3 +57,30 @@ exp = logger.exception
 # logging.disable(logging.CRITICAL)
 # logging.disable(logging.EXCEPTION)
 # endregion
+
+def formating_error_message(error, name):
+    """Format the error message for logging
+
+    Args:
+        error (Exception): error message
+
+    Returns:
+        str: formatted error message
+    """
+    err_type = type(error).__name__
+    tb_str = traceback.format_exc()
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_frame = traceback.extract_tb(error.__traceback__)[-1]
+    function_name = current_frame.name
+
+    explan_mistake = f"""
+        Mistake mame: {name}
+        Time: {timestamp}
+        Type of error: {err_type} type of
+        Message: {error}
+        Function name: {function_name}
+        Traceback:
+        {tb_str}
+        """
+
+    return explan_mistake

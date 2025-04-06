@@ -11,7 +11,7 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
-from src.settings import Settings, inf, lg, cr
+from src.settings import Settings, inf, cr, formating_error_message
 import ast
 import traceback
 from statistic.adjust_time import adjust_times
@@ -395,21 +395,8 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         html_buffer.close()
 
     except Exception as err:
-        err_type = type(err).__name__
-        tb_str = traceback.format_exc()
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        current_frame = traceback.extract_tb(err.__traceback__)[-1]
-        function_name = current_frame.name
 
-        cr(f"""
-        Ошибка при формировании rozklad_cours
-        Время: {timestamp}
-        Тип ошибки: {err_type}
-        Сообщение: {err}
-        Функция: {function_name}
-        Трассировка:
-        {tb_str}
-        """)
+        cr(formating_error_message(err, "rozklad_curs"))
         
         return "<p>Brak</p>", 0, 0, "<p>Brak</p>", "<p>Brak</p>"
 
@@ -618,7 +605,6 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
             Returns:
                 dataframe: dataframe with the courses in the format for the forecast driver schedule
             """            
-            # todo do it correct - it's cause of future warning The issue lies in changing the column value format
             df.replace('[]',np.nan, inplace=True)
             df.replace('',np.nan, inplace=True)
 
@@ -795,21 +781,8 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
         
     except Exception as err:
-        err_type = type(err).__name__
-        tb_str = traceback.format_exc()
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        current_frame = traceback.extract_tb(err.__traceback__)[-1]
-        function_name = current_frame.name
 
-        cr(f"""
-        Ошибка при формировании forecast_driver
-        Время: {timestamp}
-        Тип ошибки: {err_type}
-        Сообщение: {err}
-        Функция: {function_name}
-        Трассировка:
-        {tb_str}
-        """)
+        cr(formating_error_message(err, "forecast_driver"))
 
         return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
     

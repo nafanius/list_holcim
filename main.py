@@ -10,7 +10,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import os
 import argparse
-from src.settings import Settings, lg, cr
+from src.settings import Settings, lg, cr, formating_error_message
 
 
 def get_dict():
@@ -135,10 +135,12 @@ def upload_directory_to_s3(
                 )
                 lg(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
 
-            except FileNotFoundError:
-                cr(f"The file {s3_path} was not found.")
-            except NoCredentialsError:
-                cr("Credentials not available.")
+            except FileNotFoundError as err:
+                cr(formating_error_message(err, f"upload_directory_to_s3 file {s3_path} was not found"))
+                
+            except NoCredentialsError as err:
+                cr(formating_error_message(err, "upload_directory_to_s3 Credentials not available"))
+               
 
 
 if __name__ == "__main__":

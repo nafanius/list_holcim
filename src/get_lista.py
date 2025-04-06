@@ -407,7 +407,7 @@ def combination_of_some_days_list(wenzel):
             wenzel[1] - number of wenzel
             wenzel[1][0] - first number of wenzel
             wenzel[1][1] - second number of wenzel
-            Wenzel[2] - quantity of drivers
+            wenzel[2] - quantity of drivers
     Returns:
         dict:  two dictionaries with three days of departure and shipment schedules
     """    
