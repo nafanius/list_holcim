@@ -10,23 +10,8 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import os
 import argparse
-import logging
-from pprint import pprint
-from src.settings import Settings
+from src.settings import Settings, lg, cr
 
-
-# region logging
-
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-lg = logging.debug
-cr = logging.critical
-inf = logging.info
-exp = logging.exception
-logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
-# logging.disable(logging.CRITICAL)
-# logging_end
-# endregion
 
 def get_dict():
     """creation and return of a dictionary with all data for HTML"""
@@ -148,12 +133,12 @@ def upload_directory_to_s3(
                 s3_client.put_object_acl(
                     ACL="public-read", Bucket=bucket_name, Key=s3_path
                 )
-                inf(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
+                lg(f"File {s3_path} uploaded to {bucket_name}/{s3_path}")
 
             except FileNotFoundError:
-                inf(f"The file {s3_path} was not found.")
+                cr(f"The file {s3_path} was not found.")
             except NoCredentialsError:
-                inf("Credentials not available.")
+                cr("Credentials not available.")
 
 
 if __name__ == "__main__":

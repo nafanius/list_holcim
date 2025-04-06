@@ -1,8 +1,6 @@
 from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
-from pprint import pprint
-import logging
 from data_drive.data_sql import get_newest_list_beton_or_lista
 from data_drive import data_sql
 from statistic.order import Order
@@ -13,31 +11,14 @@ import threading
 from datetime import datetime
 from sqlalchemy import inspect
 from sqlalchemy import text as text_sql_request
-from src.settings import Settings
+from src.settings import Settings, inf, lg, cr
 import ast
 import traceback
-from adjust_time import adjust_times
+from statistic.adjust_time import adjust_times
 
-
+pd.set_option('future.no_silent_downcasting', True)
 
 db_lock = threading.Lock()
-
-rng = np.random.default_rng(123545)
-
-# region logging
-
-logging.basicConfig(level=logging.DEBUG,
-                    format="%(asctime)s - %(levelname)s - %(message)s")
-lg = logging.debug
-cr = logging.critical
-inf = logging.info
-exp = logging.exception
-# logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
-# logging.disable(logging.CRITICAL)
-# logging_end
-# endregion
-
 
 count_graph = 1
 df_for_driver_glob = DataFrame()
@@ -420,7 +401,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         current_frame = traceback.extract_tb(err.__traceback__)[-1]
         function_name = current_frame.name
 
-        inf(f"""
+        cr(f"""
         Ошибка при формировании rozklad_cours
         Время: {timestamp}
         Тип ошибки: {err_type}
@@ -820,7 +801,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
         current_frame = traceback.extract_tb(err.__traceback__)[-1]
         function_name = current_frame.name
 
-        inf(f"""
+        cr(f"""
         Ошибка при формировании forecast_driver
         Время: {timestamp}
         Тип ошибки: {err_type}

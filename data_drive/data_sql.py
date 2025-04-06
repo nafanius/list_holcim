@@ -13,24 +13,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from src.settings import Settings
-import logging
+from src.settings import Settings, inf, lg
 
 
-# region logging
-
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-lg = logging.debug
-cr = logging.critical
-inf = logging.info
-exp = logging.exception
-# logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
-# logging.disable(logging.CRITICAL)
-# logging_end
-# endregion
-
-# creating database
 Base = declarative_base()
 
 
@@ -252,11 +237,11 @@ def record_beton(data):
         session.add(beton)
         session.commit()
     except IntegrityError as e:
-        inf("Ошибка целостности данных: возможно, дубликат ключа")
+        lg("Ошибка целостности данных: возможно, дубликат ключа")
         session.rollback()  # Отмена всех изменений в текущей транзакции
 
     except Exception as e:
-        inf("Ошибка при добавлении данных:", e)
+        lg("Ошибка при добавлении данных:", e)
         session.rollback()
     finally:
         session.close()
@@ -309,11 +294,11 @@ def record_lista(data):
         session.add(lista)
         session.commit()
     except IntegrityError as e:
-        inf("Data integration error:possible duplicate key")
+        lg("Data integration error:possible duplicate key")
         session.rollback()  # rollback all changes in the current transaction
 
     except Exception as e:
-        inf("Error adding data", e)
+        lg("Error adding data", e)
         session.rollback()
     finally:
         session.close()
@@ -358,7 +343,7 @@ def delete_records_below_threshold(threshold, base, wenz):
         session.commit()
     except Exception as e:
         session.rollback()
-        inf(f"An error occurred: {e}")
+        lg(f"An error occurred: {e}")
     finally:
         session.close()
 

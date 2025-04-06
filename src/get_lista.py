@@ -1,29 +1,14 @@
 import threading
 import time as time
-from src.settings import Settings
+from src.settings import Settings, inf, lg
 import src.get_del_new_lists as get_del_new_lists
-from pprint import pprint
-
 from data_drive import data_sql
 import openpyxl
 from datetime import time as datetime_time
-import logging
 from datetime import datetime, timedelta
 import re
 from src.convert_lists import get_list_from_three_norm_del_add
 
-# region logging 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-lg = logging.debug
-cr = logging.critical
-inf = logging.info
-exp = logging.exception
-# logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
-# logging.disable(logging.CRITICAL)
-# endregion
 
 db_lock = threading.Lock()
 
@@ -45,7 +30,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
         wb = openpyxl.load_workbook(excel_file)
     except Exception as err:
 
-        inf(f"{err}\nтакого файла нет " + excel_file)
+        lg(f"{err}\nтакого файла нет " + excel_file)
         return []
 
     sheet = wb[wb.sheetnames[day]]
@@ -94,10 +79,10 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     )
 
     # region test raw data
-    print("raw del lista")
-    pprint(del_lista)
-    print("raw add lista")
-    pprint(add_lista)
+    inf(f"raw del lista {wenzel[0]} {date_of_day_text}in {__name__}")
+    inf(del_lista)
+    inf(f"raw add lista {wenzel[0]} {date_of_day_text} in {__name__}")
+    inf(add_lista)
     # endregion
 
     # added to the database beton
@@ -123,8 +108,8 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
     try:
         wb = openpyxl.load_workbook(excel_file)
     except Exception as err:
-        inf("Such file does not exi" + excel_file) # such file does not exist
-        inf(err)
+        lg("Such file does not exi" + excel_file) # such file does not exist
+        lg(err)
         return []
     
     sheet = wb[wb.sheetnames[day]]
@@ -483,5 +468,5 @@ def combination_of_some_days_list(wenzel):
 
 
 if __name__ == "__main__":
-    # inf(combination_of_some_days_list(Settings.wenzels[0]))
+    # lg(combination_of_some_days_list(Settings.wenzels[0]))
     print(Settings.time_of_compare)

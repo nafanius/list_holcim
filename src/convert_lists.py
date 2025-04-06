@@ -9,7 +9,9 @@ Returns:
     """
 
 import re
-from pprint import pprint
+from src.settings import inf
+
+
 
 def converter(list_for_convert):
     """Convert the list to a string and format it.
@@ -143,10 +145,10 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
         if 0 <= index < len(add_lista_without_change):
             del add_lista_without_change[index]
 
-    print('this is del_lista with teg')
-    pprint(del_lista_with_teg)
-    print('this is add lista without change')
-    pprint(add_lista_without_change)
+    inf(f'this is del_lista with teg in {__name__}')
+    inf(del_lista_with_teg)
+    inf(f'this is add lista without change in {__name__}')
+    inf(add_lista_without_change)
 
     return del_lista_with_teg, add_lista_without_change
 

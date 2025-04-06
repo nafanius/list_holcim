@@ -1,22 +1,10 @@
 import ezsheets
 from datetime import datetime, timedelta
 import os
-import logging
+from src.settings import lg
 
 # dyspozytor.warszawa@holcim.com
 
-# region logging 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-lg = logging.debug
-cr = logging.critical
-inf = logging.info
-exp = logging.exception
-# logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
-# logging.disable(logging.CRITICAL)
-# endregion
 
 def generate_name_of_file_google():
     """Forms the file names that need to be downloaded based on the current date, returning a list of file names
@@ -56,6 +44,6 @@ def save_google_sheet(directory="excel_files"):
             file_path = os.path.join(directory, f"{ss_name}.xlsx")
             ss.downloadAsExcel(file_path)
         except Exception as err:
-            inf(err)
-            inf("ERROR: File not found")
+            lg(err)
+            lg("ERROR: File not found")
             continue

@@ -6,6 +6,8 @@ and requirements.
 """
 
 import datetime
+from pprint import pprint, pformat
+import logging
 
 
 class Settings:
@@ -29,3 +31,29 @@ class Settings:
   
     def __init__(self):
         pass
+
+
+# region logging
+class PrettyFormatter(logging.Formatter):
+       def format(self, record):
+           # Если message относится к структуре данных, отформатируйте ее
+           if isinstance(record.msg, (dict, list, tuple)):
+               record.msg = pformat(record.msg)
+           return super().format(record)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler()
+handler.setFormatter(PrettyFormatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(handler)
+
+lg = logger.debug
+cr = logger.critical
+inf = logger.info
+exp = logger.exception
+# logging.disable(logging.DEBUG)
+# logging.disable(logging.INFO)
+# logging.disable(logging.CRITICAL)
+# logging.disable(logging.EXCEPTION)
+# endregion
