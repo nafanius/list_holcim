@@ -13,8 +13,8 @@ def check_internet(host="8.8.8.8", timeout=3):
     Returns:
         booling: False if internet is available, True otherwise.
     """
-    inf("Checking internet connection...")   
-    param = "-c"  # Количество запросов
+    inf("\nChecking internet connection...")   
+    param = "-c"  # count of requests
     command = ["ping", param, "1", "-W", str(timeout), host]
     return os.system(" ".join(command)) == 0
 

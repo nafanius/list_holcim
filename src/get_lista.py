@@ -138,7 +138,14 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
                     row_in_file + row_in_list_time,
                     15,
                 )
-
+    # remove duplicates and sort the list
+    set_of_list = set()
+    lista_without_duble =  []
+    for i in lista:
+        if i[1] not in set_of_list:
+            set_of_list.add(i[1])
+            lista_without_duble.append(i)
+    lista = lista_without_duble
     lista = sorted(lista, key=lambda event: event[0])
 
     # add lista to the database
