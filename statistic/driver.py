@@ -16,8 +16,14 @@ class Driver:
     count_driver = 0
     
     def __init__(self, work_day, time_in_list, person):
-        '''Initializes the data.'''
-        self.date_order = work_day
+        """Card of depart driver
+
+        Args:
+            work_day (str): date string format "dd.mm.yyyy"
+            time_in_list (datetime.time): time from lista
+            person (str): name of driver and car's number
+        """        
+        self.date_order: str = work_day
         self.time_in_list = time_in_list
         self.person = person
         

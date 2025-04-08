@@ -1,4 +1,13 @@
 import pandas as pd
+import sys
+import os
+
+# Определите путь до корня проекта
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+
+
 from src.settings import Settings
 
 
@@ -115,7 +124,16 @@ def adjust_times(df):
 
 
 if __name__ == "__main__":
-    import sys
-    from pathlib import Path
+    # import sys, os
+    # from pathlib import Path
+    # project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    # if project_root not in sys.path:
+    #     sys.path.append(project_root)
 
-    sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+    data = {
+        'time': [pd.Timestamp('2023-01-01 10:00:00')] * 15,
+        'wenz': ['A', 'A', 'A', 'B', 'B', 'A', 'A', 'A', 'B', 'B', 'A', 'B', 'B', 'A', 'A',]
+    }
+    df = pd.DataFrame(data)
+    print(adjust_time1(df)['time'])
