@@ -10,11 +10,10 @@ from pprint import pprint
 from data_drive.data_sql import get_newest_list_beton_or_lista
 
 
-
 class Driver:
-    
+
     count_driver = 0
-    
+
     def __init__(self, work_day, time_in_list, person):
         """Card of depart driver
 
@@ -22,24 +21,24 @@ class Driver:
             work_day (str): date string format "dd.mm.yyyy"
             time_in_list (datetime.time): time from lista
             person (str): name of driver and car's number
-        """        
+        """
         self.date_order: str = work_day
         self.time_in_list = time_in_list
         self.person = person
-        
+
         Driver.count_driver += 1
 
-
     def convert_to_dict_for_df(self):
-       
-       return {}
 
+        return {"date_order": self.date_order,
+                "time_in_list": self.time_in_list,
+                "person": self.person
+                }
 
     @classmethod
     def how_many(cls):
         '''Prints the current population.'''
         print('We have {:d} drivers.'.format(cls.count_driver))
-
 
 
 if __name__ == "__main__":

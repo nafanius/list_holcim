@@ -143,7 +143,7 @@ def test_adjust_time1_no_changes():
         expected_df.index = expected_df.index + 1
 
         result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
+        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
     def test_adjust_times_no_changes_needed():
         data = {
@@ -161,7 +161,7 @@ def test_adjust_time1_no_changes():
         expected_df.index = expected_df.index + 1
 
         result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
+        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
     def test_adjust_times_multiple_groups():
         data = {
@@ -192,7 +192,7 @@ def test_adjust_time1_no_changes():
         expected_df.index = expected_df.index + 1
 
         result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
+        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
     def test_adjust_times_single_group():
         data = {
@@ -219,4 +219,4 @@ def test_adjust_time1_no_changes():
         expected_df.index = expected_df.index + 1
 
         result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
+        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore

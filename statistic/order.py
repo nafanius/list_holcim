@@ -53,6 +53,8 @@ class Order:
                 return str(int(data)).strip()
             elif isinstance(data, str):
                 return data.strip()
+            else:
+                return ""
         else:
             return ""
         
@@ -183,7 +185,7 @@ class Order:
         return self.start_time + datetime.timedelta(minutes=shipping_duration)
 
    
-    def check_pompa_dzwig(self, pompa_dgwig, metres):
+    def check_pompa_dzwig(self, pompa_dzwig, metres):
         """ checks if the order is for a pump or crane.
         If the order is for a pump, it returns True.
         If the order is for a crane, it returns False.
@@ -195,13 +197,13 @@ class Order:
         Returns:
             bool: True if the order is for a pump, False if it's for a crane
         """        
-        if pompa_dgwig:  # if it's pompa
-            data = str(pompa_dgwig)
+        if pompa_dzwig:  # if it's pompa
+            data = str(pompa_dzwig)
             data = data.strip()
             if data == '501':
                 return False
             return True
-        elif not pompa_dgwig and metres > 50:
+        elif not pompa_dzwig and metres > 50:
             return True
         
         return False
