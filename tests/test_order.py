@@ -2,7 +2,7 @@ from datetime import time
 import pytest
 from statistic.order import Order
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def order():
     # Create a dummy Order instance for testing
     return Order(
@@ -70,62 +70,107 @@ def test_count_order():
     )
     assert o4.count_ordres == 4
 
-# region tel_to_string
-def test_tel_to_string_with_float(order):
-    # Test when input is a float
-    result = order.tel_to_string(123456.0)
-    assert result == "123456"
+class TestTelToString:
 
-def test_tel_to_string_with_string(order):
-    # Test when input is a string
-    result = order.tel_to_string(" 123456 ")
-    assert result == "123456"
+    def test_tel_to_string_with_float(self, order):
+        # Test when input is a float
+        result = order.tel_to_string(123456.0)
+        assert result == "123456"
 
-def test_tel_to_string_with_none(order):
-    # Test when input is None
-    result = order.tel_to_string(None)
-    assert result == ""
+    def test_tel_to_string_with_int(self, order):
+        # Test when input is a float
+        result = order.convert_to_string(order.tel_to_string(123456))
+        assert result == "123456"
 
-def test_tel_to_string_with_empty_string(order):
-    # Test when input is an empty string
-    result = order.tel_to_string("")
-    assert result == ""
+    def test_tel_to_string_multi_tel(self, order):
+        # Test when input is a float
+        result = order.tel_to_string("123456 654321")
+        assert result == "123456 654321"
 
-def test_tel_to_string_with_invalid_type(order):
-    # Test when input is an invalid type (e.g., list)
-    result = order.tel_to_string(["123456"])
-    assert result == ""
-# endregion
+    def test_tel_to_string_multi_tel_n(self, order):
+        # Test when input is a float
+        result = order.convert_to_string(order.tel_to_string("123456 \n  654321\n"))
+        assert result == "123456 654321"
 
-# region test get_list_courses
-def test_get_list_courses_with_zero_metres(order):
-    # Test when metres is 0
-    order.metres = 0
-    result = order.get_list_courses()
-    assert result == [0]
+    def test_tel_to_string_multi_tel_t(self, order):
+        # Test when input is a float
+        result = order.convert_to_string(order.tel_to_string("123456 \t  654321\n"))
+        assert result == "123456 654321"
 
-def test_get_list_courses_with_exact_division(order):
-    # Test when metres is exactly divisible by 8
-    order.metres = 16
-    result = order.get_list_courses()
-    assert result == [8.0, 8.0]
+    def test_tel_to_string_with_string(self, order):
+        # Test when input is a string
+        result = order.tel_to_string(" 123456 ")
+        result_n = order.tel_to_string(" 123456\n")
+        result_multi_n = order.tel_to_string("\n\n123456\n")
+        result_t = order.tel_to_string("123456\t")
+        result_multi_t = order.tel_to_string("\t123456\t")
 
-def test_get_list_courses_with_remainder_less_than_2(order):
-    # Test when remainder is less than 2
-    order.metres = 17
-    result = order.get_list_courses()
-    assert result == [8.0, 7.0, 2.0]
+        assert result == "123456"
+        assert result_n == "123456"
+        assert result_multi_n == "123456"
+        assert result_t == "123456"
+        assert result_multi_t == "123456"
 
-def test_get_list_courses_with_remainder_greater_than_or_equal_to_2(order):
-    # Test when remainder is greater than or equal to 2
-    order.metres = 18
-    result = order.get_list_courses()
-    assert result == [8.0, 8.0, 2.0]
+    def test_tel_to_string_with_none(self, order):
+        # Test when input is None
+        result = order.tel_to_string(None)
+        assert result == ""
 
-def test_get_list_courses_with_metres_less_than_8(order):
-    # Test when metres is less than 8
-    order.metres = 5
-    result = order.get_list_courses()
-    assert result == [5.0]
-# endregion
+    def test_tel_to_string_with_empty_string(self, order):
+        # Test when input is an empty string
+        result = order.tel_to_string("")
+        assert result == ""
+
+    def test_tel_to_string_with_invalid_type(self, order):
+        # Test when input is an invalid type (e.g., list)
+        result = order.tel_to_string(["123456"])
+        assert result == ""
+
+class TestGetListCourses:
+
+    def test_get_list_courses_with_zero_metres(self, order):
+        # Test when metres is 0
+        order.metres = 0
+        result = order.get_list_courses()
+        assert result == [0]
+
+    def test_get_list_courses_with_exact_division(self, order):
+        # Test when metres is exactly divisible by 8
+        order.metres = 16
+        result = order.get_list_courses()
+        assert result == [8.0, 8.0]
+
+    def test_get_list_courses_with_remainder_less_than_2(self, order):
+        # Test when remainder is less than 2
+        order.metres = 17
+        result = order.get_list_courses()
+        assert result == [8.0, 7.0, 2.0]
+
+    def test_get_list_courses_with_remainder_greater_than_or_equal_to_2(self, order):
+        # Test when remainder is greater than or equal to 2
+        order.metres = 18
+        result = order.get_list_courses()
+        assert result == [8.0, 8.0, 2.0]
+
+    def test_get_list_courses_with_metres_less_than_8(self, order):
+        # Test when metres is less than 8
+        order.metres = 5
+        result = order.get_list_courses()
+        assert result == [5.0]
+
+    def test_get_list_courses_with_formul_metrs(self, order):
+        # Test when metres is less than 8
+        order.metres = 5 + 10
+        result = order.get_list_courses()
+        assert result == [8.0, 7.0]
+    
+    def test_get_list_courses_with_less_1metr(self, order):
+        # Test when metres is less than 8
+        order.metres = 0.5
+        result = order.get_list_courses()
+        assert result == [0.5]
+
+class TestPompaDzwig:
+    pass
+
 

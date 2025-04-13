@@ -51,6 +51,8 @@ class Order:
         if data:
             if isinstance(data, float):
                 return str(int(data)).strip()
+            elif isinstance(data, int):
+                return str(data).strip()
             elif isinstance(data, str):
                 return data.strip()
             else:
@@ -116,20 +118,20 @@ class Order:
         if self.metres == 0:
             return [0,]
 
-        # Определение значения каждого элемента при равном делении
+        # The number of courses equivalent to 8
         base_value = int(self.metres // 8)
 
-        # Подсчет остатка
+        # A remainder of less than 8 meters
         remainder = self.metres % 8
 
-        # Инициализация list с основным значением
+        # Initializing a list with values equal to 8 meters
         result = [
             8.0,
         ] * base_value
 
-        # Если остаток меньше 1
+        # if remainder less then 2 metrs
         if remainder != 0 and base_value > 0 and remainder < 2:
-            # последний элемент корректируется на 1 меньше
+            # The last element is adjusted to be 1 less, and added this 1 metr to remainder
             result[-1] -= 1
             remainder += 1
 
@@ -138,6 +140,7 @@ class Order:
             ]
 
         elif remainder != 0 and base_value > 0 and remainder >= 2:
+            # if remainder greater or equal 2 metrs, just added like a last element of list 
             result = result + [
                 remainder,
             ]
@@ -191,7 +194,8 @@ class Order:
         If the order is for a crane, it returns False.
 
         Args:
-            pompa_dgwig (bool): boolean value indicating if the order is for a pump or crane
+            pompa_dgwig (str): string keep infomation from excel about using pomp or 
+            "" - if no use pomp
             metres (float): the number of metres in the order
 
         Returns:
