@@ -194,7 +194,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 df_corrects = df_corrects[df_corrects['new_time'].dt.date == today.date()]
                 df_corrects.drop_duplicates(subset=['id', 'budowa'], keep='last', inplace=True)
                 
-                
+                df_corrects['id'] = df_corrects['id'].replace([np.nan, np.inf, -np.inf], 0)
                 df_corrects['id'] = df_corrects['id'].astype(int)
                 df_corrects['m3'] = df_corrects['m3'].astype(float).round(1)
                 df_corrects['k'] = df_corrects['k'].astype(int)
@@ -235,6 +235,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
                 df_corrects.reset_index(drop=True, inplace=True)
                 df_corrects.update(merged_df[['time_from_rosklad']].rename(columns={'time_from_rosklad': 'time'}))
                 df_corrects['id'] = merged_df['id_from_rosklad']
+                df_corrects['id'] = df_corrects['id'].replace([np.nan, np.inf, -np.inf], 0)
                 
                 df_corrects[["time", "new_time"]] = df_corrects[["time", "new_time"]].apply(pd.to_datetime)
                 
