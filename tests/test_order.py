@@ -165,12 +165,64 @@ class TestGetListCourses:
         assert result == [8.0, 7.0]
     
     def test_get_list_courses_with_less_1metr(self, order):
-        # Test when metres is less than 8
+        # Test when metres less then 1m
         order.metres = 0.5
         result = order.get_list_courses()
-        assert result == [0.5]
+    
+    def test_get_list_courses_with_0_metrs(self, order):
+        # Test when metres is less than 8
+        order.metres = 0
+        result = order.get_list_courses()
+        assert result == [0.0]
 
 class TestPompaDzwig:
-    pass
+
+    def test_empty_metrs(self, order):
+        result = order.check_pompa_dzwig('501', 0)
+        result1 = order.check_pompa_dzwig('', 0)
+        result2 = order.check_pompa_dzwig(True, 0)
+        result3 = order.check_pompa_dzwig(None, 0)
+        result4 = order.check_pompa_dzwig(False, 0)
+        result5 = order.check_pompa_dzwig(-5, 0)
+        result6 = order.check_pompa_dzwig(1.2, 0)
+        assert False == result
+        assert False == result1
+        assert True == result2
+        assert False == result3
+        assert False == result4
+        assert True == result5
+        assert True == result6
+
+    def test_if_pompa_dzwig_empty(self, order):
+        result = order.check_pompa_dzwig('', 10)
+        assert False == result
+
+    def test_if_pompa_dzwig_empty_and_metres_50(self, order):
+        result = order.check_pompa_dzwig('', 50)
+        assert False == result 
+    def test_if_pompa_dzwig_empty_and_metres_more_50(self, order):
+        result = order.check_pompa_dzwig('', 55)
+        assert True == result 
+
+    def test_if_pompa_dzwig_empty_and_metres_none(self, order):
+        result = order.check_pompa_dzwig('', order.convert_to_float(None))
+        assert False == result 
+
+    def test_if_pompa_dzwig_empty_and_metres_true(self, order):
+        result = order.check_pompa_dzwig('', True)
+        assert False == result 
+        
+    def test_if_pompa_dzwig_empty_and_metres_false(self, order):
+        result = order.check_pompa_dzwig('', False)
+        assert False == result 
+
+    def test_if_pompa_dzwig_empty_and_metres_negative(self, order):
+        result = order.check_pompa_dzwig('', -10)
+        assert False == result 
+
+    def test_if_pompa_dzwig_empty_and_metres_string(self, order):
+        result = order.check_pompa_dzwig('', order.convert_to_float('10'))
+        assert False == result 
+
 
 

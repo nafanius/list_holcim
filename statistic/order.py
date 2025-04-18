@@ -33,7 +33,7 @@ class Order:
 
         self.list_of_courses = self.get_list_courses()
         self.start_time = self.get_start_time()
-        self.finish_time = self.get_finish_time_and_form_list_of_loads()
+        self.finish_time = self.get_finish_time_and_form_list_times_of_loads()
         self.it_is_zaprawa = self.check_zaprawa()
         self.it_is_concret = self.check_concret()
         self.reszta = self = self.get_reszta()
@@ -59,8 +59,6 @@ class Order:
                 return ""
         else:
             return ""
-        
-    
 
     def convert_to_float(self, data):
         """converts the data to a float.
@@ -83,8 +81,6 @@ class Order:
                 return 0
         else:
             return 0
-        
-
 
     def convert_to_string(self, data):
         """converts the data to a string.
@@ -165,7 +161,7 @@ class Order:
 
         return data_time_order - datetime.timedelta(minutes=30)
 
-    def get_finish_time_and_form_list_of_loads(self):
+    def get_finish_time_and_form_list_times_of_loads(self):
         """calculates the finish time of the order.
         The finish time is calculated by adding the shipping duration to the start time.
         The shipping duration is calculated based on the number of courses and the type of pump or crane.
@@ -187,7 +183,6 @@ class Order:
 
         return self.start_time + datetime.timedelta(minutes=shipping_duration)
 
-   
     def check_pompa_dzwig(self, pompa_dzwig, metres):
         """ checks if the order is for a pump or crane.
         If the order is for a pump, it returns True.
