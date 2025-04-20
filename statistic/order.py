@@ -78,9 +78,9 @@ class Order:
             elif isinstance(data, int):
                 return float(data)
             else:
-                return 0
+                return 0.0
         else:
-            return 0
+            return 0.0
 
     def convert_to_string(self, data):
         """converts the data to a string.

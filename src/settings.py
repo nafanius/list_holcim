@@ -37,7 +37,7 @@ class Settings:
 # region logging
 class PrettyFormatter(logging.Formatter):
        def format(self, record):
-           # Если message относится к структуре данных, отформатируйте ее
+           # if message is a structured data, format it
            if isinstance(record.msg, (dict, list, tuple)):
                record.msg = pformat(record.msg)
            return super().format(record)
@@ -53,7 +53,7 @@ lg = logger.debug
 cr = logger.critical
 inf = logger.info
 exp = logger.exception
-# logging.disable(logging.DEBUG)
+logging.disable(logging.DEBUG)
 # logging.disable(logging.INFO)
 # logging.disable(logging.CRITICAL)
 # logging.disable(logging.EXCEPTION)

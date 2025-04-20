@@ -18,7 +18,6 @@ def order():
         pompa_dzwig="pompa"
     )
 
-
 def test_count_order():
     o1 = Order(
         date_order="01.01.2025",
@@ -87,47 +86,50 @@ class TestTelToString:
         result = order.tel_to_string("123456 654321")
         assert result == "123456 654321"
 
-    def test_tel_to_string_multi_tel_n(self, order):
+    @pytest.mark.parametrize(
+            "string",
+            ["123456 \n  654321\n",
+             "123456 \t  654321\n",
+             "123456 \t       654321\n",
+             "123456 654321\n",
+             "\n\n\n\n123456 \t654321\n"]
+    )
+    def test_tel_to_string_multi_tel_n(self, order, string):
         # Test when input is a float
-        result = order.convert_to_string(order.tel_to_string("123456 \n  654321\n"))
+        result = order.convert_to_string(order.tel_to_string(string))
         assert result == "123456 654321"
 
-    def test_tel_to_string_multi_tel_t(self, order):
-        # Test when input is a float
-        result = order.convert_to_string(order.tel_to_string("123456 \t  654321\n"))
-        assert result == "123456 654321"
-
-    def test_tel_to_string_with_string(self, order):
+    @pytest.mark.parametrize(
+            "string",
+            [" 123456 \n",
+             "123456 \t",
+             "\t\n123456 \t",
+             "  \n 123456   \n",
+             "\n\n\t\n\n123456 \t"]
+    )
+    def test_tel_to_string_with_string(self, order, string):
         # Test when input is a string
-        result = order.tel_to_string(" 123456 ")
-        result_n = order.tel_to_string(" 123456\n")
-        result_multi_n = order.tel_to_string("\n\n123456\n")
-        result_t = order.tel_to_string("123456\t")
-        result_multi_t = order.tel_to_string("\t123456\t")
-
+        result = order.convert_to_string(order.tel_to_string(string))
         assert result == "123456"
-        assert result_n == "123456"
-        assert result_multi_n == "123456"
-        assert result_t == "123456"
-        assert result_multi_t == "123456"
-
-    def test_tel_to_string_with_none(self, order):
+       
+    @pytest.mark.parametrize(
+            "string",
+            ["",
+             None,
+             [],
+             {},
+             (),
+             ["123456"],
+             ("1225ddf2214",),
+             0,
+             0000]
+    )
+    def test_tel_to_string_with_none_and_invalid_type(self, order, string):
         # Test when input is None
-        result = order.tel_to_string(None)
-        assert result == ""
-
-    def test_tel_to_string_with_empty_string(self, order):
-        # Test when input is an empty string
-        result = order.tel_to_string("")
-        assert result == ""
-
-    def test_tel_to_string_with_invalid_type(self, order):
-        # Test when input is an invalid type (e.g., list)
-        result = order.tel_to_string(["123456"])
+        result = order.convert_to_string(order.tel_to_string(string))
         assert result == ""
 
 class TestGetListCourses:
-
     def test_get_list_courses_with_zero_metres(self, order):
         # Test when metres is 0
         order.metres = 0
@@ -168,6 +170,7 @@ class TestGetListCourses:
         # Test when metres less then 1m
         order.metres = 0.5
         result = order.get_list_courses()
+        assert result == [0.5]
     
     def test_get_list_courses_with_0_metrs(self, order):
         # Test when metres is less than 8
@@ -177,52 +180,69 @@ class TestGetListCourses:
 
 class TestPompaDzwig:
 
-    def test_empty_metrs(self, order):
-        result = order.check_pompa_dzwig('501', 0)
-        result1 = order.check_pompa_dzwig('', 0)
-        result2 = order.check_pompa_dzwig(True, 0)
-        result3 = order.check_pompa_dzwig(None, 0)
-        result4 = order.check_pompa_dzwig(False, 0)
-        result5 = order.check_pompa_dzwig(-5, 0)
-        result6 = order.check_pompa_dzwig(1.2, 0)
+    @pytest.mark.parametrize(
+            "pomp",
+            [True,
+             -5,
+              1.2,
+             "pompa",
+             "ivanof",
+             (1,),
+             [1],
+             {1:"one"}
+             ]
+    )
+    def test_empty_metrs_true(self, order, pomp):
+        result = order.check_pompa_dzwig(pomp, 0)
+    
+        assert True == result
+
+    @pytest.mark.parametrize(
+            "pomp",
+            [0,
+             "",
+             None,
+             "501",
+             {},
+             [],
+             ()
+             ]
+    )
+    def test_empty_metrs_false(self, order, pomp):
+        result = order.check_pompa_dzwig(pomp, 0)
         assert False == result
-        assert False == result1
-        assert True == result2
-        assert False == result3
-        assert False == result4
-        assert True == result5
-        assert True == result6
 
-    def test_if_pompa_dzwig_empty(self, order):
-        result = order.check_pompa_dzwig('', 10)
+    @pytest.mark.parametrize(
+            "m",
+            [0,
+             10,
+             None,
+             50,
+             {},
+             [],
+             "",
+             False,
+             True,
+             -10,
+             -50,
+             -60]
+    )
+    def test_if_pompa_dzwig_empty(self, order, m):
+        order.metres = order.convert_to_float(m)
+        metrs_from_order = order.metres
+        result = order.check_pompa_dzwig('', metrs_from_order)
         assert False == result
-
-    def test_if_pompa_dzwig_empty_and_metres_50(self, order):
-        result = order.check_pompa_dzwig('', 50)
-        assert False == result 
-    def test_if_pompa_dzwig_empty_and_metres_more_50(self, order):
-        result = order.check_pompa_dzwig('', 55)
-        assert True == result 
-
-    def test_if_pompa_dzwig_empty_and_metres_none(self, order):
-        result = order.check_pompa_dzwig('', order.convert_to_float(None))
-        assert False == result 
-
-    def test_if_pompa_dzwig_empty_and_metres_true(self, order):
-        result = order.check_pompa_dzwig('', True)
-        assert False == result 
-        
-    def test_if_pompa_dzwig_empty_and_metres_false(self, order):
-        result = order.check_pompa_dzwig('', False)
-        assert False == result 
-
-    def test_if_pompa_dzwig_empty_and_metres_negative(self, order):
-        result = order.check_pompa_dzwig('', -10)
-        assert False == result 
-
-    def test_if_pompa_dzwig_empty_and_metres_string(self, order):
-        result = order.check_pompa_dzwig('', order.convert_to_float('10'))
-        assert False == result 
-
-
-
+  
+    @pytest.mark.parametrize(
+            "m",
+            [51,
+             50.005,
+             60,
+             158.3,
+             50.1]
+    )
+    def test_if_pompa_dzwig_empty_and_metres_more_50(self, order, m):
+        order.metres = order.convert_to_float(m)
+        metrs_from_order = order.metres
+        result = order.check_pompa_dzwig('', metrs_from_order)
+        assert True == result

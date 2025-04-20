@@ -77,7 +77,7 @@ def test_adjust_time1_five_orders():
     result_df = adjust_time1(df)
     assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
 
-def test_adjust_time1_five_orders_multygroup():
+def test_adjust_time1_multygroup():
     data = {
         'time': [pd.Timestamp('2023-01-01 10:00:00')] * 15,
         'wenz': ['A', 'A', 'A', 'B', 'B', 'A', 'A', 'A', 'B', 'B', 'A', 'B', 'B', 'A', 'A']
@@ -118,105 +118,140 @@ def test_adjust_time1_no_changes():
     expected_df = df.copy()
     result_df = adjust_time1(df)
     assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1))
-    def test_adjust_times_combined_adjustments():
-        data = {
-            'time': [
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:05:00'),
-                pd.Timestamp('2023-01-01 10:10:00')
-            ],
-            'wenz': ['A', 'A', 'B', 'B']
-        }
-        df = pd.DataFrame(data)
-        expected_data = {
-            'time': [
-                pd.Timestamp('2023-01-01 09:55:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:07:00'),
-                pd.Timestamp('2023-01-01 10:14:00')
-            ],
-            'wenz': ['A', 'A', 'B', 'B']
-        }
-        expected_df = pd.DataFrame(expected_data)
-        expected_df = expected_df.sort_values("time").reset_index(drop=True)
-        expected_df.index = expected_df.index + 1
+    
+def test_adjust_times_combined_adjustments():
+    data = {
+        'time': [
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:05:00'),
+            pd.Timestamp('2023-01-01 10:10:00')
+        ],
+        'wenz': ['A', 'A', 'B', 'B']
+    }
+    df = pd.DataFrame(data)
+    expected_data = {
+        'time': [
+            pd.Timestamp('2023-01-01 09:55:00'),
+            pd.Timestamp('2023-01-01 10:02:00'),
+            pd.Timestamp('2023-01-01 10:05:00'),
+            pd.Timestamp('2023-01-01 10:12:00')
+        ],
+        'wenz': ['A', 'A', 'B', 'B']
+    }
+    expected_df = pd.DataFrame(expected_data)
+    expected_df = expected_df.sort_values("time").reset_index(drop=True)
+    expected_df.index = expected_df.index + 1
 
-        result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
+    result_df = adjust_times(df)
+    assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
-    def test_adjust_times_no_changes_needed():
-        data = {
-            'time': [
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:10:00'),
-                pd.Timestamp('2023-01-01 10:20:00'),
-                pd.Timestamp('2023-01-01 10:30:00')
-            ],
-            'wenz': ['A', 'A', 'B', 'B']
-        }
-        df = pd.DataFrame(data)
-        expected_df = df.copy()
-        expected_df = expected_df.sort_values("time").reset_index(drop=True)
-        expected_df.index = expected_df.index + 1
+def test_adjust_times_no_changes_needed():
+    data = {
+        'time': [
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:10:00'),
+            pd.Timestamp('2023-01-01 10:20:00'),
+            pd.Timestamp('2023-01-01 10:30:00')
+        ],
+        'wenz': ['A', 'A', 'B', 'B']
+    }
+    df = pd.DataFrame(data)
+    expected_df = df.copy()
+    expected_df = expected_df.sort_values("time").reset_index(drop=True)
+    expected_df.index = expected_df.index + 1
 
-        result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
+    result_df = adjust_times(df)
+    assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
-    def test_adjust_times_multiple_groups():
-        data = {
-            'time': [
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:10:00'),
-                pd.Timestamp('2023-01-01 10:10:00'),
-                pd.Timestamp('2023-01-01 10:10:00')
-            ],
-            'wenz': ['A', 'A', 'A', 'B', 'B', 'B']
-        }
-        df = pd.DataFrame(data)
-        expected_data = {
-            'time': [
-                pd.Timestamp('2023-01-01 09:55:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:05:00'),
-                pd.Timestamp('2023-01-01 10:05:00'),
-                pd.Timestamp('2023-01-01 10:10:00'),
-                pd.Timestamp('2023-01-01 10:15:00')
-            ],
-            'wenz': ['A', 'A', 'A', 'B', 'B', 'B']
-        }
-        expected_df = pd.DataFrame(expected_data)
-        expected_df = expected_df.sort_values("time").reset_index(drop=True)
-        expected_df.index = expected_df.index + 1
+def test_adjust_times_multiple_groups():
+    data = {
+        'time': [
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:10:00'),
+            pd.Timestamp('2023-01-01 10:10:00'),
+            pd.Timestamp('2023-01-01 10:10:00')
+        ],
+        'wenz': ['A', 'A', 'A', 'B', 'B', 'B']
+    }
+    df = pd.DataFrame(data)
+    expected_data = {
+        'time': [
+            pd.Timestamp('2023-01-01 09:55:00'),
+            pd.Timestamp('2023-01-01 10:02:00'),
+            pd.Timestamp('2023-01-01 10:09:00'),
+            pd.Timestamp('2023-01-01 10:05:00'),
+            pd.Timestamp('2023-01-01 10:12:00'),
+            pd.Timestamp('2023-01-01 10:19:00')
+        ],
+        'wenz': ['A', 'A', 'A', 'B', 'B', 'B']
+    }
+    expected_df = pd.DataFrame(expected_data)
+    expected_df = expected_df.sort_values("time").reset_index(drop=True)
+    expected_df.index = expected_df.index + 1
 
-        result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
+    result_df = adjust_times(df)
+    assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
 
-    def test_adjust_times_single_group():
-        data = {
-            'time': [
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:00:00')
-            ],
-            'wenz': ['A', 'A', 'A', 'A']
-        }
-        df = pd.DataFrame(data)
-        expected_data = {
-            'time': [
-                pd.Timestamp('2023-01-01 09:50:00'),
-                pd.Timestamp('2023-01-01 09:55:00'),
-                pd.Timestamp('2023-01-01 10:00:00'),
-                pd.Timestamp('2023-01-01 10:05:00')
-            ],
-            'wenz': ['A', 'A', 'A', 'A']
-        }
-        expected_df = pd.DataFrame(expected_data)
-        expected_df = expected_df.sort_values("time").reset_index(drop=True)
-        expected_df.index = expected_df.index + 1
+def test_adjust_times_single_group():
+    data = {
+        'time': [
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00'),
+            pd.Timestamp('2023-01-01 10:00:00')
+        ],
+        'wenz': ['A', 'A', 'A', 'A']
+    }
+    df = pd.DataFrame(data)
+    expected_data = {
+        'time': [
+            pd.Timestamp('2023-01-01 09:50:00'),
+            pd.Timestamp('2023-01-01 09:57:00'),
+            pd.Timestamp('2023-01-01 10:04:00'),
+            pd.Timestamp('2023-01-01 10:11:00')
+        ],
+        'wenz': ['A', 'A', 'A', 'A']
+    }
+    expected_df = pd.DataFrame(expected_data)
+    expected_df = expected_df.sort_values("time").reset_index(drop=True)
+    expected_df.index = expected_df.index + 1
 
-        result_df = adjust_times(df)
-        assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
+    result_df = adjust_times(df)
+    assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
+
+def test_adjust_time_orders_multygroup_in_on_time():
+    data = {
+        'time': [pd.Timestamp('2023-01-01 10:00:00')] * 15,
+        'wenz': ['A', 'A', 'A', 'B', 'B', 'A', 'A', 'A', 'B', 'B', 'A', 'B', 'B', 'A', 'A']
+    }
+    df = pd.DataFrame(data)
+    expected_data = {
+        'time': [
+            pd.Timestamp('2023-01-01 09:49:00'),
+            pd.Timestamp('2023-01-01 09:50:00'),
+            pd.Timestamp('2023-01-01 09:56:00'),
+            pd.Timestamp('2023-01-01 09:57:00'),
+            pd.Timestamp('2023-01-01 10:03:00'),
+            pd.Timestamp('2023-01-01 10:04:00'),
+            pd.Timestamp('2023-01-01 10:10:00'),
+            pd.Timestamp('2023-01-01 10:11:00'),
+            pd.Timestamp('2023-01-01 10:17:00'),
+            pd.Timestamp('2023-01-01 10:18:00'),
+            pd.Timestamp('2023-01-01 10:24:00'),
+            pd.Timestamp('2023-01-01 10:25:00'),
+            pd.Timestamp('2023-01-01 10:31:00'),
+            pd.Timestamp('2023-01-01 10:38:00'),
+            pd.Timestamp('2023-01-01 10:45:00')
+        ],
+        'wenz': ["A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "A", "A"]
+    }
+    expected_df = pd.DataFrame(expected_data)
+    expected_df = expected_df.sort_values("time").reset_index(drop=True)
+    expected_df.index = expected_df.index + 1
+
+    result_df = adjust_times(df)
+    
+    assert_frame_equal(result_df.sort_index(axis=1), expected_df.sort_index(axis=1)) # type: ignore
