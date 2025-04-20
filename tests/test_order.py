@@ -1,4 +1,5 @@
 from datetime import time
+import datetime
 import pytest
 from statistic.order import Order
 
@@ -246,3 +247,14 @@ class TestPompaDzwig:
         metrs_from_order = order.metres
         result = order.check_pompa_dzwig('', metrs_from_order)
         assert True == result
+
+class TestGetStartTime:
+
+    def test_get_start_time(self, order):
+        result = order.get_start_time()
+        assert result == datetime.datetime(2025, 1, 1, 9, 40)
+
+    def test_get_start_time_00(self, order):
+        order.times = time(hour=0, minute=0)
+        result = order.get_start_time()
+        assert result == datetime.datetime(2024, 12, 31, 23, 30)

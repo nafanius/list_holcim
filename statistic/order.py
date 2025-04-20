@@ -36,7 +36,7 @@ class Order:
         self.finish_time = self.get_finish_time_and_form_list_times_of_loads()
         self.it_is_zaprawa = self.check_zaprawa()
         self.it_is_concret = self.check_concret()
-        self.reszta = self = self.get_reszta()
+        self.reszta = self.get_reszta()
 
         Order.count_ordres += 1
 
