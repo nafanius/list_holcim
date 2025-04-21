@@ -103,56 +103,8 @@ Shows loading details such as time, product quantity, loading number, remaining 
 - Represents the proportion of loads made by crane versus pump.
 
 ## Project Structure
-concrete-delivery-management/
-├── data_drive/                      # Database access and SQL-related logic
-│   ├── __init__.py
-│   └── data_sql.py
-├── Holcim_lista_polish.pdf         # Reference documentation
-├── html_driver/                    # HTML extraction utilities
-│   ├── __init__.py
-│   └── get_html.py
-├── jupyter/                        # Jupyter notebooks for data analysis
-│   ├── 1.py
-│   ├── __init__.py
-│   ├── driver_stat.ipynb
-│   ├── driver_stat_for_count_optimal_drivers_and_time.ipynb
-│   ├── DRIVERS.ipynb
-│   ├── rozklad_kurs.ipynb
-│   ├── rozklad_kurs_for_difrents time.ipynb
-│   └── Untitled.ipynb
-├── LICENSE                         # MIT license file
-├── main.py                         # Entry point of the application
-├── README.md                       # Project description and instructions
-├── requirement.txt                 # Python dependencies
-├── site/                           # Web frontend
-│   ├── index.html
-│   └── static/
-│       ├── image/
-│       │   ├── favicon-16x16.png
-│       │   └── holcim_logo_color.svg
-│       └── styles/
-│           └── styles.css
-├── src/                            # Core backend logic
-│   ├── __init__.py
-│   ├── convert_lists.py
-│   ├── download_excel.py
-│   ├── get_del_new_lists.py
-│   ├── get_lista.py
-│   ├── reboot_system.py
-│   └── settings.py
-├── statistic/                      # Statistical calculations and models
-│   ├── __init__.py
-│   ├── adjust_time.py
-│   ├── driver.py
-│   ├── order.py
-│   └── static_forms.py
-└── tests/                          # Unit tests
-    ├── __init__.py
-    ├── test_adjust_time.py
-    ├── test_driver.py
-    └── test_order.py
 
-
+```
 📦 concrete-delivery-management
 ├── 📁 data_drive/                      # Database access and SQL-related logic
 │   ├── __init__.py
@@ -201,6 +153,8 @@ concrete-delivery-management/
 ├── 📄 main.py                          # Entry point of the application
 ├── 📄 README.md                        # Project description and instructions
 └── 📄 requirement.txt                  # Python dependencies
+```
+
 ---
 
 ## Future Developments
