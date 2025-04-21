@@ -22,12 +22,12 @@ jobs:
       - name: Create badges and report directory
         run: |
           mkdir -p .github/badges
-          mkdir -p coverage_html_report
+          mkdir -p docs/coverage_html_report
 
       - name: Run tests and generate coverage
         run: |
           coverage run -m pytest
-          coverage html -d coverage_html_report
+          coverage html -d docs/coverage_html_report
           coverage-badge -o .github/badges/coverage.svg
 
       - name: Commit coverage badge and report

@@ -1,5 +1,6 @@
 ![Coverage Badge](https://raw.githubusercontent.com/nafanius/list_holcim/main/.github/badges/coverage.svg)
 [![Coverage](.github/badges/coverage.svg)](https://nafanius.github.io/list_holcim/coverage_html_report/index.html)
+[![Coverage](.github/badges/coverage.svg)](https://nafanius.github.io/list_holcim/coverage_html_report/)
 
 # Concrete Delivery Management System
 
