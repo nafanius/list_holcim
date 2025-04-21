@@ -5,7 +5,7 @@ and converting data types. It also maintains a count of the total
 number of orders created.
 """
 from pprint import pprint
-from data_drive.data_sql import get_newest_list_beton_or_lista
+# from data_drive.data_sql import get_newest_list_beton_or_lista
 import re
 import datetime
 from src.settings import Settings

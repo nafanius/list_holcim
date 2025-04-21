@@ -7,7 +7,7 @@ It is used to create a driver object with the following attributes:
 """
 
 from pprint import pprint
-from data_drive.data_sql import get_newest_list_beton_or_lista
+# from data_drive.data_sql import get_newest_list_beton_or_lista
 
 
 class Driver:
