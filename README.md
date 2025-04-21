@@ -1,3 +1,4 @@
+![Coverage Badge](https://raw.githubusercontent.com/nafanius/list_holcim/main/.github/badges/coverage.svg)
 # Concrete Delivery Management System
 
 **Live site:** [holcim_lista](https://bit.ly/holcim_lista)
@@ -100,6 +101,56 @@ Shows loading details such as time, product quantity, loading number, remaining 
 
 - Represents the proportion of loads made by crane versus pump.
 
+## Project Structure
+
+📦 concrete-delivery-management
+├── 📁 data_drive/ # Database access and SQL-related logic 
+│   ├── __init__.py 
+│   └── data_sql.py 
+├── 📁 html_driver/ # HTML extraction utilities 
+│   ├── __init__.py 
+│   └── get_html.py 
+├── 📁 jupyter/ # Jupyter notebooks for temply data analysis 
+│   ├── 1.py 
+│   ├── __init__.py 
+│   ├── driver_stat.ipynb 
+│   ├── driver_stat_for_count_optimal_drivers_and_time.ipynb 
+│   ├── DRIVERS.ipynb 
+│   ├── rozklad_kurs.ipynb 
+│   ├── rozklad_kurs_for_difrents time.ipynb 
+│   └── Untitled.ipynb   
+├── 📁 site/ # Web frontend 
+│   ├── index.html 
+│   └── 📁 static/ 
+│       ├── 📁 image/ 
+│       │   ├── favicon-16x16.png 
+│       │   └── holcim_logo_color.svg 
+│       └── 📁 styles/ 
+│           └── styles.css 
+├── 📁 src/ # Core backend logic 
+│   ├── __init__.py 
+│   ├── convert_lists.py # Converting data and adding HTML tags
+│   ├── download_excel.py # Download googl sheets in excel format to lical instance
+│   ├── get_del_new_lists.py # Monitoring changes compared to the previous state of the file
+│   ├── get_lista.py # Obtaining current data from the file
+│   ├── reboot_system.py # We restart the system if there is no internet connection
+│   └── settings.py 
+├── 📁 statistic/ # Statistical calculations and models 
+│   ├── __init__.py 
+│   ├── adjust_time.py 
+│   ├── driver.py 
+│   ├── order.py 
+│   └── static_forms.py 
+├── 📁 tests/ # Unit tests 
+│   ├── __init__.py 
+│   ├── test_adjust_time.py 
+│   ├── test_driver.py 
+│   └── test_order.py
+├── 📄 Holcim_lista_polish.pdf # Project description and instructions in Polish for users
+├── 📄 LICENSE # MIT license file 
+├── 📄 main.py # Entry point of the application 
+├── 📄 README.md # Project description and instructions 
+└── 📄 requirement.txt # Python dependencies 
 ---
 
 ## Future Developments
