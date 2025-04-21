@@ -19,6 +19,9 @@ jobs:
           pip install coverage pytest coverage-badge
           pip install -r requirement.txt
 
+      - name: Create badges directory
+        run: mkdir -p .github/badges
+
       - name: Run tests and generate coverage
         run: |
           coverage run -m pytest
