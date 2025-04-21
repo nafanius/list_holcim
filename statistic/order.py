@@ -251,49 +251,50 @@ class Order:
 
 
 if __name__ == "__main__":
+    pass
 
-    # pprint(get_newest_list_beton_or_lista("beton", "03.02.2025")[5])
+    # # pprint(get_newest_list_beton_or_lista("beton", "03.02.2025")[5])
 
-    # bud = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[5])
-    # bud1 = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[9])
-    # bud2 = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[3])
-    orders = {}
-    count = 1
-    date_order = "07.02.2025"
-    for item in get_newest_list_beton_or_lista("beton", date_order, 'zawod'):
-        orders[f"{count}bud"] = Order(date_order, *item)
-        count += 1
+    # # bud = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[5])
+    # # bud1 = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[9])
+    # # bud2 = Order(*get_newest_list_beton_or_lista("beton", "03.02.2025")[3])
+    # orders = {}
+    # count = 1
+    # date_order = "07.02.2025"
+    # for item in get_newest_list_beton_or_lista("beton", date_order, 'zawod'):
+    #     orders[f"{count}bud"] = Order(date_order, *item)
+    #     count += 1
 
-    pprint(orders)
+    # pprint(orders)
 
-    df_bud = []
-    for key_bud in orders.keys():
-        bud = orders[key_bud]
-        pprint(
-            (
-                bud.name,
-                bud.metres,
-                bud.times,
-                bud.start_time,
-                bud.finish_time,
-                bud.list_of_loads,
-                bud.it_is_zaprawa,
-                bud.it_is_concret,
-                bud.list_of_courses,
-                bud.date_order,
-                bud.count_ordres,
-            )
-        )
-        df_bud.append({
-            "name": bud.name,
-            "metr": bud.metres,
-            "time": bud.times,
-            "start_time": bud.start_time,
-            "finish_time": bud.finish_time,
-            "list_of_loads": bud.list_of_loads,
-            "it_is_zaprawa": bud.it_is_zaprawa,
-            "it_is_concret": bud.it_is_concret,
-            "list_of_courses": bud.list_of_courses,
-            "date_order": bud.date_order,
-            "date_order": bud.date_order,
-        })
+    # df_bud = []
+    # for key_bud in orders.keys():
+    #     bud = orders[key_bud]
+    #     pprint(
+    #         (
+    #             bud.name,
+    #             bud.metres,
+    #             bud.times,
+    #             bud.start_time,
+    #             bud.finish_time,
+    #             bud.list_of_loads,
+    #             bud.it_is_zaprawa,
+    #             bud.it_is_concret,
+    #             bud.list_of_courses,
+    #             bud.date_order,
+    #             bud.count_ordres,
+    #         )
+    #     )
+    #     df_bud.append({
+    #         "name": bud.name,
+    #         "metr": bud.metres,
+    #         "time": bud.times,
+    #         "start_time": bud.start_time,
+    #         "finish_time": bud.finish_time,
+    #         "list_of_loads": bud.list_of_loads,
+    #         "it_is_zaprawa": bud.it_is_zaprawa,
+    #         "it_is_concret": bud.it_is_concret,
+    #         "list_of_courses": bud.list_of_courses,
+    #         "date_order": bud.date_order,
+    #         "date_order": bud.date_order,
+    #     })

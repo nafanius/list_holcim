@@ -42,27 +42,28 @@ class Driver:
 
 
 if __name__ == "__main__":
+    pass
 
-    drivers = {}
-    count = 1
-    work_day = "03.03.2025"
+    # drivers = {}
+    # count = 1
+    # work_day = "03.03.2025"
 
-    for item in get_newest_list_beton_or_lista("lista", work_day, 'zawod'):
-        drivers[f"{count}bud"] = Driver(work_day, *item)
-        count += 1
+    # for item in get_newest_list_beton_or_lista("lista", work_day, 'zawod'):
+    #     drivers[f"{count}bud"] = Driver(work_day, *item)
+    #     count += 1
 
-    pprint(drivers)
+    # pprint(drivers)
 
-    df_driver = []
-    for key_driver in drivers.keys():
-        driver = drivers[key_driver]
-        pprint(
-            (
-                driver.time_in_list,
-                driver.person,
-            )
-        )
-        df_driver.append({
-            "time_start": driver.time_in_list,
-            "person": driver.person,
-        })
+    # df_driver = []
+    # for key_driver in drivers.keys():
+    #     driver = drivers[key_driver]
+    #     pprint(
+    #         (
+    #             driver.time_in_list,
+    #             driver.person,
+    #         )
+    #     )
+    #     df_driver.append({
+    #         "time_start": driver.time_in_list,
+    #         "person": driver.person,
+    #     })
