@@ -28,7 +28,7 @@ jobs:
         run: |
           coverage run -m pytest
           coverage html -d docs/coverage_html_report
-          coverage-badge -o .github/badges/coverage.svg --force
+          coverage-badge -o .github/badges/coverage.svg -f
 
       - name: Commit coverage badge and report
         run: |
