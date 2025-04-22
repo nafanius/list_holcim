@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holcim Lista</title>
+    <link rel="icon" type="image/png" href="/static/image/favicon-16x16.png">
+    <link rel="stylesheet" href="https://cdn.muicss.com/mui-0.10.3/css/mui.min.css">
+    <script src="https://cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(144deg, #f0fded 20%, #a5ecfd 100%);
+        }
+
+        .main {
+            margin: 20px;
+        }
+
+        .title_div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title_text {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .title_image {
+            max-width: 100px;
+        }
+
+        .mui-btn {
+            margin: 5px;
+        }
+
+        .content-div {
+            display: none;
+        }
+
+        .content-div.active {
+            display: block;
+        }
+
+        .full-width-graph {
+            width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+    <script>
+        function toggleVisibility(divId) {
+            const div = document.getElementById(divId);
+            div.classList.toggle('active');
+        }
+
+        function showDivs() {
+            const dropdown = document.getElementById('dropdown');
+            const selectedValue = dropdown.value;
+
+            document.querySelectorAll('.content-div').forEach(div => div.style.display = 'none');
+            const selectedDiv = document.getElementById(selectedValue);
+            if (selectedDiv) {
+                selectedDiv.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showDivs();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="mui-container main">
+        <div class="title_div">
+            <div class="title_text">
+                <h1>Lista Holcim</h1>
+                <p>Zaktualizowano na: 21.04.2025 07:23</p>
+                <p id="brend">Produced for "Trans-Serwis"</p>
+                <p id="cong"></p>
+                <p id="war"></p>
+            </div>
+            <div class="title_image">
+                <a href="https://www.holcim.pl/" target="_blank">
+                    <img id="logo" src="/static/image/logo.png" alt="Logo">
+                </a>
+            </div>
+        </div>
+
+        <div class="mui-select">
+            <select id="dropdown" onchange="showDivs()">
+                <option value="zawod">Zawodzie</option>
+                <option value="odola">Odolany</option>
+                <option value="zeran">Żerań</option>
+                <option value="gora">Góra kalwaria</option>
+            </select>
+        </div>
+
+        <div id="zawod" class="content-div">
+            <h2>Zawodzie</h2>
+            <button class="mui-btn mui-btn--primary" onclick="toggleVisibility('zawod-details')">Toggle Details</button>
+            <div id="zawod-details" class="mui-panel">
+                <p>21.04.2025 poniedziałek</p>
+                <ul>
+                    
+                    <li>Dane są niedostępne</li>
+                    
+                </ul>
+            </div>
+        </div>
+
+        <!-- Repeat similar structure for other sections like odola, zeran, gora -->
+
+        <footer class="mui--text-center">
+            <p>ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
+        </footer>
+    </div>
+</body>
+
+</html>
