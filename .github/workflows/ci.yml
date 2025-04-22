@@ -30,10 +30,14 @@ jobs:
           coverage html -d docs/coverage_html_report
           coverage-badge -o .github/badges/coverage.svg -f
 
+      - name: copy site_index to docs
+        run: |
+          cp site/index.html docs/
+
       - name: Commit coverage badge and report
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/badges/coverage.svg docs/coverage_html_report/
+          git add .github/badges/coverage.svg docs/coverage_html_report/ docs/index.html
           git commit -m "Update coverage badge" || echo "No changes to commit"
           git push
