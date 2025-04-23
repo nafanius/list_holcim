@@ -1173,7 +1173,7 @@ html_template = """
     </div>
 
     <footer style="margin-top: 3px; margin-bottom: 3px; text-align: center; font-size: small;">
-            <p> ⓒ production by Ilin Maksim <br> fizruk.ilin@gmail.com</p>
+            <p> ⓒ production by Ilin Maksim <br> ilin1980maks@gmail.com</p>
     </footer>
 </body>
 

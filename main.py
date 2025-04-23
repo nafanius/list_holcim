@@ -39,7 +39,7 @@ def get_dict():
         args = parser.parse_args()
 
         dictinary["brend"] = (
-            args.by_who if args.by_who else 'Produced for "Trans-Serwis"'
+            args.by_who if args.by_who else 'Produced for "Holcim"'
         )
         dictinary["cong"] = args.cong if args.cong else ""
         dictinary["war"] = args.war if args.war else ""
