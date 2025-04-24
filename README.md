@@ -1,6 +1,6 @@
 [![Coverage](.github/badges/coverage.svg)](https://nafanius.github.io/list_holcim/coverage_html_report/)
-[CI](https://github.com/nafanius/holcim_lista/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/USERNAME/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/USERNAME/REPO)
+![CI](https://github.com/nafanius/holcim_lista/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/nafanius/holcim_lista/branch/main/graph/badge.svg)](https://codecov.io/gh/USERNAME/REPO)
 
 # Concrete Delivery Management System
 
