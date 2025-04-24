@@ -48,7 +48,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
                     sheet.cell(row=row, column=column + 1).value, # firm
                     sheet.cell(row=row, column=column + 2).value, # adress bud(name)
                     f"{sheet.cell(row=row, column=column + 10).value} "
-                    f"{'' if str(sheet.cell(row=row, column=column + 12).value).lower() == 'ok' 
+                    f"{'' if str(sheet.cell(row=row, column=column + 12).value).lower() == 'ok'\
                         else sheet.cell(row=row, column=column + 12).value}", # częstotliwość i Status kontraktu(uwagi)
                     f"{sheet.cell(row=row, column=column + 13).value} "
                     f"{sheet.cell(row=row, column=column + 14).value}", # Przebieg i Godzina potwierdzenia betonowania(przebieg)
