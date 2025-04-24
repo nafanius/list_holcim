@@ -43,15 +43,18 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
             times_download = datetime_time(int(hours), int(minutes))
             lista_beton.append(
                 (
-                    sheet.cell(row=row, column=column + 4).value,
-                    times_download,
-                    sheet.cell(row=row, column=column + 1).value,
-                    sheet.cell(row=row, column=column + 2).value,
-                    sheet.cell(row=row, column=column + 10).value,
-                    f"{sheet.cell(row=row, column=column + 13).value} {sheet.cell(row=row, column=column + 14).value}",
-                    sheet.cell(row=row, column=column + 11).value,
+                    sheet.cell(row=row, column=column + 4).value, # metrs
+                    times_download, # times
+                    sheet.cell(row=row, column=column + 1).value, # firm
+                    sheet.cell(row=row, column=column + 2).value, # adress bud(name)
+                    f"{sheet.cell(row=row, column=column + 10).value} "
+                    f"{'' if str(sheet.cell(row=row, column=column + 12).value).lower() == 'ok' 
+                        else sheet.cell(row=row, column=column + 12).value}", # częstotliwość i Status kontraktu(uwagi)
+                    f"{sheet.cell(row=row, column=column + 13).value} "
+                    f"{sheet.cell(row=row, column=column + 14).value}", # Przebieg i Godzina potwierdzenia betonowania(przebieg)
+                    sheet.cell(row=row, column=column + 11).value, # telefon
                     wenz,
-                    sheet.cell(row=row, column=column + 8).value,
+                    sheet.cell(row=row, column=column + 8).value, # pompa
                 )
             )
 
