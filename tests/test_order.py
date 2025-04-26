@@ -361,3 +361,79 @@ class TestGetFinishTimeListOfTimeLoads:
         result = order.get_finish_time_and_form_list_times_of_loads()
         assert result == response
 
+class TestGetConcellation:
+
+    @pytest.mark.parametrize("pszebieg",
+            ["kjkksk kdjjd odwołano sdkkkksdk",
+            "odwołano 12.3.44",
+            "gsgsg sggs odwołano",
+            "odwołano 12.3.44"]
+    )
+    def test_consellation_in_przebeg_true(self, order, pszebieg):
+        order.przebieg = pszebieg
+        result  = order.get_cancellation()
+        assert result == True
+
+    @pytest.mark.parametrize("pszebieg",
+            ["kjkksk kdjjd oddwocłano sdkkkksdk",
+            "oddwołano 12.3.44",
+            "gsgsg sggs odxwosłano",
+            "odwxxołano 12.3.44"]
+    )
+    def test_consellation_in_przebeg_false(self, order, pszebieg):
+        order.przebieg = pszebieg
+        result  = order.get_cancellation()
+        assert result == False
+
+    @pytest.mark.parametrize(("pszebieg", "uwagi"),
+            [("kjkksk kdjjd odwołano sdkkkksdk", "qqqw wq  sds vfvd ds"),
+             ("odwołano 12.3.44", "qqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odwołano", "qqqw wq  sds vfvd ds"),
+             ("odwołano 12.3.44", "qqqw wq  sds vfvd ds")]
+    )
+    def test_consellation_in_przebeg_uwagi_true(self, order, pszebieg, uwagi):
+        order.przebieg = pszebieg
+        order.uwagi = uwagi
+        result  = order.get_cancellation()
+        assert result == True
+    
+    @pytest.mark.parametrize(("pszebieg", "uwagi"),
+            [("kjkksk kdjjd odwrosłano sdkkkksdk", "qqqw wq  sds vfvd ds"),
+             ("odwsołano 12.3.44", "qqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odfwołano", "qqqw wq  sds vfvd ds"),
+             ("odswołano 12.3.44", "qqqw wq  sds vfvd ds")]
+    )
+    def test_consellation_in_przebeg_uwagi_false(self, order, pszebieg, uwagi):
+        order.przebieg = pszebieg
+        order.uwagi = uwagi
+        result  = order.get_cancellation()
+        assert result == False
+
+    @pytest.mark.parametrize(("uwagi", "pszebieg"),
+            [("kjkksk kdjjd odwołano sdkkkksdk", "qqqw wq  sds vfvd ds"),
+             ("odwołano 12.3.44", "qqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odwołano", "qqqw wq  sds vfvd ds"),
+             ("", "sgsg sggs odwołanoqqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odwołano", ""),
+             ("odwołano 12.3.44", "qqqw wq  sds vfvd ds")]
+    )
+    def test_consellation_in_uwagi_przebeg_true(self, order, pszebieg, uwagi):
+        order.przebieg = pszebieg
+        order.uwagi = uwagi
+        result  = order.get_cancellation()
+        assert result == True
+    
+    @pytest.mark.parametrize(("uwagi", "pszebieg"),
+            [("kjkksk kdjjd odwrosłano sdkkkksdk", "qqqw wq  sds vfvd ds"),
+             ("odwsołano 12.3.44", "qqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odfwołano", "qqqw wq  sds vfvd ds"),
+             ("gsgsg sggs odfwołano", ""),
+             ("", ""),
+             ("", "gsgsg sggs odfwołano"),
+             ("odswołano 12.3.44", "qqqw wq  sds vfvd ds")]
+    )
+    def test_consellation_in_uwagi_przebeg_false(self, order, pszebieg, uwagi):
+        order.przebieg = pszebieg
+        order.uwagi = uwagi
+        result  = order.get_cancellation()
+        assert result == False

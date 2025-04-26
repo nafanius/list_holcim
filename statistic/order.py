@@ -37,7 +37,7 @@ class Order:
         self.it_is_zaprawa = self.check_zaprawa()
         self.it_is_concret = self.check_concret()
         self.reszta = self.get_reszta()
-        self.cancellation = self.cancellation()
+        self.cancellation = self.get_cancellation()
 
         Order.count_ordres += 1
 
@@ -248,7 +248,7 @@ class Order:
     def get_cancellation(self):
         concat_uwagi = self.uwagi + self.przebieg
 
-        if "odwal" in concat_uwagi.lower():
+        if "odwo" in concat_uwagi.lower():
             return True
         
         return False
