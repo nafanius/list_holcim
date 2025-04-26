@@ -2,6 +2,7 @@ from datetime import time
 import datetime
 import pytest
 from statistic.order import Order
+from src.settings import Settings
 
 @pytest.fixture(scope="module")
 def order():
@@ -69,6 +70,50 @@ def test_count_order():
         pompa_dzwig="pompa"
     )
     assert o4.count_ordres == 4
+
+class TestMetresToFloat:
+
+    @pytest.mark.parametrize(("m3","response"),
+                             [(0.5, 0.5),
+                              (1.2, 1.2),
+                              (8.115651515, 8.1),
+                              (-12.0, 12.0),
+                              (-0.0, 0.0),
+                              (0.00000, 0.0),
+                              (0.56, 0.6),
+                              (0.45, 0.5),
+                              (-0.45, 0.5),
+                              (0.000004, 0.0)]
+    )
+    def test_float(self, order, m3, response):
+        result = order.convert_to_float(m3)
+        assert result == response
+
+
+    @pytest.mark.parametrize(("m3","response"),
+                             [(1, 1.0),
+                              (150, 150.0),
+                              (-1, 1.0),
+                              (0, 0.0),
+                              (-0.0, 0.0),
+                              (-250, 250.0)]
+    )
+    def test_float_from_int(self, order, m3, response):
+        result = order.convert_to_float(m3)
+        assert result == response
+    
+    @pytest.mark.parametrize(("m3","response"),
+                             [("1", 0.0),
+                              (time, 0.0),
+                              (object, 0.0),
+                              ([1,], 0.0),
+                              ({}, 0.0),
+                              ((1,), 0.0),
+                              ({"1":1}, 0.0)]
+    )
+    def test_float_not_flot_or_int(self, order, m3, response):
+        result = order.convert_to_float(m3)
+        assert result == response
 
 class TestTelToString:
 

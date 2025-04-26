@@ -37,6 +37,7 @@ class Order:
         self.it_is_zaprawa = self.check_zaprawa()
         self.it_is_concret = self.check_concret()
         self.reszta = self.get_reszta()
+        self.cancellation = self.cancellation()
 
         Order.count_ordres += 1
 
@@ -74,9 +75,9 @@ class Order:
         """        
         if data:
             if isinstance(data, float):
-                return data
+                return abs(round(data, 1))
             elif isinstance(data, int):
-                return float(data)
+                return abs(float(round(data, 1)))
             else:
                 return 0.0
         else:
@@ -243,6 +244,15 @@ class Order:
             metres -= cours
 
         return reszta
+    
+    def get_cancellation(self):
+        concat_uwagi = self.uwagi + self.przebieg
+
+        if "odwal" in concat_uwagi.lower():
+            return True
+        
+        return False
+        
 
     @classmethod
     def how_many(cls):
