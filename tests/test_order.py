@@ -2,7 +2,7 @@ from datetime import time
 import datetime
 import pytest
 from statistic.order import Order
-from src.settings import Settings
+from src.settings import inf
 
 @pytest.fixture(scope="module")
 def order():
@@ -320,7 +320,7 @@ class TestGetStartTime:
         result = order.get_start_time()
         assert result == response
 
-class TestGetFinishTimeListOfTimeLoads:
+class TestGetFinishTime:
 
     @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
             [(time(hour=10, minute=10), "01.10.2024", 18.0, datetime.datetime(2024, 10, 1, 10, 12)),
@@ -361,6 +361,108 @@ class TestGetFinishTimeListOfTimeLoads:
         order.list_of_courses = order.get_list_courses()
         order.start_time = order.get_start_time()
         result = order.get_finish_time_and_form_list_times_of_loads()
+        assert result == response
+
+class TestGetListOfTimeLoads:
+
+    @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
+            [(time(hour=10, minute=10), "01.10.2024", 18.0, [datetime.datetime(2024, 10, 1, 9, 40),
+                                                             datetime.datetime(2024, 10, 1, 9, 56),
+                                                             datetime.datetime(2024, 10, 1, 10, 12)]),
+             (time(hour=5, minute=10), "01.10.2024", 100.0, [datetime.datetime(2024, 10, 1, 4, 40),
+                                                             datetime.datetime(2024, 10, 1, 4, 56),
+                                                             datetime.datetime(2024, 10, 1, 5, 12),
+                                                             datetime.datetime(2024, 10, 1, 5, 28),
+                                                             datetime.datetime(2024, 10, 1, 5, 44),
+                                                             datetime.datetime(2024, 10, 1, 6, 0),
+                                                             datetime.datetime(2024, 10, 1, 6, 16),
+                                                             datetime.datetime(2024, 10, 1, 6, 32),
+                                                             datetime.datetime(2024, 10, 1, 6, 48),
+                                                             datetime.datetime(2024, 10, 1, 7, 4),
+                                                             datetime.datetime(2024, 10, 1, 7, 20),
+                                                             datetime.datetime(2024, 10, 1, 7, 36),
+                                                             datetime.datetime(2024, 10, 1, 7, 52)]),
+             (time(hour=10, minute=0), "01.10.2024", 8.0, [datetime.datetime(2024, 10, 1, 9, 30)]),
+             (time(hour=10, minute=0), "01.10.2024", 8.1, [datetime.datetime(2024, 10, 1, 9, 30),
+                                                           datetime.datetime(2024, 10, 1, 9, 44)]),
+             (time(hour=10, minute=10), "02.10.2025", 25.0, [datetime.datetime(2025, 10, 2, 9, 40),
+                                                             datetime.datetime(2025, 10, 2, 9, 56),
+                                                             datetime.datetime(2025, 10, 2, 10, 12),
+                                                             datetime.datetime(2025, 10, 2, 10, 26)]),
+             (time(hour=10, minute=10), "01.09.2024", 12.0, [datetime.datetime(2024, 9, 1, 9, 40),
+                                                             datetime.datetime(2024, 9, 1, 9, 56)]),
+             (time(hour=10, minute=10), "01.09.2024", 0.0, []),
+             (time(hour=0, minute=0), "01.01.2024", 50.0, [datetime.datetime(2023, 12, 31, 23, 30),
+                                                           datetime.datetime(2023, 12, 31, 23, 46),
+                                                           datetime.datetime(2024, 1, 1, 0, 2),
+                                                           datetime.datetime(2024, 1, 1, 0, 18),
+                                                           datetime.datetime(2024, 1, 1, 0, 34),
+                                                           datetime.datetime(2024, 1, 1, 0, 50),
+                                                           datetime.datetime(2024, 1, 1, 1, 6)])]
+    )
+    def test_form_list_of_load_pomp(self, order, set_times, set_date, m3, response):
+        """this test will be fail if Settings.unloading_time_for_pomp changed
+        """        
+        order.times = set_times
+        order.pompa_dzwig = True
+        order.date_order = set_date
+        order.metres = m3
+        order.list_of_courses = order.get_list_courses()
+        order.start_time = order.get_start_time()
+        order.list_of_loads = []
+        order.get_finish_time_and_form_list_times_of_loads()
+        result = order.list_of_loads
+        inf(result)
+        assert result == response
+
+    @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
+            [(time(hour=10, minute=10), "01.10.2024", 18.0, [datetime.datetime(2024, 10, 1, 9, 40),
+                                                             datetime.datetime(2024, 10, 1, 10, 21, 36),
+                                                             datetime.datetime(2024, 10, 1, 11, 3, 12)]),
+             (time(hour=5, minute=10), "01.10.2024", 100.0, [datetime.datetime(2024, 10, 1, 4, 40),
+                                                             datetime.datetime(2024, 10, 1, 5, 21, 36),
+                                                             datetime.datetime(2024, 10, 1, 6, 3, 12),
+                                                             datetime.datetime(2024, 10, 1, 6, 44, 48),
+                                                             datetime.datetime(2024, 10, 1, 7, 26, 24),
+                                                             datetime.datetime(2024, 10, 1, 8, 8),
+                                                             datetime.datetime(2024, 10, 1, 8, 49, 36),
+                                                             datetime.datetime(2024, 10, 1, 9, 31, 12),
+                                                             datetime.datetime(2024, 10, 1, 10, 12, 48),
+                                                             datetime.datetime(2024, 10, 1, 10, 54, 24),
+                                                             datetime.datetime(2024, 10, 1, 11, 36),
+                                                             datetime.datetime(2024, 10, 1, 12, 17, 36),
+                                                             datetime.datetime(2024, 10, 1, 12, 59, 12)]),
+             (time(hour=10, minute=0), "01.10.2024", 8.0, [datetime.datetime(2024, 10, 1, 9, 30)]),
+             (time(hour=10, minute=0), "01.10.2024", 8.1, [datetime.datetime(2024, 10, 1, 9, 30),
+                                                           datetime.datetime(2024, 10, 1, 10, 6, 24)]),
+             (time(hour=10, minute=10), "02.10.2025", 25.0, [datetime.datetime(2025, 10, 2, 9, 40),
+                                                             datetime.datetime(2025, 10, 2, 10, 21, 36),
+                                                             datetime.datetime(2025, 10, 2, 11, 3, 12),
+                                                             datetime.datetime(2025, 10, 2, 11, 39, 36)]),
+             (time(hour=10, minute=10), "01.09.2024", 12.0, [datetime.datetime(2024, 9, 1, 9, 40),
+                                                             datetime.datetime(2024, 9, 1, 10, 21, 36)]),
+             (time(hour=10, minute=10), "01.09.2024", 0.0, []),
+             (time(hour=0, minute=0), "01.01.2024", 50.0, [datetime.datetime(2023, 12, 31, 23, 30),
+                                                           datetime.datetime(2024, 1, 1, 0, 11, 36),
+                                                           datetime.datetime(2024, 1, 1, 0, 53, 12),
+                                                           datetime.datetime(2024, 1, 1, 1, 34, 48),
+                                                           datetime.datetime(2024, 1, 1, 2, 16, 24),
+                                                           datetime.datetime(2024, 1, 1, 2, 58),
+                                                           datetime.datetime(2024, 1, 1, 3, 39, 36)])]
+    )
+    def test_form_list_of_load_dzwig(self, order, set_times, set_date, m3, response):
+        """this test will be fail if Settings.unloading_time_for_pomp changed
+        """        
+        order.times = set_times
+        order.pompa_dzwig = False
+        order.date_order = set_date
+        order.metres = m3
+        order.list_of_courses = order.get_list_courses()
+        order.start_time = order.get_start_time()
+        order.list_of_loads = []
+        order.get_finish_time_and_form_list_times_of_loads()
+        result = order.list_of_loads
+        inf(result)
         assert result == response
 
 class TestGetConcellation:
@@ -439,3 +541,17 @@ class TestGetConcellation:
         order.uwagi = uwagi
         result  = order.get_cancellation()
         assert result == False
+
+@pytest.mark.skip(reason="not ready")
+class TestGetCheckZaprawa:
+
+    @pytest.mark.parametrize("pszebieg",
+            ["kjkksk kdjjd odwołano sdkkkksdk",
+            "odwołano 12.3.44",
+            "gsgsg sggs odwołano",
+            "odwołano 12.3.44"]
+    )
+    def test_consellation_in_przebeg_true(self, order, pszebieg):
+        order.przebieg = pszebieg
+        result  = order.get_cancellation()
+        assert result == True

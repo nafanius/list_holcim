@@ -128,7 +128,7 @@ class Order:
 
         # if remainder less then 2 metrs
         if remainder != 0 and base_value > 0 and remainder < 2:
-            # The last element is adjusted to be 1 less, and added this 1 metr to remainder
+            # The lasct element is adjusted to be 1 less, and added this 1 metr to remainder
             result[-1] -= 1
             remainder += 1
 
@@ -171,7 +171,12 @@ class Order:
             datetime: the finish time of the order
         """        
         shipping_duration = 0
-        self.list_of_loads += [self.start_time,]
+        
+        if self.list_of_courses[0]:
+            self.list_of_loads += [self.start_time,]
+        else:
+            self.list_of_loads = []
+
         for cours in self.list_of_courses[:-1]:
             if self.pompa_dzwig:  # if it's pompa
                 shipping_duration += cours * Settings.unloading_time_for_pomp
