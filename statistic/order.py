@@ -132,22 +132,22 @@ class Order:
             remainder += 1
 
             result = result + [
-                remainder,
+                round(remainder, 2),
             ]
 
         elif remainder != 0 and base_value > 0 and remainder >= 2:
             # if remainder greater or equal 2 metrs, just added like a last element of list 
             result = result + [
-                remainder,
+                round(remainder, 2),
             ]
 
         elif remainder != 0 and base_value == 0:
             result = [
-                remainder,
+                round(remainder, 2),
             ]
 
         return result
-
+    
     def get_start_time(self):
         """calculates the start time of the order.
         The start time is calculated by subtracting 30 minutes from the order time.
@@ -159,7 +159,7 @@ class Order:
             self.date_order, "%d.%m.%Y").date()
         data_time_order = datetime.datetime.combine(date_order, self.times)
 
-        return data_time_order - datetime.timedelta(minutes=30)
+        return data_time_order - datetime.timedelta(minutes=Settings.travel_to_the_construction)
 
     def get_finish_time_and_form_list_times_of_loads(self):
         """calculates the finish time of the order.

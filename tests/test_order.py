@@ -7,16 +7,16 @@ from statistic.order import Order
 def order():
     # Create a dummy Order instance for testing
     return Order(
-        date_order="01.01.2025",
-        metres=0,
-        times=time(hour=10, minute=10),
-        firm="Test Firm",
-        name="Test Name",
-        uwagi="Test Uwagi",
-        przebieg="Test Przebieg",
-        tel="123456789",
-        wenz=1,
-        pompa_dzwig="pompa"
+        date_order = "01.01.2025",
+        metres = 0,
+        times = time(hour=10, minute=10),
+        firm = "Test Firm",
+        name = "Test Name",
+        uwagi = "Test Uwagi",
+        przebieg = "Test Przebieg",
+        tel = "123456789",
+        wenz = 1,
+        pompa_dzwig = True 
     )
 
 def test_count_order():
@@ -258,3 +258,61 @@ class TestGetStartTime:
         order.times = time(hour=0, minute=0)
         result = order.get_start_time()
         assert result == datetime.datetime(2024, 12, 31, 23, 30)
+
+    @pytest.mark.parametrize(("set_times", "set_date", "response"),
+            [(time(hour=10, minute=10), "01.10.2024", datetime.datetime(2024, 10, 1, 9, 40)),
+             (time(hour=5, minute=10), "01.10.2024", datetime.datetime(2024, 10, 1, 4, 40)),
+             (time(hour=10, minute=0), "01.10.2024", datetime.datetime(2024, 10, 1, 9, 30)),
+             (time(hour=10, minute=10), "02.10.2025", datetime.datetime(2025, 10, 2, 9, 40)),
+             (time(hour=10, minute=10), "01.09.2024", datetime.datetime(2024, 9, 1, 9, 40)),
+             (time(hour=0, minute=0), "01.01.2024", datetime.datetime(2023, 12, 31, 23, 30))]
+    )
+    def test_get_start_time_change_data_order(self, order, set_times, set_date, response):
+        order.times = set_times
+        order.date_order = set_date
+        result = order.get_start_time()
+        assert result == response
+
+class TestGetFinishTimeListOfTimeLoads:
+
+    @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
+            [(time(hour=10, minute=10), "01.10.2024", 18.0, datetime.datetime(2024, 10, 1, 10, 12)),
+             (time(hour=5, minute=10), "01.10.2024", 100.0, datetime.datetime(2024, 10, 1, 7, 52)),
+             (time(hour=10, minute=0), "01.10.2024", 8.0, datetime.datetime(2024, 10, 1, 9, 30)),
+             (time(hour=10, minute=0), "01.10.2024", 8.1, datetime.datetime(2024, 10, 1, 9, 44)),
+             (time(hour=10, minute=10), "02.10.2025", 25.0, datetime.datetime(2025, 10, 2, 10, 26)),
+             (time(hour=10, minute=10), "01.09.2024", 12.0, datetime.datetime(2024, 9, 1, 9, 56)),
+             (time(hour=0, minute=0), "01.01.2024", 45.0, datetime.datetime(2024, 1, 1, 0, 50))]
+    )
+    def test_finish_for_pomp(self, order, set_times, set_date, m3, response):
+        """this test will be fail if Settings.unloading_time_for_pomp changed
+        """        
+        order.times = set_times
+        order.date_order = set_date
+        order.metres = m3
+        order.list_of_courses = order.get_list_courses()
+        order.start_time = order.get_start_time()
+        result = order.get_finish_time_and_form_list_times_of_loads()
+        assert result == response
+
+    @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
+            [(time(hour=10, minute=10), "01.10.2024", 18.0, datetime.datetime(2024, 10, 1, 11, 3, 12)),
+             (time(hour=5, minute=10), "01.10.2024", 2.0, datetime.datetime(2024, 10, 1, 4, 40)),
+             (time(hour=10, minute=0), "01.10.2024", 8.0, datetime.datetime(2024, 10, 1, 9, 30)),
+             (time(hour=10, minute=0), "01.10.2024", 8.1, datetime.datetime(2024, 10, 1, 10, 6, 24)),
+             (time(hour=10, minute=10), "02.10.2025", 25.0, datetime.datetime(2025, 10, 2, 11, 39, 36)),
+             (time(hour=10, minute=10), "01.09.2024", 16.6, datetime.datetime(2024, 9, 1, 10, 58)),
+             (time(hour=0, minute=0), "01.01.2024", 45.0, datetime.datetime(2024, 1, 1, 2, 58))]
+    )
+    def test_finish_for_dzwig(self, order, set_times, set_date, m3, response):
+        """this test will be fail if Settings.unloading_time_for_crane changed
+        """  
+        order.pompa_dzwig = False
+        order.times = set_times
+        order.date_order = set_date
+        order.metres = m3
+        order.list_of_courses = order.get_list_courses()
+        order.start_time = order.get_start_time()
+        result = order.get_finish_time_and_form_list_times_of_loads()
+        assert result == response
+
