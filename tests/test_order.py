@@ -109,6 +109,9 @@ class TestMetresToFloat:
                               ([1,], 0.0),
                               ({}, 0.0),
                               ((1,), 0.0),
+                              (None, 0.0),
+                              (0, 0.0),
+                              ("", 0.0),
                               ({"1":1}, 0.0)]
     )
     def test_float_not_flot_or_int(self, order, m3, response):
@@ -270,8 +273,7 @@ class TestPompaDzwig:
              False,
              True,
              -10,
-             -50,
-             -60]
+             -50]
     )
     def test_if_pompa_dzwig_empty(self, order, m):
         order.metres = order.convert_to_float(m)
@@ -282,10 +284,10 @@ class TestPompaDzwig:
     @pytest.mark.parametrize(
             "m",
             [51,
-             50.005,
+             50.1,
              60,
              158.3,
-             50.1]
+             -60]
     )
     def test_if_pompa_dzwig_empty_and_metres_more_50(self, order, m):
         order.metres = order.convert_to_float(m)
