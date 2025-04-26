@@ -45,21 +45,22 @@ def get_list_construction_place(date_order, wenzel):
     for key_bud in orders.keys():
         bud = orders[key_bud]
 
-        df_bud.append({
-            "name": bud.name[:30]+"...",
-            "meter": bud.metres,
-            "time": bud.times,
-            "start_time": bud.start_time,
-            "finish_time": bud.finish_time,
-            "list_of_loads": bud.list_of_loads,
-            "wenz": bud.wenz,
-            "it_is_zaprawa": bud.it_is_zaprawa,
-            "it_is_concret": bud.it_is_concret,
-            "list_of_courses": bud.list_of_courses,
-            "pompa_dzwig": bud.pompa_dzwig,
-            "reszta": bud.reszta,
-            "date_order": bud.date_order,
-        })
+        if not bud.cancellation: # add orders not cancellation
+            df_bud.append({
+                "name": bud.name[:30]+"...",
+                "meter": bud.metres,
+                "time": bud.times,
+                "start_time": bud.start_time,
+                "finish_time": bud.finish_time,
+                "list_of_loads": bud.list_of_loads,
+                "wenz": bud.wenz,
+                "it_is_zaprawa": bud.it_is_zaprawa,
+                "it_is_concret": bud.it_is_concret,
+                "list_of_courses": bud.list_of_courses,
+                "pompa_dzwig": bud.pompa_dzwig,
+                "reszta": bud.reszta,
+                "date_order": bud.date_order,
+            })
 
     return df_bud
 
