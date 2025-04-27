@@ -4,10 +4,10 @@ import pytest
 from statistic.order import Order
 from src.settings import inf
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def order():
     # Create a dummy Order instance for testing
-    return Order(
+    order_obj =  Order(
         date_order = "01.01.2025",
         metres = 0,
         times = time(hour=10, minute=10),
@@ -20,56 +20,80 @@ def order():
         pompa_dzwig = True 
     )
 
-def test_count_order():
-    o1 = Order(
-        date_order="01.01.2025",
-        metres=0,
-        times=time(hour=10, minute=10),
-        firm="Test Firm",
-        name="Test Name",
-        uwagi="Test Uwagi",
-        przebieg="Test Przebieg",
-        tel="123456789",
-        wenz=1,
-        pompa_dzwig="pompa"
-    )
-    o2 = Order(
-        date_order="01.01.2025",
-        metres=0,
-        times=time(hour=10, minute=20),
-        firm="Test Firm",
-        name="Test Name2",
-        uwagi="Test Uwagi",
-        przebieg="Test Przebieg",
-        tel="123456789",
-        wenz=1,
-        pompa_dzwig="pompa"
-    )
-    o3 = Order(
-        date_order="01.01.2025",
-        metres=0,
-        times=time(hour=10, minute=30),
-        firm="Test Firm",
-        name="Test Name3",
-        uwagi="Test Uwagi",
-        przebieg="Test Przebieg",
-        tel="123456789",
-        wenz=1,
-        pompa_dzwig="pompa"
-    )
-    o4 = Order(
-        date_order="01.01.2025",
-        metres=0,
-        times=time(hour=10, minute=40),
-        firm="Test Firm",
-        name="Test Name4",
-        uwagi="Test Uwagi",
-        przebieg="Test Przebieg",
-        tel="123456789",
-        wenz=1,
-        pompa_dzwig="pompa"
-    )
-    assert o4.count_ordres == 4
+    yield order_obj
+
+    del order_obj
+    
+
+class TestClassOrder:
+    def test_count_order(self):
+        o1 = Order(
+            date_order="01.01.2025",
+            metres=0,
+            times=time(hour=10, minute=10),
+            firm="Test Firm",
+            name="Test Name",
+            uwagi="Test Uwagi",
+            przebieg="Test Przebieg",
+            tel="123456789",
+            wenz=1,
+            pompa_dzwig="pompa"
+        )
+        o2 = Order(
+            date_order="01.01.2025",
+            metres=0,
+            times=time(hour=10, minute=20),
+            firm="Test Firm",
+            name="Test Name2",
+            uwagi="Test Uwagi",
+            przebieg="Test Przebieg",
+            tel="123456789",
+            wenz=1,
+            pompa_dzwig="pompa"
+        )
+        o3 = Order(
+            date_order="01.01.2025",
+            metres=0,
+            times=time(hour=10, minute=30),
+            firm="Test Firm",
+            name="Test Name3",
+            uwagi="Test Uwagi",
+            przebieg="Test Przebieg",
+            tel="123456789",
+            wenz=1,
+            pompa_dzwig="pompa"
+        )
+        o4 = Order(
+            date_order="01.01.2025",
+            metres=0,
+            times=time(hour=10, minute=40),
+            firm="Test Firm",
+            name="Test Name4",
+            uwagi="Test Uwagi",
+            przebieg="Test Przebieg",
+            tel="123456789",
+            wenz=1,
+            pompa_dzwig="pompa"
+        )
+        assert o4.count_ordres == 4
+        del o1, o2, o3, o4
+
+    def test_how_many(self):
+        o5 = Order(
+            date_order="01.01.2025",
+            metres=0,
+            times=time(hour=10, minute=10),
+            firm="Test Firm",
+            name="Test Name",
+            uwagi="Test Uwagi",
+            przebieg="Test Przebieg",
+            tel="123456789",
+            wenz=1,
+            pompa_dzwig="pompa"
+        )
+        assert o5.how_many() == "We have 5 orders."
+
+
 
 class TestMetresToFloat:
 
@@ -555,3 +579,5 @@ class TestGetCheckZaprawa:
         order.przebieg = pszebieg
         result  = order.get_cancellation()
         assert result == True
+
+

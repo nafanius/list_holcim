@@ -263,6 +263,7 @@ class Order:
     def how_many(cls):
         """Prints the current population."""
         print("We have {:d} orders.".format(cls.count_ordres))
+        return "We have {:d} orders.".format(cls.count_ordres)
 
 
 if __name__ == "__main__":
