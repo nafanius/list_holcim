@@ -17,7 +17,7 @@ class Settings:
     data_base = 'sqlite:////home/user/.database_lista/web_lista.db' # path to the database
 
     min_interval = 7 # minimum interval for the departure
-    amount_of_zaprawa = 6 # amount of zaprawa m3
+    amount_of_zaprawa = 6.0 # amount of zaprawa m3
     names_dry_concret = r'\b(OW|Ow|ow|oW)\b' # regex for dry concret
     time_of_end_upload_zaprawa = datetime.time(8, 15) # time of end upload zaprawa
     travel_to_the_construction = 30 # time of travel to the construction and back

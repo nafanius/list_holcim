@@ -3,6 +3,9 @@ import datetime
 import pytest
 from statistic.order import Order
 from src.settings import inf
+from src.settings import Settings
+import re
+
 
 @pytest.fixture(scope="class")
 def order():
@@ -566,18 +569,41 @@ class TestGetConcellation:
         result  = order.get_cancellation()
         assert result == False
 
-@pytest.mark.skip(reason="not ready")
 class TestGetCheckZaprawa:
 
-    @pytest.mark.parametrize("pszebieg",
-            ["kjkksk kdjjd odwołano sdkkkksdk",
-            "odwołano 12.3.44",
-            "gsgsg sggs odwołano",
-            "odwołano 12.3.44"]
+    @pytest.mark.parametrize(("list_of_courses","times", "name", "response"),
+            [([0.0], time(8, 14), "ow", False),
+            ([0.0], time(8, 14), "owocowa", True),
+            ([1.0], time(8, 14), "owoc owoc", True),
+            ([1.0], time(8, 14), " owWoWOWOwO ", True),
+            ([1.0], time(8, 14), "oW", False),
+            ([2.0], time(8, 14), "oW", False),
+            ([3.0], time(8, 14), "oW", False),
+            ([4.0], time(8, 14), "oW", False),
+            ([5.0], time(8, 14), "oW", False),
+            ([6.0], time(8, 14), "oW", False),
+            ([7.0], time(8, 14), "oW", False),
+            ([8.0], time(8, 14), "oW", False),
+            ([1.0], time(8, 14), "owocy morza", True),
+            ([2.0], time(8, 14), "owocy morza", True),
+            ([3.0], time(8, 14), "owocy morza", True),
+            ([4.0], time(8, 14), "owocy morza", True),
+            ([5.0], time(8, 14), "owocy morza", True),
+            ([6.0], time(8, 14), "owocy morza", False),
+            ([7.0], time(8, 14), "owocy morza", False),
+            ([8.0], time(8, 14), "owocy morza", False),
+            ([1.0], time(9, 14), "owocy morza", False),
+            ([2.0], time(8, 15), "owocy morza", False),
+            ([3.0], time(18, 14), "owocy morza", False),
+            ([4.0], time(8, 14), "", True),
+            ([5.0], time(8, 14), "owocy morza", True),
+            ([6.0], time(8, 14), "ow", False)]
     )
-    def test_consellation_in_przebeg_true(self, order, pszebieg):
-        order.przebieg = pszebieg
-        result  = order.get_cancellation()
-        assert result == True
+    def test_check_zaprawa(self, order, list_of_courses, times, name, response):
+        order.list_of_courses = list_of_courses
+        order.times = times
+        order.name = name
+        result  = order.check_zaprawa()
+        assert result == response
 
 
