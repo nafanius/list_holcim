@@ -167,13 +167,13 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
         today = datetime.today()
         today_string = today.strftime('%d.%m.%Y')
-        inspector = inspect(data_sql.engine)
+        inspector = inspect(data_sql.Database.engine)
 
         if today.weekday() == 6:
             delete_query = text_sql_request("DELETE FROM actual_after")
 
             with db_lock:  
-                with data_sql.engine.connect() as connection:
+                with data_sql.Database.engine.connect() as connection:
                     connection.execute(delete_query)
                     connection.commit()  
 
@@ -183,12 +183,12 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
             # todo delete with but its not work and don't need if its need for the bot. check it!
             with db_lock:
                 rozklad_curs.to_sql(
-                    'actual', con=data_sql.engine, if_exists='replace', index=True)
+                    'actual', con=data_sql.Database.engine, if_exists='replace', index=True)
             
             if 'corrects' in inspector.get_table_names():
                 query = 'SELECT * FROM corrects;'
                 with db_lock:
-                    df_corrects = pd.read_sql_query(query, con=data_sql.engine)
+                    df_corrects = pd.read_sql_query(query, con=data_sql.Database.engine)
         
                                 
                 df_corrects['new_time'] = pd.to_datetime(df_corrects['new_time'])
@@ -251,7 +251,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
 
 
                 with db_lock:
-                    df_corrects[['index','id','time','m3','k','budowa','res', 'wenz', 'mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.engine, if_exists='replace', index=False)
+                    df_corrects[['index','id','time','m3','k','budowa','res', 'wenz', 'mat','p/d','new_time','user']].to_sql('corrects', con=data_sql.Database.engine, if_exists='replace', index=False)
 
                 rozklad_curs["delete"] = False
 
@@ -270,7 +270,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
             # save the rozklad_curs as actual_after for today and zawod
             with db_lock:
                 rozklad_curs.to_sql(
-                    'actual_after', con=data_sql.engine, if_exists='replace', index=True)
+                    'actual_after', con=data_sql.Database.engine, if_exists='replace', index=True)
         else:
             # apply the function to adjust time for all except zawod and today
             rozklad_curs = adjust_times(rozklad_curs)

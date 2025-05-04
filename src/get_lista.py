@@ -88,7 +88,9 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     # endregion
 
     # added to the database beton
+
     with db_lock:
+        data_sql.Database.create_all_tables()
         data_sql.record_beton({"date_of_day_text":date_of_day_text, "lista_beton":lista_beton, "day":day, "wenz":wenzel[0]})
     
     return lista_beton, del_lista, add_lista
@@ -152,6 +154,7 @@ def form_lista(excel_file, day, date_of_day_text, wenzel):
 
     # add lista to the database
     with db_lock:
+        data_sql.Database.create_all_tables()
         data_sql.record_lista({"date_of_day_text":date_of_day_text, "lista":lista, "day":day, "wenz":wenzel[0]})
     
     # delete old records

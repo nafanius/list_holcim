@@ -15,16 +15,27 @@ from sqlalchemy.orm import declarative_base
 
 from src.settings import Settings, inf, lg
 
+class Database:                                                                                                                                                                                                   
+    Base = declarative_base()
+    # creating an SQLlite database in a file
+    engine = create_engine(Settings.data_base)
 
-Base = declarative_base()
+    # Сcreating session for interective with database
+    Session = sessionmaker(bind=engine)
+
+    # creating all tables that do not yet exist
+    @classmethod
+    def create_all_tables(cls):
+        cls.Base.metadata.create_all(cls.engine)
 
 
 
-class Beton_zawod(Base):
+
+class Beton_zawod(Database.Base):
     """base template for beton_zawod
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -40,11 +51,11 @@ class Beton_zawod(Base):
     def __repr__(self):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
-class Beton_odola(Base):
+class Beton_odola(Database.Base):
     """base template for beton_odola
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -60,11 +71,11 @@ class Beton_odola(Base):
     def __repr__(self):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
-class Beton_zeran(Base):
+class Beton_zeran(Database.Base):
     """base template for beton_zeran
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -80,11 +91,11 @@ class Beton_zeran(Base):
     def __repr__(self):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
     
-class Beton_gora(Base):
+class Beton_gora(Database.Base):
     """base template for beton_gora
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -100,11 +111,11 @@ class Beton_gora(Base):
     def __repr__(self):
         return f"<BETHON(id_event_time={self.id_event_time}, DETE ={self.date_text})>"
 
-class Lista_zawod(Base):
+class Lista_zawod(Database.Base):
     """base template for lista_zawod
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -120,11 +131,11 @@ class Lista_zawod(Base):
     def __repr__(self):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
-class Lista_odola(Base):
+class Lista_odola(Database.Base):
     """base template for lista_odola
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -140,11 +151,11 @@ class Lista_odola(Base):
     def __repr__(self):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
-class Lista_zeran(Base):
+class Lista_zeran(Database.Base):
     """base template for lista_zeran
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -160,11 +171,11 @@ class Lista_zeran(Base):
     def __repr__(self):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
     
-class Lista_gora(Base):
+class Lista_gora(Database.Base):
     """base template for lista_gora
 
     Args:
-        Base (class): base class from  sqlalchemy
+        Database.Base (class): base class from  sqlalchemy
 
     Returns:
         str: description of this class
@@ -181,23 +192,13 @@ class Lista_gora(Base):
         return f"<LISTA(id_event_time={self.id_event_time}, DATE ={self.date_text})>"
 
 
-# creating an SQLlite database in a file
-engine = create_engine(Settings.data_base)
-
-# creating all tables that do not yet exist
-Base.metadata.create_all(engine)
-
-# Сcreating session for interective with database
-Session = sessionmaker(bind=engine)
-
-
 def record_beton(data):
     """Inserting data into the concrete orders information table
 
     Args:
         data (dictionary): dictionary with elements wenz, day, lista_beton, date_of_day_text
     """    
-    session = Session()
+    session = Database.Session()
     get_list_beton_serialize = [(item[0], item[1].isoformat(), *item[2:]) for item in data["lista_beton"]]
     serialized_list_beton = json.dumps(get_list_beton_serialize, default=str)
     try:
@@ -253,7 +254,7 @@ def record_lista(data):
     Args:
         data (dictionary): dictionary with elements wenz, day, lista, date_of_day_text
     """    
-    session = Session()
+    session = Database.Session()
 
     get_list_serialize = [(item[0].isoformat(), item[1]) for item in data["lista"]]
     serialized_list = json.dumps(get_list_serialize, default=str)
@@ -329,7 +330,7 @@ def delete_records_below_threshold(threshold, base, wenz):
     elif base == "lista" and wenz ==  "gora":
         base_name = Lista_gora
 
-    session = Session()
+    session = Database.Session()
 
     try:
         # select records with greaters primary key value
@@ -377,7 +378,7 @@ def get_oldest_list_beton_or_lista(base, date_of_lista_text, wenz):
     elif base == "lista" and wenz ==  "gora":
         base_name = Lista_gora
 
-    session = Session()
+    session = Database.Session()
 
     try:
         result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista_text).order_by(base_name.id_event_time.asc()).first()
@@ -426,7 +427,7 @@ def get_newest_list_beton_or_lista(base, date_of_lista_text, wenz):
     elif base == "lista" and wenz ==  "gora":
         base_name = Lista_gora
 
-    session = Session()
+    session = Database.Session()
 
     try:
         result = session.query(base_name.list_data).filter(base_name.date_text == date_of_lista_text).order_by(base_name.id_event_time.desc()).first()
