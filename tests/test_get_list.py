@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime
 from src.get_lista import find_day_request
 
 @pytest.mark.parametrize(

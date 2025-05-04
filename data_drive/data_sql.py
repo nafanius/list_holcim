@@ -449,4 +449,5 @@ def get_newest_list_beton_or_lista(base, date_of_lista_text, wenz):
     
     
 if __name__ == '__main__':
-    pprint(get_newest_list_beton_or_lista('beton', '03.02.2025', Settings.wenzels[0]))
+    pass
+    # pprint(get_newest_list_beton_or_lista('beton', '03.02.2025', Settings.wenzels[0]))
