@@ -11,8 +11,6 @@ Returns:
 import re
 from src.settings import lg
 
-
-
 def converter(list_for_convert):
     """Convert the list to a string and format it.
     The function takes a list of values and converts them to a string format.
@@ -86,8 +84,6 @@ def converter(list_for_convert):
             
     return [metres, times, firm, name, uwagi, przebieg, tel, wenz, pomp, sort]
 
-
-
 def compare_lists_by_tuples(del_lista, add_lista):
     """Compare two lists of tuples and find matching indices based on the first three elements of each tuple.
     And then create a new lists with teg for the first list and remove the elements from the second list us
@@ -151,7 +147,6 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
     lg(add_lista_without_change)
 
     return del_lista_with_teg, add_lista_without_change
-
 
 def get_list_from_three_norm_del_add(lista_norm, lista_del, lista_add):
     """It creates a comprehensive list from elements that existed, were removed,

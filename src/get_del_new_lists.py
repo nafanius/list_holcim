@@ -56,6 +56,5 @@ def check_del_add_lista(date_of_lista_text, currant_list_beton, wenzel):
 
     return del_lista, add_lista
 
-
 if __name__ == "__main__":
     pass

@@ -1,5 +1,6 @@
 from datetime import time
 from statistic.driver import Driver
+import pytest
 
 
 def test_count_driver():
@@ -18,13 +19,19 @@ def test_field_access():
     assert d1.time_in_list == time(hour=10, minute=10)
     assert d1.person == "wojtek"
 
+@pytest.mark.parametrize(("date_order", "time_in_list", "person"),
+                         [("10.04.2025", time(hour=10, minute=10), "wojtek"),
+                          ("10.04.1025", time(hour=23, minute=59), ""),
+                          ("10.04.2025", time(hour=00, minute=00), "wojtek"),
+                          ("30.12.2025", time(hour=10, minute=59), "WOQNDD"),
+                         ]
+)
+def test_convert_to_dict_for_df(date_order, time_in_list, person):
+    d1 = Driver(date_order, time_in_list, person)
 
-def test_convert_to_dict_for_df():
-    d1 = Driver("10.04.2025", time(hour=10, minute=10), "wojtek")
-
-    assert d1.convert_to_dict_for_df() == {"date_order": "10.04.2025",
-                                         "time_in_list": time(hour=10, minute=10),
-                                         "person": "wojtek"
+    assert d1.convert_to_dict_for_df() == {"date_order": date_order,
+                                         "time_in_list": time_in_list,
+                                         "person": person
                                          }
 
 

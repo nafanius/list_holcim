@@ -5,7 +5,6 @@ from src.settings import inf, formating_error_message, timer
 
 # dyspozytor.warszawa@holcim.com
 
-
 def generate_name_of_file_google():
     """Forms the file names that need to be downloaded based on the current date, returning a list of file names
 
@@ -16,12 +15,13 @@ def generate_name_of_file_google():
 
     now = datetime.now()
     current_week_number = now.isocalendar()[1]
-    current_year = now.year
+    current_year = now.isocalendar()[0]
 
-    if current_week_number == 1 and current_year == (now - timedelta(weeks=1)).year:
+    if (current_week_number == 53 or current_week_number == 52 and
+        current_year != (now + timedelta(weeks=1)).isocalendar()[0]): # check if current week is 53 or 52 and next year is different
+        
+        list_of_download_files.append(f"{current_week_number}.{current_year}")
         list_of_download_files.append(f"{1}.{current_year + 1}")
-        list_of_download_files.append(f"{2}.{current_year + 1}")
-
     else:
         list_of_download_files.append(f"{current_week_number}.{current_year}")
         list_of_download_files.append(f"{current_week_number + 1}.{current_year}")
