@@ -270,136 +270,122 @@ def find_day_request():
 
     now = datetime.now()
     # get number of the week and day of the week
-    current_week_number = now.isocalendar()[1]
     day_of_week = now.weekday()
-    current_year = now.year
+    current_week_number = now.isocalendar()[1]
+    current_year = now.isocalendar()[0]
 
-    def create_week_and_year_to_file_name(type_of_days, week, year):
-        if type_of_days == 1:
-            if week == 1 and year == (now - timedelta(weeks=1)).year:
-                return (1, year + 1), (1, year + 1), (1, year + 1)
-            else:
-                return (week, year), (week, year), (week, year)
+    def current_week_pluse(count_days):
+        """calculates the week number of the current week plus a given number of days
 
-        elif type_of_days == 2:
-            if week == 1 and year == (now - timedelta(weeks=1)).year:
-                return (1, year + 1), (1, year + 1), (2, year + 1)
-            else:
-                return (week, year), (week, year), (week + 1, year)
+        Args:
+            count_days (int): count of days to add
 
-        elif type_of_days == 3:
-            if week == 1 and year == (now - timedelta(weeks=1)).year:
-                return (1, year + 1), (2, year + 1), (2, year + 1)
-            else:
-                return (week, year), (week + 1, year), (week + 1, year)
+        Returns:
+            int: week number of the current week plus a given number of days
+        """        
+        return (now+timedelta(days=count_days)).isocalendar()[1]
+    
+    def current_year_pluse(count_days):
+        """calculates the year number of the current year plus a given number of days
 
-        elif type_of_days == 4:
-            if week == 1 and year == (now - timedelta(weeks=1)).year:
-                return (2, year + 1), (2, year + 1), (2, year + 1)
-            else:
-                return (week + 1, year), (week + 1, year), (week + 1, year)
-        else:
-            return []
+        Args:
+            count_days (int): count of days to add
 
+        Returns:
+            int: year number of the current year plus a given number of days
+        """ 
+        return (now+timedelta(days=count_days)).isocalendar()[0]
+    
     if day_of_week in (0, 1, 2, 3):
-        weeks_years = create_week_and_year_to_file_name(
-            1, current_week_number, current_year
-        )
-
+       
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 2,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
 
     elif day_of_week == 4:
-        weeks_years = create_week_and_year_to_file_name(
-            2, current_week_number, current_year
-        )
+       
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
     elif day_of_week == 5:
-        weeks_years = create_week_and_year_to_file_name(
-            3, current_week_number, current_year
-        )
+       
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
     elif day_of_week == 6:
-        weeks_years = create_week_and_year_to_file_name(
-            4, current_week_number, current_year
-        )
+    
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {weeks_years[0][0]}.{weeks_years[0][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {weeks_years[1][0]}.{weeks_years[1][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 2,
-                f"./excel_files/Tydz {weeks_years[2][0]}.{weeks_years[2][1]}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
