@@ -410,6 +410,35 @@ html_template = """
                     selectedDiv.style.display = 'block';
                 }
             }
+
+            function isReloadTime() {
+                const now = new Date();
+                const minute = now.getMinutes();
+                return [6, 26, 46].includes(minute);
+            }
+
+            function reloadIfNeeded() {
+                if (!isReloadTime()) return;
+
+                const now = new Date();
+                const timeKey = now.getHours() + ':' + now.getMinutes(); // например: "14:26"
+
+                const lastReload = localStorage.getItem('lastReloadKey');
+                if (lastReload !== timeKey) {
+                    localStorage.setItem('lastReloadKey', timeKey);
+                    location.reload();
+                }
+            }
+
+            // Обновлять при возврате на вкладку — всегда
+            document.addEventListener("visibilitychange", function () {
+                if (document.visibilityState === "visible") {
+                    location.reload();
+                }
+            });
+
+            // 2. Проверять каждую минуту, если пришло время 6/26/46 — обновляем
+            setInterval(reloadIfNeeded, 60000);
         </script>
 
 </head>
