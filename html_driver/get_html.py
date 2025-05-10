@@ -374,7 +374,7 @@ html_template = """
                 const div = document.getElementById(divId);
                 const button = document.getElementById(buttonId);
 
-                // Переключаем видимость элемента
+                // toggle visibility of the div
                 if (div.classList.contains('hidden')) {
                     div.classList.remove('hidden');
                     window.dispatchEvent(new Event('resize'));
@@ -382,7 +382,7 @@ html_template = """
                     div.classList.add('hidden');
                 };
 
-                // Изменяем текст кнопки
+                // change button class, style and text
                 if (div.classList.contains('hidden')) {
                     button.classList.remove('button-like');
                     button.classList.add('button-push');
@@ -393,18 +393,18 @@ html_template = """
             }
 
             document.addEventListener('DOMContentLoaded', (event) => {
-                showDivs(); // Показываем первый элемент при загрузке страницы
+                showDivs(); // show the default div on page load (1)
             });
 
             function showDivs() {
                 const dropdown = document.getElementById('dropdown');
                 const selectedValue = dropdown.value;
 
-                // Скрываем все div'ы
+                // hide all divs
                 const allDivs = document.querySelectorAll('.content-div');
                 allDivs.forEach(div => div.style.display = 'none');
 
-                // Показываем только выбранный div
+                // show selected div
                 const selectedDiv = document.getElementById(selectedValue);
                 if (selectedDiv) {
                     selectedDiv.style.display = 'block';
@@ -430,14 +430,14 @@ html_template = """
                 }
             }
 
-            // Обновлять при возврате на вкладку — всегда
+            // reload on tab visibility
             document.addEventListener("visibilitychange", function () {
                 if (document.visibilityState === "visible") {
                     location.reload();
                 }
             });
 
-            // 2. Проверять каждую минуту, если пришло время 6/26/46 — обновляем
+            // check every minute
             setInterval(reloadIfNeeded, 60000);
         </script>
 
