@@ -22,10 +22,8 @@ html_template = """
     })(window,document,'script','dataLayer','GTM-MHB9K4RH');</script>
     <!-- End Google Tag Manager -->
 
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MHB9K4RH"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <script type="text/javascript" src="https://app.termly.io/resource-blocker/a1d60097-9d65-40f1-8df3-203f99a86ae6?autoBlock=on" ></script>
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
