@@ -29,6 +29,7 @@ class Order:
         self.tel = self.convert_to_string(self.tel_to_string(tel))
         self.wenz = wenz
         self.list_of_loads = []
+        self.cancellation = self.get_cancellation()
         self.pompa_dzwig = self.check_pompa_dzwig(pompa_dzwig, self.metres)
 
         self.list_of_courses = self.get_list_courses()
@@ -37,7 +38,6 @@ class Order:
         self.it_is_zaprawa = self.check_zaprawa()
         self.it_is_concret = self.check_concret()
         self.reszta = self.get_reszta()
-        self.cancellation = self.get_cancellation()
 
         Order.count_ordres += 1
 
@@ -203,11 +203,16 @@ class Order:
             bool: True if the order is for a pump, False if it's for a crane
         """        
         if pompa_dzwig:  # if it's pompa
-            data = str(pompa_dzwig)
+            data =self.convert_to_string(pompa_dzwig)
             data = data.strip()
+            # todo remove in settings '501' "pompogrusz"
             if data == '501':
                 return False
+            elif "pompogrusz" in data.lower() and metres <= 5.5:
+                self.cancellation = True
+                return True
             return True
+        
         elif not pompa_dzwig and metres > 50:
             return True
         

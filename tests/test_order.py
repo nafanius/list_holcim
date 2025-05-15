@@ -96,8 +96,6 @@ class TestClassOrder:
         )
         assert o5.how_many() == "We have 5 orders."
 
-
-
 class TestMetresToFloat:
 
     @pytest.mark.parametrize(("m3","response"),
@@ -270,8 +268,44 @@ class TestPompaDzwig:
     )
     def test_empty_metrs_true(self, order, pomp):
         result = order.check_pompa_dzwig(pomp, 0)
-    
         assert True == result
+     
+    @pytest.mark.parametrize(
+            ("pomp", "m", "response"),
+            [(True, -10, True), 
+             ('501',10, False),
+             ('P-2 Olszewski pompogruszka bierze beton zał g  g 13:10',10, True),
+             ('Niziński ',100, True),
+             ('501',-100, False),
+             ('501',50, False),
+            ]
+    )
+    def test_have_501(self, order, pomp, m, response):
+        result = order.check_pompa_dzwig(pomp, m)
+        assert response == result
+
+
+    @pytest.mark.parametrize(
+            ("pomp", "m", "response","cancel"),
+            [(True, -10, True, False), 
+             ('501',10, False, False),
+             ('P-2 Olszewski pompogruszka bierze beton zał g  g 13:10', 5.5, True, True),
+             ('P-2 Olszewski pompogruszka bierze beton zał g  g 13:10', 6, True, False),
+             ('pompogruszka bierze beton zał g  g 13:10', 30, True, False),
+             ('P-2 Olszewski pompogruszka bierze beton zał g  g 13:10', 4, True, True),
+             ('mpogruszka bierze beton zał g  g 13:10', 4, True, False),
+             ('P-2 Olszewski pompogruszka bierze beton zał g  g 13:10', 1, True, True),
+             ('P-28 Olszewski Pompogruszka bierze beton zał g 7:00 + plus węże 6mb i 6mb', 2, True, True),
+             ('Niziński ',100, True, False),
+             ('501',-100, False, False),
+             ('501',50, False, False),
+            ]
+    )
+    def test_have_pompogruszka(self, order, pomp, m, response, cancel):
+        order.cancellation = False
+        result_pomp = order.check_pompa_dzwig(pomp, m)
+        result_cancellation = order.cancellation
+        assert (response, cancel) == (result_pomp, result_cancellation)
 
     @pytest.mark.parametrize(
             "pomp",
