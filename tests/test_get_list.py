@@ -1,82 +1,87 @@
 import pytest
 from datetime import datetime
+from pprint import pprint
 from src.get_lista import find_day_request
+from unittest.mock import patch, MagicMock
+from datetime import time as datetime_time
+from src.get_lista import form_lista
+
 
 @pytest.mark.parametrize(
     "mock_date, expected_date",
-    [   (datetime(2023, 3, 6), [(0,
-                                 f"./excel_files/Tydz 10.2023.xlsx",
-                                 "06.03.2023"),
-                                 (1,
+    [(datetime(2023, 3, 6), [(0,
+                              f"./excel_files/Tydz 10.2023.xlsx",
+                              "06.03.2023"),
+                             (1,
                                  f"./excel_files/Tydz 10.2023.xlsx",
                                  "07.03.2023"),
-                                 (2,
-                                 f"./excel_files/Tydz 10.2023.xlsx",
-                                 "08.03.2023")]),  # Monday
+                             (2,
+                              f"./excel_files/Tydz 10.2023.xlsx",
+                              "08.03.2023")]),  # Monday
         (datetime(2024, 12, 23), [(0,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "23.12.2024"),
-                                 (1,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "24.12.2024"),
-                                 (2,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "25.12.2024")]),  # Tuesday
+                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   "23.12.2024"),
+                                  (1,
+                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  "24.12.2024"),
+                                  (2,
+                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  "25.12.2024")]),  # Tuesday
         (datetime(2024, 12, 27), [(4,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "27.12.2024"),
-                                 (5,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "28.12.2024"),
-                                 (0,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "30.12.2024")]),  # Friday
+                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   "27.12.2024"),
+                                  (5,
+                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  "28.12.2024"),
+                                  (0,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "30.12.2024")]),  # Friday
         (datetime(2024, 12, 28), [(5,
-                                 f"./excel_files/Tydz 52.2024.xlsx",
-                                 "28.12.2024"),
-                                 (0,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "30.12.2024"),
-                                 (1,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "31.12.2024")]),  # Saturday
+                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   "28.12.2024"),
+                                  (0,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "30.12.2024"),
+                                  (1,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "31.12.2024")]),  # Saturday
         (datetime(2024, 12, 29), [(0,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "30.12.2024"),
-                                 (1,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "31.12.2024"),
-                                 (2,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "01.01.2025")]),  # Sunday
+                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   "30.12.2024"),
+                                  (1,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "31.12.2024"),
+                                  (2,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "01.01.2025")]),  # Sunday
         (datetime(2024, 12, 30), [(0,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "30.12.2024"),
-                                 (1,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "31.12.2024"),
-                                 (2,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "01.01.2025")]),  # Monday
+                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   "30.12.2024"),
+                                  (1,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "31.12.2024"),
+                                  (2,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "01.01.2025")]),  # Monday
         (datetime(2024, 12, 31), [(1,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "31.12.2024"),
-                                 (2,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "01.01.2025"),
-                                 (3,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
-                                 "02.01.2025")]),  # Tuesday
+                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   "31.12.2024"),
+                                  (2,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "01.01.2025"),
+                                  (3,
+                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  "02.01.2025")]),  # Tuesday
         (datetime(2025, 1, 1), [(2,
                                  f"./excel_files/Tydz 1.2025.xlsx",
                                  "01.01.2025"),
-                                 (3,
+                                (3,
                                  f"./excel_files/Tydz 1.2025.xlsx",
                                  "02.01.2025"),
-                                 (4,
+                                (4,
                                  f"./excel_files/Tydz 1.2025.xlsx",
                                  "03.01.2025")])  # Wednesday
-    ]
+     ]
 )
 def test_find_day_request(monkeypatch, mock_date, expected_date):
     class MockDateTime:
@@ -91,3 +96,284 @@ def test_find_day_request(monkeypatch, mock_date, expected_date):
     assert len(result) == 3
     assert result == expected_date
 
+class TestFormLista:
+    @pytest.fixture
+    def mock_openpyxl(self):
+        with patch("src.get_lista.openpyxl") as mock_openpyxl:
+            yield mock_openpyxl
+
+    @pytest.fixture(scope='class')
+    def mock_db_and_settings(self):
+        with patch("src.get_lista.data_sql") as mock_data_sql, \
+                patch("src.get_lista.Settings") as mock_settings, \
+                patch("src.get_lista.db_lock"), \
+                patch("src.get_lista.time") as mock_time:
+            mock_settings.time_of_compare = 1
+            mock_time.time.return_value = 10000
+            yield mock_data_sql, mock_settings, mock_time
+
+    @pytest.fixture(scope='class')
+    def wenzel(self):
+        # wenzel[1][0] and wenzel[1][1] are used for matching
+        return ("zawod", ("zawodzie 2 ", "zawodzie 1 "), 24)
+
+    def make_mock_sheet(self, rows):
+        mock_sheet = MagicMock()
+        mock_sheet.max_row = len(rows) + 1
+
+        def cell(row, column):
+            # row and column are 1-based
+            try:
+                value = rows[row-1][column-1]
+            except IndexError:
+                value = None
+            mock_cell = MagicMock()
+            mock_cell.value = value
+            return mock_cell
+        mock_sheet.cell.side_effect = cell
+        return mock_sheet
+
+    def test_form_lista_returns_empty_on_file_error(self, mock_openpyxl, mock_db_and_settings, wenzel):
+        # Simulate file not found
+        mock_openpyxl.load_workbook.side_effect = Exception("File not found")
+        with patch("src.get_lista.inf") as mock_inf:
+            result = form_lista("nofile.xlsx", 0, "01.01.2024", wenzel)
+            assert result == []
+            mock_inf.assert_any_call("Such file does not exist" + "nofile.xlsx")
+
+    @pytest.mark.parametrize(("rows", "expected"),
+                             [([
+                                 [None, None, "zawodzie 2 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver10", "13:45"],
+                             ], [
+                                 (datetime_time(8, 0), "Driver1"),
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(10, 15), "Driver3"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(12, 45), "Driver8"),
+                                 (datetime_time(13, 15), "Driver9"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]), #check if the first row is not included zawodzie 2
+                             ([
+                                 [None, None, "zawodzie 1 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver10", "13:45"],
+                             ], [
+                                 (datetime_time(8, 0), "Driver1"),
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(10, 15), "Driver3"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(12, 45), "Driver8"),
+                                 (datetime_time(13, 15), "Driver9"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]), #check if the first row is not included zawodzie 1
+                             ([
+                                 [None, None, "zawodzie  zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver10", "13:45"],
+                             ], []), #check if the first row is not included zawodzie 1 or zawodzie 2
+                             ([
+                                 [None, None, "zawodzie 1 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08,00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "25:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", None, None, "Driver10", "13:45"],
+                             ], [
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]), #check if the first row is not included zawodzie 1 or zawodzie 2 and the time is correct
+                             ([
+                                 [None, None, "zawodzie 1 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08,00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "25:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", None, None, "Driver10", "13:45"],
+                                 [None, None, "zawodzi zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08,00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "25:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", None, None, "Driver10", "13:45"],
+                             ], [
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]), #check if the first row is not included zawodzie 1 or zawodzie 2 and two part of the rows not included zawodzie 1 or zawodzie 2 
+
+                             ])
+    def test_form_lista_returns_correct_list(self, mock_openpyxl, mock_db_and_settings, wenzel, rows, expected):
+        # Prepare a fake sheet with two matching rows and valid times
+        # Row 1: column 3 matches wenzel[1][0], columns 11 and 14 have names, columns 12 and 15 have times
+
+        mock_sheet = self.make_mock_sheet(rows)
+        mock_wb = MagicMock()
+        mock_wb.sheetnames = ["Sheet1"]
+        mock_wb.__getitem__.return_value = mock_sheet
+        mock_openpyxl.load_workbook.return_value = mock_wb
+
+        result = form_lista("file.xlsx", 0, "01.01.2024", wenzel)
+        assert result == expected
+
+    @pytest.mark.parametrize(("rows", "expected"),
+                             [([
+                                 [None, None, "zawodzie 2 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver3", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver1", "13:45"],
+                             ], [
+                                 (datetime_time(8, 0), "Driver1"),
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(10, 15), "Driver3"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(13, 15), "Driver9"),
+                             ]),
+                             ([
+                                 [None, None, "zawodzie 1 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver1", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "10:15"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver8", "11:50", None, "Driver8", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver10", "13:45"],
+                                 [None, None, "zawodzie 2 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08:00", None, "Driver1", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10:15", None, "Driver4", "10:15"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver8", "11:50", None, "Driver8", "12:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", "13:15", None, "Driver10", "13:45"],
+                             ], [
+                                 (datetime_time(8, 0), "Driver1"),
+                                 (datetime_time(10, 15), "Driver3"),
+                                 (datetime_time(10, 15), "Driver4"),
+                                 (datetime_time(11, 50), "Driver8"),
+                                 (datetime_time(13, 15), "Driver9"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]),
+                             ([
+                                 [None, None, "zawodzie 1 zxsxcd cdcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08,00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "10", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver7", "11:50", None, "Driver8", "25:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", None, None, "Driver10", "13:45"],
+                                 [None, None, "zawodzie 2 zxsxcd ", None, None,
+                                     None, None, None, None, None, None, None, None],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver1", "08,00", None, "Driver2", "09:30"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver3", "11:47", None, "Driver4", "11:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver17", "11:50", None, "Driver8", "25:45"],
+                                 [None, None, None, None, None, None, None, None, None,
+                                     None, "Driver9", None, None, "Driver11", "13:40"],
+                             ], [
+                                 (datetime_time(9, 30), "Driver2"),
+                                 (datetime_time(11, 45), "Driver4"),
+                                 (datetime_time(11, 47), "Driver3"),
+                                 (datetime_time(11, 50), "Driver7"),
+                                 (datetime_time(11, 50), "Driver17"),
+                                 (datetime_time(13, 40), "Driver11"),
+                                 (datetime_time(13, 45), "Driver10"),
+                             ]),
+                             ])
+    def test_form_lista_removes_duplicates_and_sorts(self, mock_openpyxl, mock_db_and_settings, wenzel, rows, expected ):
+        # Same name appears twice, only first occurrence should be kept
+
+        mock_sheet = self.make_mock_sheet(rows)
+        mock_wb = MagicMock()
+        mock_wb.sheetnames = ["Sheet1"]
+        mock_wb.__getitem__.return_value = mock_sheet
+        mock_openpyxl.load_workbook.return_value = mock_wb
+
+        result = form_lista("file.xlsx", 0, "01.01.2024", wenzel)
+        # Only the first occurrence of "Driver" should be kept, with the earliest time
+        assert result == expected
+
+    def test_form_lista_handles_no_matches(self, mock_openpyxl, mock_db_and_settings, wenzel):
+        # No row matches wenzel[1][0] or wenzel[1][1]
+        rows = [
+            [None, None, "zzz", None, None, None, None, None, None,
+                None, "DriverX", "12:00", None, "DriverY", "13:00"],
+        ]
+        mock_sheet = self.make_mock_sheet(rows)
+        mock_wb = MagicMock()
+        mock_wb.sheetnames = ["Sheet1"]
+        mock_wb.__getitem__.return_value = mock_sheet
+        mock_openpyxl.load_workbook.return_value = mock_wb
+
+        result = form_lista("file.xlsx", 0, "01.01.2024", wenzel)
+        assert result == []
+
+    def test_form_lista_ignores_invalid_times(self, mock_openpyxl, mock_db_and_settings, wenzel):
+        # Invalid time strings should be ignored
+        rows = [
+            [None, None, "abc", None, None, None, None, None, None,
+                None, "Driver1", "notatime", None, "Driver2", "25:99"],
+        ]
+        mock_sheet = self.make_mock_sheet(rows)
+        mock_wb = MagicMock()
+        mock_wb.sheetnames = ["Sheet1"]
+        mock_wb.__getitem__.return_value = mock_sheet
+        mock_openpyxl.load_workbook.return_value = mock_wb
+
+        result = form_lista("file.xlsx", 0, "01.01.2024", wenzel)
+        assert result == []
