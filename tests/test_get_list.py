@@ -7,6 +7,9 @@ from unittest.mock import patch, MagicMock
 from datetime import time as datetime_time
 from src.get_lista import form_lista
 from src.get_lista import form_lista_beton
+from src.get_lista import lista_in_text
+from src.get_lista import lista_in_text_beton
+from src.get_lista import combination_of_some_days_list
 
 
 @pytest.mark.parametrize(
@@ -97,7 +100,6 @@ def test_find_day_request(monkeypatch, mock_date, expected_date):
     result = find_day_request()
     assert len(result) == 3
     assert result == expected_date
-
 
 class TestFormLista:
     @pytest.fixture
@@ -382,7 +384,6 @@ class TestFormLista:
         result = form_lista("file.xlsx", 0, "01.01.2024", wenzel)
         assert result == []
 
-
 class TestFormListaBeton:
 
     @pytest.fixture
@@ -442,19 +443,19 @@ class TestFormListaBeton:
             assert result[2] == []
 
     @pytest.mark.parametrize(("data_param", "count", "wenz"),
-        [({
-            (1, 3): "zawodzie 2 ",
-            (12, 3): Faker().time(pattern="%H:%M", end_datetime=None),
-            (12, 7): 10.5,
-            (12, 4): Faker().company(),
-            (12, 5): Faker().address(),
-            (12, 13): Faker().text(max_nb_chars=100)[:50],
-            (12, 15): Faker().text(max_nb_chars=100)[:50],
-            (12, 16): Faker().text(max_nb_chars=100)[:50],
-            (12, 17): Faker().text(max_nb_chars=100)[:50],
-            (12, 14): Faker().phone_number(),
-            (12, 11): Faker().text(max_nb_chars=100)[:50],
-        }, 1, "2"),
+                             [({
+                                 (1, 3): "zawodzie 2 ",
+                                 (12, 3): Faker().time(pattern="%H:%M", end_datetime=None),
+                                 (12, 7): 10.5,
+                                 (12, 4): Faker().company(),
+                                 (12, 5): Faker().address(),
+                                 (12, 13): Faker().text(max_nb_chars=100)[:50],
+                                 (12, 15): Faker().text(max_nb_chars=100)[:50],
+                                 (12, 16): Faker().text(max_nb_chars=100)[:50],
+                                 (12, 17): Faker().text(max_nb_chars=100)[:50],
+                                 (12, 14): Faker().phone_number(),
+                                 (12, 11): Faker().text(max_nb_chars=100)[:50],
+                             }, 1, "2"),
         ({
             (1, 3): "zawodzie 1 ",
             (12, 3): Faker().time(pattern="%H:%M", end_datetime=None),
@@ -547,7 +548,7 @@ class TestFormListaBeton:
             (15, 14): Faker().msisdn(),
             (15, 11): Faker().text(max_nb_chars=100)[:50],
         }, 1, "1"),
-        ]
+    ]
     )
     def test_form_lista_beton_with_data(self, mock_openpyxl, mock_settings, wenzel, data_param, count, wenz):
         mock_wb = MagicMock()
@@ -566,6 +567,223 @@ class TestFormListaBeton:
             assert add_lista == ["add"]
 
             pprint(lista_beton)
-            assert len(list((hasattr(x[1], "hour") for x in lista_beton))) == count
+            assert len(list((hasattr(x[1], "hour")
+                       for x in lista_beton))) == count
             assert all(hasattr(x[1], "hour") for x in lista_beton)
             assert all((x[-2] == wenz) for x in lista_beton)
+
+class TestListaInText:
+    def test_empty_list(self):
+        assert lista_in_text([]) == []
+
+    def test_single_entry(self):
+        lista = [(datetime_time(8, 30), "Jan Kowalski")]
+        expected = ["08:30 Jan Kowalski"]
+        assert lista_in_text(lista) == expected
+
+    @pytest.mark.parametrize(("lista", "expected"),
+                             [([
+                                 (datetime_time(7, 0), "Anna Nowak"),
+                                 (datetime_time(12, 15), "Piotr Zielinski"),
+                                 (datetime_time(16, 45), "Maria Wisniewska"),
+                             ],
+                                 [
+                                 "07:00 Anna Nowak",
+                                 "12:15 Piotr Zielinski",
+                                 "16:45 Maria Wisniewska",
+                             ])]
+
+                             )
+    def test_multiple_entries(self, lista, expected):
+
+        assert lista_in_text(lista) == expected
+
+    def test_time_with_single_digit_hour_and_minute(self):
+        lista = [(datetime_time(5, 5), "Adam Malysz")]
+        expected = ["05:05 Adam Malysz"]
+        assert lista_in_text(lista) == expected
+
+class TestListaInTextBeton:
+    def test_empty(self):
+        assert lista_in_text_beton([]) == ""
+
+    def test_normal_entry(self):
+        lista_beton = [
+            (10.5, datetime_time(8, 30), "FirmaA", "Adres1", "uwagi1", "przebieg1", "123456789", "2", None, 0)
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        assert "08:30:00 10.5 węzeł 2" in result[0]
+        assert "FirmaA" in result[1]
+        assert "Adres1 uwagi1 przebieg1" in result[2]
+        assert "123456789" in result[3]
+        assert "dzwig" in result[4]
+        assert "--------------------" in result[5]
+        assert "zaplanowano metrów - 10.5" in metres
+
+    def test_pompa_entry(self):
+        lista_beton = [
+            (5, datetime_time(9, 0), "FirmaB", "Adres2", "uwagi2", "przebieg2", "987654321", "1", "pompa", 0)
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        assert "09:00:00 5 węzeł 1" in result[0]
+        assert "pompa" in result[4]
+        assert "zaplanowano metrów - 5.0" in metres
+
+    def test_delete_entry(self):
+        lista_beton = [
+            (7, datetime_time(10, 15), "FirmaC", "Adres3", "uwagi3", "przebieg3", "555555555", "3", None, 1)
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        assert all('line-through' in line for line in result)
+        assert "zaplanowano metrów - 0" in metres  # delete entries do not sum
+
+    def test_add_entry(self):
+        lista_beton = [
+            (12, datetime_time(11, 45), "FirmaD", "Adres4", "uwagi4", "przebieg4", "444444444", "4", None, 2)
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        assert all('rgb(0, 139, 7)' in line for line in result)
+        assert "zaplanowano metrów - 12.0" in metres
+
+    def test_mixed_entries(self):
+        lista_beton = [
+            (10, datetime_time(8, 0), "FirmaA", "Adres1", "uwagi1", "przebieg1", "1111112", "1", None, 0),
+            (5, datetime_time(9, 0), "FirmaB", "Adres2", "uwagi2", "przebieg2", "222222", "2", "pompa", 2),
+            (3, datetime_time(10, 0), "FirmaC", "Adres3", "uwagi3", "przebieg3", "3332332", "3", None, 1),
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        # Check normal
+        assert "08:00:00 10 węzeł 1" in result[0]
+        # Check add (green)
+        assert any('rgb(0, 139, 7)' in line for line in result)
+        # Check delete (red, line-through)
+        assert any('line-through' in line for line in result)
+        # Check sum (only normal and add)
+        assert "zaplanowano metrów - 15.0" in metres
+
+    def test_non_numeric_metres(self):
+        lista_beton = [
+            ("not_a_number", datetime_time(12, 0), "FirmaE", "Adres5", "uwagi5", "przebieg5", "555", "pompa 258", None, 0)
+        ]
+        result, metres = lista_in_text_beton(lista_beton)
+        assert "not_a_number" in result[0]
+        assert "zaplanowano metrów - 0" in metres
+
+# todo make this test more useful 
+class TestCombinationOfSomeDaysList:
+    @pytest.fixture
+    def wenzel(self):
+        return ("WenzelA", ("num1", "num2"), 3)
+
+    @pytest.fixture
+    def fake_list_of_day(self):
+        return [
+            (0, "./excel_files/Tydz 10.2024.xlsx", "01.04.2024"),
+            (1, "./excel_files/Tydz 10.2024.xlsx", "02.04.2024"),
+            (2, "./excel_files/Tydz 10.2024.xlsx", "03.04.2024"),
+        ]
+
+    @pytest.fixture
+    def fake_form_lista(self):
+        return [
+            (datetime_time(7, 0), "Jan Kowalski"),
+            (datetime_time(8, 0), "Anna Nowak"),
+        ]
+
+    @pytest.fixture
+    def fake_lista_in_text(self):
+        return ["07:00 Jan Kowalski", "08:00 Anna Nowak"]
+
+    @pytest.fixture
+    def fake_form_lista_beton(self):
+        return (
+            [
+                (5.0, "07:00", "FirmaA", "Budowa1", "uwagi", "przebieg", "123456789", "1", "pompa"),
+            ],
+            [],
+            [],
+        )
+
+    @pytest.fixture
+    def fake_get_list_from_three_norm_del_add(self):
+        return [
+            (5.0, datetime_time(7, 0), "FirmaA", "Budowa1", "uwagi", "przebieg", "123456789", "1", "pompa", 0),
+        ]
+
+    @pytest.fixture
+    def fake_lista_in_text_beton(self):
+        return (
+            [
+                "07:00:00 5.0 węzeł 1",
+                "FirmaA",
+                "Budowa1 uwagi przebieg",
+                "123456789",
+                "pompa",
+                "--------------------",
+            ],
+            '<p style="font-weight: bold; margin-bottom: 3px">zaplanowano metrów - 5.0</p>',
+        )
+
+    @pytest.fixture
+    def patch_get_lista(self):
+        with patch("src.get_lista.find_day_request") as mock_find_day_request, \
+             patch("src.get_lista.form_lista") as mock_form_lista, \
+             patch("src.get_lista.lista_in_text") as mock_lista_in_text, \
+             patch("src.get_lista.form_lista_beton") as mock_form_lista_beton, \
+             patch("src.get_lista.get_list_from_three_norm_del_add") as mock_get_list_from_three_norm_del_add, \
+             patch("src.get_lista.lista_in_text_beton") as mock_lista_in_text_beton:
+            yield {
+                "mock_find_day_request": mock_find_day_request,
+                "mock_form_lista": mock_form_lista,
+                "mock_lista_in_text": mock_lista_in_text,
+                "mock_form_lista_beton": mock_form_lista_beton,
+                "mock_get_list_from_three_norm_del_add": mock_get_list_from_three_norm_del_add,
+                "mock_lista_in_text_beton": mock_lista_in_text_beton,
+            }
+
+    def test_combination_of_some_days_list_success(
+        self,
+        patch_get_lista,
+        wenzel,
+        fake_list_of_day,
+        fake_form_lista,
+        fake_lista_in_text,
+        fake_form_lista_beton,
+        fake_get_list_from_three_norm_del_add,
+        fake_lista_in_text_beton,
+    ):
+        patch_get_lista["mock_find_day_request"].return_value = fake_list_of_day
+        patch_get_lista["mock_form_lista"].return_value = fake_form_lista
+        patch_get_lista["mock_lista_in_text"].return_value = fake_lista_in_text
+        patch_get_lista["mock_form_lista_beton"].return_value = fake_form_lista_beton
+        patch_get_lista["mock_get_list_from_three_norm_del_add"].return_value = fake_get_list_from_three_norm_del_add
+        patch_get_lista["mock_lista_in_text_beton"].return_value = fake_lista_in_text_beton
+
+        result = combination_of_some_days_list(wenzel)
+
+        assert isinstance(result, dict)
+        assert len(result) == 6
+        for i in range(1, 7):
+            assert f"element{i}" in result
+        assert "01.04.2024 poniedziałek" in result["element1"][0]
+        assert "zaplanowano metrów" in "".join(result["element4"])
+
+    def test_combination_of_some_days_list_no_data(
+        self,
+        patch_get_lista,
+        wenzel,
+        fake_list_of_day,
+    ):
+        patch_get_lista["mock_find_day_request"].return_value = fake_list_of_day
+        patch_get_lista["mock_form_lista"].return_value = []
+        patch_get_lista["mock_lista_in_text"].return_value = []
+        patch_get_lista["mock_form_lista_beton"].return_value = ([], [], [])
+        patch_get_lista["mock_get_list_from_three_norm_del_add"].return_value = []
+        patch_get_lista["mock_lista_in_text_beton"].side_effect = ValueError("No data")
+
+        result = combination_of_some_days_list(wenzel)
+
+        assert isinstance(result, dict)
+        assert len(result) == 6
+        for v in result.values():
+            assert any("Dane są niedostępne" in str(x) for x in v)
