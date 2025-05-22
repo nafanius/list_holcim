@@ -126,10 +126,11 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
     """    
 
     df_orders = get_list_construction_place(date_of_request, wenzel=wenzel)
-
+    global count_graph
+    global df_for_driver_glob
+    
     try:
-        global count_graph
-        global df_for_driver_glob
+        
         bud = DataFrame(df_orders)
 
         # remove dry concrete
@@ -396,6 +397,7 @@ def rozklad_curs(wenzel, date_of_request="18.02.2025"):
         html_buffer.close()
 
     except Exception as err:
+        df_for_driver_glob = DataFrame()
 
         cr(formating_error_message(err, "rozklad_curs"))
         
@@ -425,6 +427,10 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
     global count_graph
     try:
         global df_for_driver_glob
+
+        if df_for_driver_glob.empty: # if df_for_driver_glob is empty, return empty tables, graphs and so on
+            return "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>", "<p>Brak</p>"
+
         df_for_driver = df_for_driver_glob[["time","m3","mat","p/d"]]
 
 
