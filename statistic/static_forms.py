@@ -572,6 +572,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
                         # starting the work interval for the new performer BRAK_KEROWCA
                         brak_intervals[current_executor] = {'start': current_time, 'end': None}
                         brak_intervals[current_executor]['order'] = order
+                        brak_intervals[current_executor]['new driver'] = 'NaN'
 
                     if current_executor not in used_executors:
                         df.at[current_time, 'First'] = current_executor + f"::{str(df.at[current_time, 'First'])}"
@@ -799,7 +800,7 @@ def forecast_driver(wenzel, date_of_request="18.02.2025"):
 
 
 if __name__ == "__main__":
-    date_of_request = '31.03.2025'
+    date_of_request = '24.05.2025'
     df_orders = get_list_construction_place(date_of_request, Settings.wenzels[0])
     df_driver  = get_list_driver(date_of_request, Settings.wenzels[0])
     # lg(rozklad_curs()[0])
