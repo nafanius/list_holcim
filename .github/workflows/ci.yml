@@ -27,6 +27,8 @@ jobs:
       - name: Run tests and generate coverage
         run: |
           coverage run --parallel -m pytest
+          coverage combine
+          coverage report
           coverage html -d docs/coverage_html_report
           coverage-badge -o .github/badges/coverage.svg -f
 
