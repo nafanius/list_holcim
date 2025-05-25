@@ -128,7 +128,7 @@ def make_list_with_teg(del_lista, add_lista, matching_indices):
         item_del = del_lista[matching[0]]
         item_add = add_lista[matching[1]]
 
-        for index, (elem1, elem2) in enumerate(zip(item_del[:8], item_add[:8])):
+        for index, (elem1, elem2) in enumerate(zip(item_del[:7], item_add[:7])):
             if elem1 != elem2:
                 change_elem = (f'<span style="color: rgb(238, 36, 36); font-weight: bold; text-decoration: line-through;">{elem1}</span>'
                                f' <span style="color: rgb(0, 139, 7); font-weight: bold;">{elem2}</span>')

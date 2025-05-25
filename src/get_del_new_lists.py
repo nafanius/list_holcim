@@ -25,9 +25,9 @@ def get_old_list_beton(date_of_lista_text, wenzel, hours = Settings.time_of_comp
     with db_lock:
         data_sql.delete_records_below_threshold(threshold, "beton", wenzel[0])
 
-        return data_sql.get_oldest_list_beton_or_lista("beton", date_of_lista_text, wenzel[0])
+        old_list =  data_sql.get_oldest_list_beton_or_lista("beton", date_of_lista_text, wenzel[0])
    
-    return []
+    return old_list
 
 def check_del_add_lista(date_of_lista_text, currant_list_beton, wenzel):
     """It checks for any removed or new entries in the new dictionary
@@ -48,12 +48,12 @@ def check_del_add_lista(date_of_lista_text, currant_list_beton, wenzel):
     old_counter = Counter(old_stan_lista_beton)                                                                        
     currant_counter = Counter(currant_list_beton)
 
-        # Ищем элементы, которые нужно удалить (из old_list, но отсутствуют или меньше раз в currant_list
+    # look for elements that need to be removed (from old_list, but not in currant_list or less times)
     for item in old_counter:                                                                               
         if old_counter[item] > currant_counter[item]:                                                      
             del_lista.extend([item] * (old_counter[item] - currant_counter[item]))                         
                                                                                                         
-    # Ищем элементы, которые нужно добавить (из currant_list, но отсутствуют или меньше раз в old_list)    
+    # look for elements that need to be added (in currant_list, but not in old_list or more times)  
     for item in currant_counter:                                                                           
         if currant_counter[item] > old_counter[item]:                                                      
             add_lista.extend([item] * (currant_counter[item] - old_counter[item]))  
