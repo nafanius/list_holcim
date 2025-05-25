@@ -186,7 +186,7 @@ class Order:
                 shipping_duration += cours * Settings.unloading_time_for_crane  # if it's crane
                 self.list_of_loads += [self.list_of_loads[-1] + datetime.timedelta(
                     minutes=cours * Settings.unloading_time_for_crane),]
-
+                
         return self.start_time + datetime.timedelta(minutes=shipping_duration)
 
     def check_pompa_dzwig(self, pompa_dzwig, metres):

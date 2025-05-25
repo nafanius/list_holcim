@@ -7,8 +7,9 @@ from src.settings import Settings
 import re
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def order():
+    Order.count_ordres = 0
     # Create a dummy Order instance for testing
     order_obj =  Order(
         date_order = "01.01.2025",
@@ -30,6 +31,7 @@ def order():
 
 class TestClassOrder:
     def test_count_order(self):
+        Order.count_ordres = 0
         o1 = Order(
             date_order="01.01.2025",
             metres=0,
@@ -82,6 +84,7 @@ class TestClassOrder:
         del o1, o2, o3, o4
 
     def test_how_many(self):
+        Order.count_ordres = 0
         o5 = Order(
             date_order="01.01.2025",
             metres=0,
@@ -94,7 +97,7 @@ class TestClassOrder:
             wenz=1,
             pompa_dzwig="pompa"
         )
-        assert o5.how_many() == "We have 5 orders."
+        assert o5.how_many() == "We have 1 orders."
 
 class TestMetresToFloat:
 
@@ -473,7 +476,7 @@ class TestGetListOfTimeLoads:
         order.list_of_loads = []
         order.get_finish_time_and_form_list_times_of_loads()
         result = order.list_of_loads
-        inf(result)
+        # inf(result)
         assert result == response
 
     @pytest.mark.parametrize(("set_times", "set_date", "m3",  "response"),
@@ -523,7 +526,7 @@ class TestGetListOfTimeLoads:
         order.list_of_loads = []
         order.get_finish_time_and_form_list_times_of_loads()
         result = order.list_of_loads
-        inf(result)
+        # inf(result)
         assert result == response
 
 class TestGetConcellation:

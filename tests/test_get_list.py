@@ -566,7 +566,7 @@ class TestFormListaBeton:
             assert del_lista == ["del"]
             assert add_lista == ["add"]
 
-            pprint(lista_beton)
+            # pprint(lista_beton)
             assert len(list((hasattr(x[1], "hour")
                        for x in lista_beton))) == count
             assert all(hasattr(x[1], "hour") for x in lista_beton)

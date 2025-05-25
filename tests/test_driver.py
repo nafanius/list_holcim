@@ -2,15 +2,14 @@ from datetime import time
 from statistic.driver import Driver
 import pytest
 
-
 def test_count_driver():
+    Driver.count_driver = 0
     d1 = Driver("10.04.2025", time(hour=10, minute=10), "wojtek")
     d2 = Driver("10.04.2025", time(hour=10, minute=20), "wojtek1")
     d3 = Driver("10.04.2025", time(hour=10, minute=30), "wojtek2")
     d4 = Driver("10.04.2025", time(hour=10, minute=40), "wojtek3")
 
     assert d4.count_driver == 4
-
 
 def test_field_access():
     d1 = Driver("10.04.2025", time(hour=10, minute=10), "wojtek")
