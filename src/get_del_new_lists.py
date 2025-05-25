@@ -2,6 +2,7 @@ import threading
 import time
 from data_drive import data_sql
 from src.settings import Settings
+from collections import Counter 
 
 db_lock = threading.Lock()
 
@@ -43,12 +44,19 @@ def check_del_add_lista(date_of_lista_text, currant_list_beton, wenzel):
     del_lista = []
     add_lista = []
     old_stan_lista_beton = get_old_list_beton(date_of_lista_text, wenzel=wenzel)
-    for i in old_stan_lista_beton:
-        if i not in currant_list_beton:
-            del_lista.append(i)
-    for i in currant_list_beton:
-        if i not in old_stan_lista_beton:
-            add_lista.append(i)
+
+    old_counter = Counter(old_stan_lista_beton)                                                                        
+    currant_counter = Counter(currant_list_beton)
+
+        # Ищем элементы, которые нужно удалить (из old_list, но отсутствуют или меньше раз в currant_list
+    for item in old_counter:                                                                               
+        if old_counter[item] > currant_counter[item]:                                                      
+            del_lista.extend([item] * (old_counter[item] - currant_counter[item]))                         
+                                                                                                        
+    # Ищем элементы, которые нужно добавить (из currant_list, но отсутствуют или меньше раз в old_list)    
+    for item in currant_counter:                                                                           
+        if currant_counter[item] > old_counter[item]:                                                      
+            add_lista.extend([item] * (currant_counter[item] - old_counter[item]))  
 
     # для контроля отображения
     # del_lista = del_lista + currant_list_beton[2:3]
