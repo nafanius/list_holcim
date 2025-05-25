@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for src/get_del_new_lists.py: 93%</title>
+    <title>Coverage for src/get_del_new_lists.py: 96%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>src/get_del_new_lists.py</b>:
-            <span class="pc_cov">93%</span>
+            <span class="pc_cov">96%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">27 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">25<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">2<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">26<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">1<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_145eef247bfb46b6_get_lista_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-25 16:28 +0000
+            created at 2025-05-25 21:42 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -107,9 +107,9 @@
     <p class="run"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t">    <span class="key">with</span> <span class="nam">db_lock</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">        <span class="nam">data_sql</span><span class="op">.</span><span class="nam">delete_records_below_threshold</span><span class="op">(</span><span class="nam">threshold</span><span class="op">,</span> <span class="str">"beton"</span><span class="op">,</span> <span class="nam">wenzel</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t">        <span class="key">return</span> <span class="nam">data_sql</span><span class="op">.</span><span class="nam">get_oldest_list_beton_or_lista</span><span class="op">(</span><span class="str">"beton"</span><span class="op">,</span> <span class="nam">date_of_lista_text</span><span class="op">,</span> <span class="nam">wenzel</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t">        <span class="nam">old_list</span> <span class="op">=</span>  <span class="nam">data_sql</span><span class="op">.</span><span class="nam">get_oldest_list_beton_or_lista</span><span class="op">(</span><span class="str">"beton"</span><span class="op">,</span> <span class="nam">date_of_lista_text</span><span class="op">,</span> <span class="nam">wenzel</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">    <span class="key">return</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">    <span class="key">return</span> <span class="nam">old_list</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t31" href="#t31">31</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t"><span class="key">def</span> <span class="nam">check_del_add_lista</span><span class="op">(</span><span class="nam">date_of_lista_text</span><span class="op">,</span> <span class="nam">currant_list_beton</span><span class="op">,</span> <span class="nam">wenzel</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t33" href="#t33">33</a></span><span class="t">    <span class="str">"""It checks for any removed or new entries in the new dictionary</span>&nbsp;</span><span class="r"></span></p>
@@ -130,12 +130,12 @@
     <p class="run"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">    <span class="nam">old_counter</span> <span class="op">=</span> <span class="nam">Counter</span><span class="op">(</span><span class="nam">old_stan_lista_beton</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="nam">currant_counter</span> <span class="op">=</span> <span class="nam">Counter</span><span class="op">(</span><span class="nam">currant_list_beton</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">        <span class="com"># &#1048;&#1097;&#1077;&#1084; &#1101;&#1083;&#1077;&#1084;&#1077;&#1085;&#1090;&#1099;, &#1082;&#1086;&#1090;&#1086;&#1088;&#1099;&#1077; &#1085;&#1091;&#1078;&#1085;&#1086; &#1091;&#1076;&#1072;&#1083;&#1080;&#1090;&#1100; (&#1080;&#1079; old_list, &#1085;&#1086; &#1086;&#1090;&#1089;&#1091;&#1090;&#1089;&#1090;&#1074;&#1091;&#1102;&#1090; &#1080;&#1083;&#1080; &#1084;&#1077;&#1085;&#1100;&#1096;&#1077; &#1088;&#1072;&#1079; &#1074; currant_list</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">    <span class="com"># look for elements that need to be removed (from old_list, but not in currant_list or less times)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">    <span class="key">for</span> <span class="nam">item</span> <span class="key">in</span> <span class="nam">old_counter</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">        <span class="key">if</span> <span class="nam">old_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">></span> <span class="nam">currant_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">            <span class="nam">del_lista</span><span class="op">.</span><span class="nam">extend</span><span class="op">(</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="nam">old_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">-</span> <span class="nam">currant_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">    <span class="com"># &#1048;&#1097;&#1077;&#1084; &#1101;&#1083;&#1077;&#1084;&#1077;&#1085;&#1090;&#1099;, &#1082;&#1086;&#1090;&#1086;&#1088;&#1099;&#1077; &#1085;&#1091;&#1078;&#1085;&#1086; &#1076;&#1086;&#1073;&#1072;&#1074;&#1080;&#1090;&#1100; (&#1080;&#1079; currant_list, &#1085;&#1086; &#1086;&#1090;&#1089;&#1091;&#1090;&#1089;&#1090;&#1074;&#1091;&#1102;&#1090; &#1080;&#1083;&#1080; &#1084;&#1077;&#1085;&#1100;&#1096;&#1077; &#1088;&#1072;&#1079; &#1074; old_list)    </span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">    <span class="com"># look for elements that need to be added (in currant_list, but not in old_list or more times)  </span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">    <span class="key">for</span> <span class="nam">item</span> <span class="key">in</span> <span class="nam">currant_counter</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">        <span class="key">if</span> <span class="nam">currant_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">></span> <span class="nam">old_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">            <span class="nam">add_lista</span><span class="op">.</span><span class="nam">extend</span><span class="op">(</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="nam">currant_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span> <span class="op">-</span> <span class="nam">old_counter</span><span class="op">[</span><span class="nam">item</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -157,7 +157,7 @@
             <a class="nav" href="z_145eef247bfb46b6_get_lista_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-05-25 16:28 +0000
+            created at 2025-05-25 21:42 +0000
         </p>
     </div>
 </footer>
