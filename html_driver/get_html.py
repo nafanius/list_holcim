@@ -596,6 +596,17 @@ html_template = """
             </div>
         </div>
 
+        <p style="padding-left: 5px; padding-top: 5px; padding-bottom: 10px;">
+            <a
+                href="https://docs.google.com/document/d/e/2PACX-1vQ3R6GDubGMQDwwADf3Z07PDDSC52q0jPKsbN3lzpgiDCIotoj5cgo2tcgbM7ti4lEH6T6tNSq0i42A/pub">
+                <img src="static/image/icon_bot.png" alt="icon_bot" style="width: 64px; height: 64px">
+            </a>
+            <a
+                href="https://docs.google.com/document/d/e/2PACX-1vSIoIr4YrZKleSeLhpey0RknCJucaN4oSKHdF3KuLDeB7if7TrAMJNcBivKBJg6Q7oDWtIJRPQIzRX6/pub">
+                <img src="static/image/holcim_app.png" alt="icon_bot" style="width: 64px; height: 64px">
+            </a>
+        </p>
+
         <select id="dropdown" onchange="showDivs()">
         <option value="zawod">Zawodzie</option>
         <option value="odola">Odolany</option>
