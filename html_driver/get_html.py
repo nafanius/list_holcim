@@ -605,6 +605,10 @@ html_template = """
                 href="https://docs.google.com/document/d/e/2PACX-1vSIoIr4YrZKleSeLhpey0RknCJucaN4oSKHdF3KuLDeB7if7TrAMJNcBivKBJg6Q7oDWtIJRPQIzRX6/pub">
                 <img src="static/image/holcim_app.png" alt="icon_app" style="width: 64px; height: 64px">
             </a>
+            <a style="text-decoration: none"
+                href="https://t.me/betonycz_bot/holcim_lista">
+                <img src="static/image/holcim_app_telegram.png" alt="icon_app_telegram" style="width: 64px; height: 64px">
+            </a>
         </p>
 
         <select id="dropdown" onchange="showDivs()">
