@@ -56,7 +56,7 @@ def converter(list_for_convert):
         """        
         if not data:
             return False
-        if data == '501':
+        if '501' in data:
             return False
         return True
     
