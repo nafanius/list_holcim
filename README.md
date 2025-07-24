@@ -6,7 +6,7 @@
 
 **Live site:** [holcim_lista](https://bit.ly/holcim_lista)
 
-**Static Example on GitHub Pages** [GitHub Pages](https://nafanius.github.io/list_holcim/)
+**Static Example on GitHub Pages** [GitHub Pages](https://nafanius.github.io/list_holcim/docs/)
 
 ## Overview
 
