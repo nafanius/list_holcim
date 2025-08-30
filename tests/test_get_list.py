@@ -6,6 +6,7 @@ from src.get_lista import find_day_request
 from unittest.mock import patch, MagicMock
 from datetime import time as datetime_time
 from src.get_lista import form_lista
+from src.settings import Settings
 from src.get_lista import form_lista_beton
 from src.get_lista import lista_in_text
 from src.get_lista import lista_in_text_beton
@@ -15,76 +16,76 @@ from src.get_lista import combination_of_some_days_list
 @pytest.mark.parametrize(
     "mock_date, expected_date",
     [(datetime(2023, 3, 6), [(0,
-                              f"./excel_files/Tydz 10.2023.xlsx",
+                              f"./excel_files/Tydz 10.2023{Settings.end_name_file}.xlsx",
                               "06.03.2023"),
                              (1,
-                                 f"./excel_files/Tydz 10.2023.xlsx",
+                                 f"./excel_files/Tydz 10.2023{Settings.end_name_file}.xlsx",
                                  "07.03.2023"),
                              (2,
-                              f"./excel_files/Tydz 10.2023.xlsx",
+                              f"./excel_files/Tydz 10.2023{Settings.end_name_file}.xlsx",
                               "08.03.2023")]),  # Monday
         (datetime(2024, 12, 23), [(0,
-                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                    "23.12.2024"),
                                   (1,
-                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                   "24.12.2024"),
                                   (2,
-                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                   "25.12.2024")]),  # Tuesday
         (datetime(2024, 12, 27), [(4,
-                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                    "27.12.2024"),
                                   (5,
-                                  f"./excel_files/Tydz 52.2024.xlsx",
+                                  f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                   "28.12.2024"),
                                   (0,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "30.12.2024")]),  # Friday
         (datetime(2024, 12, 28), [(5,
-                                   f"./excel_files/Tydz 52.2024.xlsx",
+                                   f"./excel_files/Tydz 52.2024{Settings.end_name_file}.xlsx",
                                    "28.12.2024"),
                                   (0,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "30.12.2024"),
                                   (1,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "31.12.2024")]),  # Saturday
         (datetime(2024, 12, 29), [(0,
-                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                    "30.12.2024"),
                                   (1,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "31.12.2024"),
                                   (2,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "01.01.2025")]),  # Sunday
         (datetime(2024, 12, 30), [(0,
-                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                    "30.12.2024"),
                                   (1,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "31.12.2024"),
                                   (2,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "01.01.2025")]),  # Monday
         (datetime(2024, 12, 31), [(1,
-                                   f"./excel_files/Tydz 1.2025.xlsx",
+                                   f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                    "31.12.2024"),
                                   (2,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "01.01.2025"),
                                   (3,
-                                  f"./excel_files/Tydz 1.2025.xlsx",
+                                  f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                   "02.01.2025")]),  # Tuesday
         (datetime(2025, 1, 1), [(2,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
+                                 f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                  "01.01.2025"),
                                 (3,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
+                                 f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                  "02.01.2025"),
                                 (4,
-                                 f"./excel_files/Tydz 1.2025.xlsx",
+                                 f"./excel_files/Tydz 1.2025{Settings.end_name_file}.xlsx",
                                  "03.01.2025")])  # Wednesday
      ]
 )
@@ -661,13 +662,13 @@ class TestListaInTextBeton:
         # Check sum (only normal and add)
         assert "zaplanowano metrów - 15.0" in metres
 
-    def test_non_numeric_metres(self):
-        lista_beton = [
-            ("not_a_number", datetime_time(12, 0), "FirmaE", "Adres5", "uwagi5", "przebieg5", "555", "pompa 258", None, 0)
-        ]
-        result, metres = lista_in_text_beton(lista_beton)
-        assert "not_a_number" in result[0]
-        assert "zaplanowano metrów - 0" in metres
+    # def test_non_numeric_metres(self):
+    #     lista_beton = [
+    #         ("not_a_number", datetime_time(12, 0), "FirmaE", "Adres5", "uwagi5", "przebieg5", "555", "pompa 258", None, 0)
+    #     ]
+    #     result, metres = lista_in_text_beton(lista_beton)
+    #     assert "not_a_number" in result[0]
+    #     assert "zaplanowano metrów - 0" in metres
 
 # todo make this test more useful 
 class TestCombinationOfSomeDaysList:

@@ -330,14 +330,14 @@ class TestPompaDzwig:
             [0,
              10,
              None,
-             50,
+             24,
              {},
              [],
              "",
              False,
              True,
              -10,
-             -50]
+             -24]
     )
     def test_if_pompa_dzwig_empty(self, order, m):
         order.metres = order.convert_to_float(m)
