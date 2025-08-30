@@ -34,7 +34,7 @@ jobs:
 
       - name: copy site_index to docs
         run: |
-          cp site/* docs/
+          cp -r site/* docs/
 
       - name: Commit coverage badge and report
         run: |
