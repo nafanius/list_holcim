@@ -32,9 +32,9 @@ jobs:
           coverage html -d docs/coverage_html_report
           coverage-badge -o .github/badges/coverage.svg -f
 
-      # - name: copy site_index to docs
-      #   run: |
-      #     cp site/index.html docs/
+      - name: copy site_index to docs
+        run: |
+          cp site/* docs/
 
       - name: Commit coverage badge and report
         run: |
