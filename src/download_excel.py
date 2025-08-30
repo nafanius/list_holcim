@@ -1,7 +1,7 @@
 import ezsheets
 from datetime import datetime, timedelta
 import os
-from src.settings import cr, inf, formating_error_message, timer
+from src.settings import Settings, cr, inf, formating_error_message, timer
 
 # dyspozytor.warszawa@holcim.com
 
@@ -41,11 +41,11 @@ def save_google_sheet(directory="excel_files"):
                 os.makedirs(directory)
             all_spreadsheets = ezsheets.listSpreadsheets() # get all available files
             filtered_spreadsheets = {name: spreadsheet_id for spreadsheet_id, name in all_spreadsheets.items()\
-                                      if name.endswith(week_number_year)} # filtred ended week_number_year from generate_name_of_file_google
+                                      if week_number_year in name} # filtred ended week_number_year from generate_name_of_file_google
             if len(filtered_spreadsheets) == 1:
                 spreadsheet_id = next(iter(filtered_spreadsheets.values()))
                 spreadsheet = ezsheets.Spreadsheet(spreadsheet_id)
-                file_path = os.path.join(directory, f"Tydz {week_number_year}.xlsx")
+                file_path = os.path.join(directory, f"Tydz {week_number_year}{Settings.end_name_file}.xlsx")
                 spreadsheet.downloadAsExcel(file_path)
             elif len(filtered_spreadsheets) == 0:
                 inf(f"There isn't file has name ended {week_number_year}")

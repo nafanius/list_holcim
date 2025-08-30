@@ -23,6 +23,7 @@ class Settings:
     travel_to_the_construction = 30 # time of travel to the construction and back
     unloading_time_for_pomp = 2 # time of unloading for pomp
     unloading_time_for_crane = 5.2 # 1 time of unloading for crane
+    end_name_file = ' Przewoźnicy'
     wenzels = (
         ("zawod",("zawodzie 2 ", "zawodzie 1 "), 24),
         ("odola",("if will be 2 wenz", "odolany 519"), 17),

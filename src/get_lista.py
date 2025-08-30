@@ -25,6 +25,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     Returns:
         list: lista_beton, del_lista, add_lista: 3 list of cartage with old add del
     """
+    num_bud = int()
     lista_beton = []
     try:
         wb = openpyxl.load_workbook(excel_file)
@@ -36,6 +37,8 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     sheet = wb[wb.sheetnames[day]]
 
     def fill_list_beton(times_download, row, column, wenz):
+        nonlocal num_bud
+
         time_pattern = r"\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b"
         match = re.search(time_pattern, str(times_download))
         if match:
@@ -45,8 +48,8 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
                 (
                     sheet.cell(row=row, column=column + 4).value, # metrs
                     times_download, # times
-                    sheet.cell(row=row, column=column + 1).value, # firm
-                    sheet.cell(row=row, column=column + 2).value, # adress bud(name)
+                    f"Budowa_{num_bud}" if sheet.cell(row=row, column=column + 1).value == None else sheet.cell(row=row, column=column + 1).value, # firm
+                    f"Adres_{num_bud}" if sheet.cell(row=row, column=column + 2).value == None else sheet.cell(row=row, column=column + 2).value, # firm, # adress bud(name)
                     f"{sheet.cell(row=row, column=column + 10).value} "
                     f"{'' if str(sheet.cell(row=row, column=column + 12).value).lower() == 'ok' else sheet.cell(row=row, column=column + 12).value}", # częstotliwość i Status kontraktu(uwagi)
                     f"{sheet.cell(row=row, column=column + 13).value} "
@@ -56,6 +59,8 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
                     sheet.cell(row=row, column=column + 8).value, # pompa
                 )
             )
+            num_bud += 1
+      
 
     for row_in_file in range(1, sheet.max_row):
         find_line = sheet.cell(row=row_in_file, column=3).value
@@ -63,14 +68,17 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
             number_wenz = "1"
             if wenzel[1][0] in  str(find_line).lower():
                 number_wenz = "2"
-
+                
+            num_bud = 1
             for row_in_beton in range(11, 42):
+
                 fill_list_beton(
                     sheet.cell(row=row_in_file + row_in_beton, column=3).value,
                     row_in_file + row_in_beton,
                     3,
                     number_wenz,
                 )
+                
 
 
     lista_beton = sorted(lista_beton, key=lambda event: event[1])
@@ -81,7 +89,7 @@ def form_lista_beton(excel_file, day, date_of_day_text, wenzel):
     )
 
     # region test raw data
-    lg(f"raw del lista {wenzel[0]} {date_of_day_text}in {__name__}")
+    lg(f"raw del lista {wenzel[0]} {date_of_day_text} in {__name__}")
     lg(del_lista)
     lg(f"raw add lista {wenzel[0]} {date_of_day_text} in {__name__}")
     lg(add_lista)
@@ -223,7 +231,7 @@ def lista_in_text_beton(lista_beton):
         
         sum_metres = sum_metres + sum_of_metres(metres, sort)
         text_pomp_gzwig = 'dzwig'
-        if pomp:
+        if pomp or float(metres) > 24:
             text_pomp_gzwig = 'pompa'
 
         if sort == 0:
@@ -304,21 +312,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}{Settings.end_name_file}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 2,
-                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
@@ -328,21 +336,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}{Settings.end_name_file}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 day_of_week + 1,
-                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
@@ -351,21 +359,21 @@ def find_day_request():
         list_of_days.append(
             (
                 day_of_week,
-                f"./excel_files/Tydz {current_week_number}.{current_year}.xlsx",
+                f"./excel_files/Tydz {current_week_number}.{current_year}{Settings.end_name_file}.xlsx",
                 now.strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )
@@ -374,21 +382,21 @@ def find_day_request():
         list_of_days.append(
             (
                 0,
-                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(1)}.{current_year_pluse(1)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=1)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 1,
-                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(2)}.{current_year_pluse(2)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=2)).strftime("%d.%m.%Y"),
             )
         )
         list_of_days.append(
             (
                 2,
-                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}.xlsx",
+                f"./excel_files/Tydz {current_week_pluse(3)}.{current_year_pluse(3)}{Settings.end_name_file}.xlsx",
                 (now + timedelta(days=3)).strftime("%d.%m.%Y"),
             )
         )

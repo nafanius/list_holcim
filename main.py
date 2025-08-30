@@ -147,5 +147,5 @@ if __name__ == "__main__":
     # pprint(get_dict())
     check_internet()
     save_html(get_dict())
-    upload_directory_to_s3("./site", "list-holcim")
+    # upload_directory_to_s3("./site", "list-holcim")
     # dict_zaw = get_dict()

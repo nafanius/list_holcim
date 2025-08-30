@@ -213,7 +213,7 @@ class Order:
                 return True
             return True
         
-        elif not pompa_dzwig and metres > 50:
+        if not pompa_dzwig and metres > 24:
             return True
         
         return False
