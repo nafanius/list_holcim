@@ -2,6 +2,7 @@ auth_data.py
 credentials.json
 credentials-sheets.json
 .venv1
+.venv
 .vscode
 excel_files/
 token-drive.pickle
@@ -11,3 +12,4 @@ client_secret_155862096178-ea212r8qqlerg30i05gpvk6hgpn3jcff.apps.googleuserconte
 __pycache__/
 <_io.BytesIO*
 save_old_dict
+run_script.sh
