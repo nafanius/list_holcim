@@ -2,7 +2,7 @@ auth_data.py
 credentials.json
 credentials-sheets.json
 .venv1
-.venv
+.venv/
 .vscode
 excel_files/
 token-drive.pickle
