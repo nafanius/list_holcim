@@ -568,6 +568,7 @@ html_template = """
             </div>
         </div>
 
+        <!--
         <p style="padding-left: 5px; padding-top: 5px; padding-bottom: 15px;">
             <a style="text-decoration: none"
                 href="https://docs.google.com/document/d/e/2PACX-1vQ3R6GDubGMQDwwADf3Z07PDDSC52q0jPKsbN3lzpgiDCIotoj5cgo2tcgbM7ti4lEH6T6tNSq0i42A/pub">
@@ -582,6 +583,7 @@ html_template = """
                 <img src="static/image/holcim_app_telegram.png" alt="icon_app_telegram" style="width: 64px; height: 64px">
             </a>
         </p>
+        -->
 
         <select id="dropdown" onchange="showDivs()">
         <option value="zawod">Zawodzie</option>
